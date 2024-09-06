@@ -1,0 +1,165 @@
+﻿﻿@using Microsoft.AspNetCore.Identity
+@using CodeData_Connection.Areas.Identity.User
+@using CodeData_Connection.Areas.Identity.Enums
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - CodeData Connection</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/CodeData Connection.styles.css" asp-append-version="true" />
+</head>
+<body class="theme-light">
+
+    @if (SignInManager.IsSignedIn(User))
+    {
+        @* 
+        <div class="user">
+            <img src="~/img/icon-user.svg" alt="">
+            <p>Olá, @UserManager.GetUserAsync(User).Result.FirstName!</p>
+        </div>
+        *@
+        <div class="sidebar">
+
+            <script>
+                let sidebar = document.querySelector('.sidebar')
+                let isMinimized = sessionStorage.getItem("isMinimized");
+
+                if (!isMinimized) {
+                    sessionStorage.setItem("isMinimized", "true");
+                } else {
+                    if (isMinimized === "true") {
+                        sidebar.classList.remove("active")
+                    }
+                    else if (isMinimized === "false") {
+                        sidebar.classList.add("active")
+                    }
+                }
+            </script>
+
+            <div class="logo">
+                <a asp-controller="Home" asp-action="Index">
+                    <img src="~/img/logo-codedata.svg" alt="">
+                </a>
+
+            </div>
+
+            <ul>
+                <li>
+                    <a asp-controller="Estoque" asp-action="Index">
+                        <img src="~/img/icon-patrimonio.svg" alt="">
+                        <span class="nav-item">ESTOQUE</span>
+                    </a>
+                    <span class="tooltip">ESTOQUE</span>
+                </li>
+                <li>
+                    <a asp-controller="Locacao" asp-action="Index">
+                        <div class="background-link"></div>
+                        <img src="~/img/icon-locacao.svg" alt="">
+                        <span class="nav-item">LOCAÇÃO</span>
+                    </a>
+                    <span class="tooltip">LOCAÇÃO</span>
+                </li>
+                <li>
+                    <a asp-controller="Homologacao" asp-action="Index">
+                        <img src="~/img/icon-homologacao.svg" alt="">
+                        <span class="nav-item">HOMOLOGAÇÃO</span>
+                    </a>
+                    <span class="tooltip">HOMOLOGAÇÃO</span>
+                </li>
+
+                <li>
+                    <a asp-controller="Clientes" asp-action="Index">
+                        <img src="~/img/icon-clientes.svg" alt="">
+                        <span class="nav-item">CLIENTES</span>
+                    </a>
+                    <span class="tooltip">CLIENTES</span>
+                </li>
+
+                @if (await UserManager.IsInRoleAsync(await UserManager.GetUserAsync(User).ConfigureAwait(false), Role.Administrador.ToString()))
+                {
+                    @* <li>
+                        <a asp-controller="Usuarios" asp-action="Index">
+                            <img src="~/img/icon-usuarios.svg" alt="">
+                            <span class="nav-item">USUÁRIOS</span>
+                        </a>
+                        <span class="tooltip">USUÁRIOS</span>
+                    </li> *@
+
+                    <li>
+                        <a asp-controller="Config" asp-action="Index">
+                            <img src="~/img/icon-config.svg" alt="">
+                            <span class="nav-item">CONFIGURAÇÕES</span>
+                        </a>
+                        <span class="tooltip">CONFIGURAÇÕES</span>
+                    </li>
+                }
+
+                @* <li>
+                    <form id="form-logout" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/", new { area = "" })" method="post" style="display=none"></form>
+                    <a onclick="document.getElementById('form-logout').submit()">
+                        <div class="background-link"></div>
+                        <img src="~/img/icon-logout.svg" alt="">
+                        <span class="nav-item">SAIR</span>
+                    </a>
+                    <span class="tooltip">SAIR</span>
+                </li> *@
+            </ul>
+        </div>
+    }
+
+    @await Html.PartialAsync("_Navbar")
+
+    <div class="main-content">
+            <main role="main">
+                @RenderBody()
+            </main>
+    </div>
+
+    <script>
+        let btn = document.getElementById('vertical-menu-btn')
+        let links = document.querySelectorAll('a')
+        let items = document.querySelectorAll('li')
+        let itemSelected = sessionStorage.getItem("itemSelected")
+
+        if (!itemSelected) {
+            sessionStorage.setItem("itemSelected", "");
+        } else {
+
+            items.forEach(i => {
+                if (i.innerHTML.includes(itemSelected) && window.location.pathname.length > 1) {
+                    i.classList.add("selected")
+                }
+            })
+        }
+
+        btn.addEventListener('click', () => {
+            sidebar.classList.toggle("active")
+
+            sessionStorage.setItem("isMinimized", sidebar.classList.contains("active") ? false : true)
+        })
+
+        links.forEach(link => {
+            link.addEventListener('click', () => {
+                let items = document.querySelectorAll('li')
+                items.forEach(i => i.classList.remove('selected'))
+
+                let li = link.parentNode
+                sessionStorage.setItem("itemSelected", li.innerHTML)
+            })
+        })
+    </script>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+
+</body>
+</html>

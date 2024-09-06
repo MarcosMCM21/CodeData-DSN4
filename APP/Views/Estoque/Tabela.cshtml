@@ -1,0 +1,175 @@
+﻿@{
+    Layout = null;
+}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="~/css/table.css">
+    <link rel="stylesheet" href="~/css/datatables.css">
+</head>
+
+<div class="container-table-1">
+    <header>
+        <h1>Lista de Patrimônio</h1>
+        <div class="actions">
+            <button class="btn orange" id="pdf">PDF</button>
+            <button class="btn orange" id="xls">XLS</button>
+            <button class="btn orange" id="printer">Printer</button>
+            <button class="btn orange">Adicionar Equipamento</button>
+            <button class="btn dark-blue">Importar Equipamentos</button>
+        </div>
+    </header>
+
+    <div class="container-table">
+        <div class="search-sort">
+            <input type="text" placeholder="Search" id="table-search">
+            <button class="btn-filter">Sort by Date</button>
+        </div>
+
+        <table id="userTable">
+            <thead>
+                <tr>
+                    <th><input type="checkbox"></th>
+                    <th>Patrimônio</th>
+                    <th>Modelo</th>
+                    <th>Descrição</th>
+                    <th>Marca</th>
+                    <th>SN</th>
+                    <th>PN</th>
+                    <th>Condição</th>
+                    <th>Status</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><input type="checkbox"></td>
+                    <td>0000001</td>
+                    <td>DT-35</td>
+                    <td>Um equipamento criado para fazer coisas</td>
+                    <td>MRC</td>
+                    <td>5465146451614</td>
+                    <td>65464513</td>
+                    <td><span class="status ativo">Ativo</span></td>
+                    <td><span class="status locacao">Locação</span></td>
+                    <td>
+                        <button class="btn view">L</button>
+                        <button class="btn view">V</button>
+                        <button class="btn view">E</button>
+                        <button class="btn delete">D</button>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td><input type="checkbox"></td>
+                    <td>0000002</td>
+                    <td>DT-40</td>
+                    <td>Um equipamento criado para fazer coisas</td>
+                    <td>MRC</td>
+                    <td>5465146498741</td>
+                    <td>65464789</td>
+                    <td><span class="status ativo">Ativo</span></td>
+                    <td><span class="status homologacao">Homologação</span></td>
+                    <td>
+                        <button class="btn view">L</button>
+                        <button class="btn view">V</button>
+                        <button class="btn view">E</button>
+                        <button class="btn delete">D</button>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td><input type="checkbox"></td>
+                    <td>0000003</td>
+                    <td>DT-60</td>
+                    <td>Um equipamento criado para fazer coisas</td>
+                    <td>MRC</td>
+                    <td>5465146423698</td>
+                    <td>65464456</td>
+                    <td><span class="status ativo">Ativo</span></td>
+                    <td><span class="status estoque">Estoque</span></td>
+                    <td>
+                        <button class="btn view">L</button>
+                        <button class="btn view">V</button>
+                        <button class="btn view">E</button>
+                        <button class="btn delete">D</button>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td><input type="checkbox"></td>
+                    <td>0000004</td>
+                    <td>DT-15</td>
+                    <td>Um equipamento criado para fazer coisas</td>
+                    <td>MRC</td>
+                    <td>5465146423574</td>
+                    <td>65464159</td>
+                    <td><span class="status inativo">Inativo</span></td>
+                    <td><span class="status estoque">Estoque</span></td>
+                    <td>
+                        <button class="btn view">L</button>
+                        <button class="btn view">V</button>
+                        <button class="btn view">E</button>
+                        <button class="btn delete">D</button>
+                    </td>
+                </tr>
+
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="~/js/datatables.js"></script>
+
+<script>
+    let table = new DataTable('#userTable', {
+        // options here
+        lengthMenu: [10, 25, 50, { label: 'Todos', value: -1 }],
+
+        search: {
+            return: false
+        },
+
+        "columnDefs": [ {
+            "targets": [0, 9],
+            "orderable": false
+        }],
+
+        layout: {
+            topStart: {
+                'pageLength': true,
+                buttons: ['csv', 'pdf', 'print']
+            }
+        }
+    });
+
+    let buttons = document.getElementsByClassName('dt-buttons')[0]
+    buttons.style.display = 'none'
+
+    let buttonsPDF = document.getElementsByClassName('buttons-pdf')[0]
+    let buttonsCSV = document.getElementsByClassName('buttons-csv')[0]
+    let buttonsPrinter = document.getElementsByClassName('buttons-print')[0]
+    let tableSearch = document.getElementById('dt-search-0')
+
+    let btnPdf = document.getElementById('pdf')
+    let btnXls = document.getElementById('xls')
+    let btnpPinter = document.getElementById('printer')
+    let search = document.getElementById('table-search')
+
+    console.log(tableSearch)
+    console.log(search)
+
+    btnPdf.addEventListener('click', ()=>{
+        buttonsPDF.click()
+    })
+
+    btnXls.addEventListener('click', ()=>{
+        buttonsCSV.click()
+    })
+
+    btnpPinter.addEventListener('click', ()=>{
+        buttonsPrinter.click()
+    })
+</script>

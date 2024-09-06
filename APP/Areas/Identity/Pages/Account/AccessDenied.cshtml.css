@@ -1,0 +1,18 @@
+﻿.access-denied {
+    height: calc(100vh - 10vh);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.access-denied img ::deep img {
+    width: 100px;
+}
+
+.access-denied h1 {
+    margin-top: 1.5rem;
+    margin-bottom: 0.3rem;
+    color: #dc3545;
+}
+

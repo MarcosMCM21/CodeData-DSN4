@@ -1,0 +1,59 @@
+﻿@page
+@model LoginModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="~/css/login.css" />
+    <title>Login</title>
+</head>
+<body>
+    <div class="container">
+        <div class="login-section">
+            <img src="~/img/logo.svg" alt="Logo">
+            <h1>LOGIN</h1>
+
+            <form asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+
+                <div class="form-group">
+                    <label for="email">Email ou Username</label>
+                    <input asp-for="Input.EmailOrUserName" id="email" aria-required="true" placeholder="Email ou Username"/>
+                    <span asp-validation-for="Input.EmailOrUserName" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Senha</label>
+                    <div class="password-field">
+                        <input asp-for="Input.Password" id="password" aria-required="true" placeholder="Senha"/>
+                        <span asp-validation-for="Input.Password" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="form-options">
+                    <label asp-for="Input.RememberMe">
+                        <input name="remember" asp-for="Input.RememberMe" />
+                        @Html.DisplayNameFor(m => m.Input.RememberMe)
+                    </label>
+
+                    <a asp-page ="./ForgotPassword">Esqueceu a senha?</a>
+                </div>
+                <button type="submit">ENTRAR</button>
+            </form>
+
+            <p>Não tem um conta? <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Cadastre-se</a></p>
+        </div>
+           
+    </div>
+
+    @section Scripts {
+        <partial name="_ValidationScriptsPartial" />
+    }
+
+</body>
+</html>

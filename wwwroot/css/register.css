@@ -27,19 +27,19 @@ body {
     background-color: #ffffff;
 }
 
-    .form-section h1 {
-        margin-bottom: 10px;
-        color: #000000; /* Cor primária aplicada */
-    }
+.form-section h1 {
+    margin-bottom: 10px;
+    color: #000000; /* Cor primária aplicada */
+}
 
-    .form-section p {
-        margin-bottom: 20px;
-        color: #7a7a7a;
-    }
+.form-section p {
+    margin-bottom: 20px;
+    color: #7a7a7a;
+}
 
-    .form-section a {
-        text-decoration: none;
-    }
+.form-section a {
+    text-decoration: none;
+}
 
 .form-group {
     margin-bottom: 15px;
@@ -71,9 +71,9 @@ button {
     font-size: 16px;
 }
 
-    button:hover {
-        background-color: #1e5b2f; /* Um tom mais escuro da cor primária */
-    }
+button:hover {
+    background-color: #1e5b2f; /* Um tom mais escuro da cor primária */
+}
 
 .info-section {
     background-color: rgb(0, 0, 0);
@@ -84,10 +84,14 @@ button {
     text-align: center;
 }
 
-    .info-section h2 {
-        justify-content: unset;
-    }
+.info-section h2 {
+    justify-content: unset;
+}
 
-    .info-section p {
-        text-align: justify;
-    }
+.info-section p {
+    text-align: justify;
+}
+
+.text-danger {
+    color: red;
+}

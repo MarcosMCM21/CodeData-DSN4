@@ -1,0 +1,10 @@
+﻿@page
+@model ConfirmEmailModel
+@{
+    Layout = "/Views/Shared/_Message.cshtml";
+    ViewData["Title"] = "Confirmar Email";
+}
+
+<h1>@ViewData["Title"]</h1>
+<partial name="_StatusMessage" model="Model.StatusMessage" />
+<a asp-asp-area="Identity" asp-page="/Account/Login" class="btn btn-primary">Voltar para a página de login</a>

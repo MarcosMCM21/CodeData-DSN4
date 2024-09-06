@@ -1,0 +1,68 @@
+﻿@page
+@model RegisterModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="~/css/register.css">
+    <title>Cadastro</title>
+</head>
+<body>
+    <div class="container">
+        <div class="form-section">
+            <h1>CADASTRO</h1>
+            <p>Já tem uma conta? <a asp-page="./Login">Entrar</a></p>
+            <form asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+
+                <div class="form-group">
+                    <label for="firstName">Primeiro Nome</label>
+                    <input asp-for="Input.FirstName" id="firstName" aria-required="true" />
+                    <span asp-validation-for="Input.FirstName" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label for="lastName">Sobrenome</label>
+                    <input asp-for="Input.LastName" id="lastName" aria-required="true" />
+                    <span asp-validation-for="Input.LastName" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input asp-for="Input.Username" id="username" aria-required="true" />
+                    <span asp-validation-for="Input.Username" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input asp-for="Input.Email" id="email" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+                    <span asp-validation-for="Input.Email" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label for="password">Senha</label>
+                    <input asp-for="Input.Password" id="password" autocomplete="new-password" aria-required="true" placeholder="Senha" />
+                    <span asp-validation-for="Input.Password" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label for="confirmPassword">Confirmar de Senha</label>
+                    <input asp-for="Input.ConfirmPassword" id="confirmPassword" autocomplete="new-password" aria-required="true" placeholder="Senha" />
+                    <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                </div>
+                <button type="submit">CADASTRAR</button>
+            </form>
+        </div>
+        <div class="info-section">
+            <h2>Sistema de Controle de Patrimônio, Locação e Homologação</h2>
+            <p>Bem-vindo ao nosso sistema de controle de patrimônio! Aqui, você pode ter controle de forma eficiente sobre todos os ativos da sua organização. O sistema permite visualizar a locação de itens, garantindo que você tenha um registro preciso de quem está utilizando cada patrimônio, incluindo o processo de homologação</p>
+            <p>Utilize nosso sistema para otimizar a gestão do seu patrimônio e garantir a integridade dos seus ativos!</p>
+        </div>
+    </div>
+
+    @section Scripts {
+        <partial name="_ValidationScriptsPartial" />
+    }
+
+</body>
+</html>

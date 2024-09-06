@@ -1,0 +1,14 @@
+﻿@page
+@model AccessDeniedModel
+@{
+    Layout = "/Views/Shared/_Message.cshtml";
+    ViewData["Title"] = "Acesso Negado";
+}
+
+<div class="access-denied">
+    <!-- Adiciona a imagem de erro -->
+    <img src="~/img/acesso-negado.png" alt="Acesso Negado" class="error-image">
+    <h1>Acesso Negado</h1>
+    <p>Você não tem permissão para acessar esta página.</p>
+    <a asp-controller="Home" asp-action="Index" class="btn btn-primary">Voltar para a Página Inicial</a>
+</div>

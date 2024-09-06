@@ -112,3 +112,7 @@ button {
 button:hover {
     background-color: #1e5b2f; /* Um tom mais escuro da cor primária */
 }
+
+.text-danger {
+    color: red;
+}

@@ -1,4 +1,4 @@
-## CodeData Automação
+## PLH CodeData
 Repositório criado para organizar todos os trabalhos da Squad em um único repositóiro fazendo o uso de subtree do git para "mesclar" todos os projetos. Esse é um trabalho para o TCC do curso técnico de Desenvolvimento de Sistemas
 
 ## Integrantes

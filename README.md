@@ -21,4 +21,4 @@ A cada final de Sprint será criada uma nova branch com o nome "Sprint<Número d
 
 ## Instruções
 A aplicação irá criar o banco de dados, mas é necessário configura-lo no arquivo appsettings.json conforme abaixo.
-![gif](instruction.gif)
+![Instruction](https://github.com/user-attachments/assets/1ea0a46e-06bf-4e41-b839-980f791f3e66)

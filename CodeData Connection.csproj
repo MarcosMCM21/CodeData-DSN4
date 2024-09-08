@@ -8,6 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Models\User\**" />
+    <Content Remove="Models\User\**" />
+    <EmbeddedResource Remove="Models\User\**" />
+    <None Remove="Models\User\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Remove="wwwroot\css\login.css" />
   </ItemGroup>
 
@@ -33,7 +40,6 @@
 
   <ItemGroup>
     <Folder Include="Migrations\" />
-    <Folder Include="Models\User\" />
     <Folder Include="Services\" />
     <Folder Include="wwwroot\img\" />
   </ItemGroup>

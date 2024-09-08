@@ -82,7 +82,7 @@
                     <span class="tooltip">CLIENTES</span>
                 </li>
 
-                @if (await UserManager.IsInRoleAsync(await UserManager.GetUserAsync(User).ConfigureAwait(false), Role.Administrador.ToString()))
+                @if(await UserManager.IsInRoleAsync(await UserManager.GetUserAsync(User).ConfigureAwait(false), Role.Administrador.ToString()))
                 {
                     @* <li>
                         <a asp-controller="Usuarios" asp-action="Index">

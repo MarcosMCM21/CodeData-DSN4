@@ -7,7 +7,7 @@ namespace CodeData_Connection.Models.Database
     {
         public String GetConnectionString()
         {
-            return "Server=localhost;Database=codedata;Uid=root;Pwd=R00tAce$$";
+            return "Server=localhost;Database=codedata;Uid=root;Pwd=R00tAcce$$";
         }
     }
 }

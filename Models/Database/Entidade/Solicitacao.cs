@@ -1,0 +1,36 @@
+﻿using CodeData_Connection.Areas.Identity.User;
+using MySqlX.XDevAPI;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace CodeData_Connection.Models.Database.Entidade
+{
+    public class Solicitacao
+    {
+        public int Id { get; set; }
+
+        [Column(TypeName = "TINYINT(1)")]
+        public bool Tipo { get; set; }
+
+        [MaxLength(50)]
+        public string Numero { get; set; }
+
+        [Column(TypeName = "DATETIME")]
+        public DateTime DataInicio { get; set; }
+
+        [Column(TypeName = "DATETIME")]
+        public DateTime DataFinal { get; set; }
+
+        [Column(TypeName = "TEXT")]
+        public string Descricao { get; set; }
+
+        // Chaves estrangeiras
+        [MaxLength(255)]
+        public string UserId { get; set; }
+        public ApplicationUser User { get; set; }
+
+        public int ClienteId { get; set; }
+        public Cliente Cliente { get; set; }
+    }
+
+}

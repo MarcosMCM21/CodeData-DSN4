@@ -5,12 +5,16 @@ namespace CodeData_Connection.Areas.Identity.User
 {
     public class ApplicationUser : IdentityUser
     {
-        [Required]
+        [MaxLength(255)]
         public string FirstName { get; set; }
 
-        [Required]
+        [MaxLength(255)]
         public string LastName { get; set; }
 
+
+        // Relacionamento com a entidade ASPNETUSERS
+        [MaxLength(255)]
         public string? GerenteID { get; set; }
+        public ApplicationUser User { get; set; }
     }
 }

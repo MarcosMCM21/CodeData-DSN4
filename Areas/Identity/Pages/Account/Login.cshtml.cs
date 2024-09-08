@@ -116,6 +116,9 @@ namespace CodeData_Connection.Areas.Identity.Pages.Account
                 var userName = user != null ? user.ToString() : Input.EmailOrUserName;
 
                 var result = await _signInManager.PasswordSignInAsync(userName, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+
+                Console.WriteLine(Input.RememberMe);
+
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");

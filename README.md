@@ -20,5 +20,5 @@ Diagrama de Classes - [Visual Paradigm Online](https://online.visual-paradigm.co
 A cada final de Sprint será criada uma nova branch com o nome "Sprint<Número da Sprint>" para salvar o estado do projeto no final da mesma.
 
 ## Instruções
-A aplicação irá criar o banco de dados, mas é necessário configura-lo no arquivo appsettings.json conforme abaixo.
+A aplicação irá criar o banco de dados, mas é necessário configura-lo no arquivo appsettings.json conforme o exemplo a seguir.
 ![Instruction](https://github.com/user-attachments/assets/1ea0a46e-06bf-4e41-b839-980f791f3e66)

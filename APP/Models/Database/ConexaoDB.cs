@@ -1,7 +1,4 @@
-﻿using Microsoft.Data.Sqlite;
-using System.Globalization;
-
-namespace CodeData_Connection.Models.Database
+﻿namespace CodeData_Connection.Models.Database
 {
     public class ConexaoDB
     {

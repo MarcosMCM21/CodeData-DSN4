@@ -30,7 +30,7 @@
         <table id="userTable">
             <thead>
                 <tr>
-                    <th><input type="checkbox"></th>
+                    <th></th>
                     <th>Patrimônio</th>
                     <th>Modelo</th>
                     <th>Descrição</th>
@@ -44,7 +44,7 @@
             </thead>
             <tbody>
                 <tr>
-                    <td><input type="checkbox"></td>
+                    <td></td>
                     <td>0000001</td>
                     <td>DT-35</td>
                     <td>Um equipamento criado para fazer coisas</td>
@@ -62,7 +62,7 @@
                 </tr>
 
                 <tr>
-                    <td><input type="checkbox"></td>
+                    <td></td>
                     <td>0000002</td>
                     <td>DT-40</td>
                     <td>Um equipamento criado para fazer coisas</td>
@@ -80,7 +80,7 @@
                 </tr>
 
                 <tr>
-                    <td><input type="checkbox"></td>
+                    <td></td>
                     <td>0000003</td>
                     <td>DT-60</td>
                     <td>Um equipamento criado para fazer coisas</td>
@@ -98,7 +98,7 @@
                 </tr>
 
                 <tr>
-                    <td><input type="checkbox"></td>
+                    <td></td>
                     <td>0000004</td>
                     <td>DT-15</td>
                     <td>Um equipamento criado para fazer coisas</td>
@@ -121,6 +121,9 @@
 </div>
 
 <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://cdn.datatables.net/2.1.5/js/dataTables.js"></script>
+<script src="https://cdn.datatables.net/select/2.0.5/js/dataTables.select.js"></script>
+<script src="https://cdn.datatables.net/select/2.0.5/js/select.dataTables.js"></script>
 <script src="~/js/datatables.js"></script>
 
 <script>
@@ -132,10 +135,20 @@
             return: false
         },
 
-        "columnDefs": [ {
-            "targets": [0, 9],
-            "orderable": false
+        columns: [
+            { data: null, orderable: false, searchable: false, render: DataTable.render.select()},
+            {}, {}, {}, {}, {}, {}, {}, {}, {},
+        ],
+
+        columnDefs: [{
+            targets: [9],
+            orderable: false
         }],
+
+        select: {
+            style: 'multi',
+            selector: 'td:first-child'
+        },
 
         layout: {
             topStart: {

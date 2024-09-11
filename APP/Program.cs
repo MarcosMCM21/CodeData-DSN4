@@ -11,18 +11,11 @@ var connectionString = builder.Configuration.GetConnectionString("ApplicationDbC
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseMySQL(connectionString));
 
 builder.Services.AddDefaultIdentity<ApplicationUser>(options => { 
-        options.SignIn.RequireConfirmedAccount = false;
+        options.SignIn.RequireConfirmedAccount = true;
         options.User.RequireUniqueEmail = true;
     })
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
-
-builder.Services.Configure<IdentityOptions>(options =>
-{
-    // Default SignIn settings.
-    options.SignIn.RequireConfirmedEmail = true;
-    options.SignIn.RequireConfirmedPhoneNumber = false;
-});
 
 builder.Services.ConfigureApplicationCookie(options =>
 {
@@ -46,7 +39,7 @@ builder.Services.AddControllersWithViews()
 
 var app = builder.Build();
 
-app.Services.CreateScope().ServiceProvider.GetRequiredService<ApplicationDbContext>().Database.Migrate();
+app.Services.CreateScope().ServiceProvider.GetRequiredService<ApplicationDbContext>().Database.EnsureCreated();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

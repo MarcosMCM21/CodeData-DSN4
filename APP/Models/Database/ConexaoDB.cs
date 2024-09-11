@@ -4,7 +4,7 @@
     {
         public String GetConnectionString()
         {
-            return "Server=localhost;Database=codedata;Uid=root;Pwd=R00tAcce$$";
+            return "Server=localhost;Database=codedata;Uid=root;Pwd=";
         }
     }
 }

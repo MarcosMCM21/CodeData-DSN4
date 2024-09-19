@@ -19,12 +19,6 @@
 
     @if (SignInManager.IsSignedIn(User))
     {
-        @* 
-        <div class="user">
-            <img src="~/img/icon-user.svg" alt="">
-            <p>Olá, @UserManager.GetUserAsync(User).Result.FirstName!</p>
-        </div>
-        *@
         <div class="sidebar">
 
             <script>
@@ -84,14 +78,6 @@
 
                 @if(await UserManager.IsInRoleAsync(await UserManager.GetUserAsync(User).ConfigureAwait(false), Role.Administrador.ToString()))
                 {
-                    @* <li>
-                        <a asp-controller="Usuarios" asp-action="Index">
-                            <img src="~/img/icon-usuarios.svg" alt="">
-                            <span class="nav-item">USUÁRIOS</span>
-                        </a>
-                        <span class="tooltip">USUÁRIOS</span>
-                    </li> *@
-
                     <li>
                         <a asp-controller="Config" asp-action="Index">
                             <img src="~/img/icon-config.svg" alt="">
@@ -101,16 +87,8 @@
                     </li>
                 }
 
-                @* <li>
-                    <form id="form-logout" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/", new { area = "" })" method="post" style="display=none"></form>
-                    <a onclick="document.getElementById('form-logout').submit()">
-                        <div class="background-link"></div>
-                        <img src="~/img/icon-logout.svg" alt="">
-                        <span class="nav-item">SAIR</span>
-                    </a>
-                    <span class="tooltip">SAIR</span>
-                </li> *@
             </ul>
+
         </div>
 
         @await Html.PartialAsync("_Navbar")

@@ -34,6 +34,19 @@ namespace CodeData_Connection.Models.Database.Entidade
 
         public int DocumentoId { get; set; }
         public Documento Documento { get; set; }
-    }
 
+        public Equipamento(int id, string codigo, string modelo, string descricao, string marca, string serialNumber, string partNumber, bool condicao, int estoqueId, int documentoId)
+        {
+            Id = id;
+            Codigo = codigo;
+            Modelo = modelo;
+            Descricao = descricao;
+            Marca = marca;
+            SerialNumber = serialNumber;
+            PartNumber = partNumber;
+            Condicao = condicao;
+            EstoqueId = estoqueId;
+            DocumentoId = documentoId;
+        }
+    }
 }

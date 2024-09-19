@@ -3,7 +3,7 @@ using MySql.Data.MySqlClient;
 using System.Configuration;
 using System.Data;
 
-namespace CodeData_Connection.Models.Database.CRUD
+namespace CodeData_Connection.Models.Database
 {
     public class ComandosNotificacao
     {
@@ -33,8 +33,6 @@ namespace CodeData_Connection.Models.Database.CRUD
             }
 
             connection.Close();
-
-            Console.WriteLine(lista);
 
             return lista;
         }

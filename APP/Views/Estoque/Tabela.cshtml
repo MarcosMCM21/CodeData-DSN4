@@ -1,6 +1,4 @@
-﻿@{
-    Layout = null;
-}
+﻿@model IEnumerable<CodeData_Connection.Models.Database.Entidade.Equipamento>
 
 <head>
     <meta charset="UTF-8">
@@ -43,6 +41,25 @@
                 </tr>
             </thead>
             <tbody>
+
+                @foreach (var equipamento in Model)
+                {
+                    <tr>
+                        <td>@equipamento.Codigo</td>
+                        <td>@equipamento.Modelo</td>
+                        <td>@equipamento.Descricao</td>
+                        <td>@equipamento.Marca</td>
+                        <td>@equipamento.SerialNumber</td>
+                        <td>@equipamento.PartNumber</td>
+                        <td>@equipamento.Condicao</td>
+                        <td><span class="status locacao">Locação</span></td>
+                        <td>
+                            <button type="button" class="btn btn-primary edit-btn" data-id="@equipamento.Id">E</button>
+                            <button type="button" class="btn btn-danger delete-btn" data-id="@equipamento.Id">D</button>
+                        </td>
+                    </tr>
+                }
+
                 <tr>
                     <td></td>
                     <td>0000001</td>
@@ -54,9 +71,9 @@
                     <td><span class="status ativo">Ativo</span></td>
                     <td><span class="status locacao">Locação</span></td>
                     <td>
-                        <button class="btn view">L</button>
+                        <button type="button" class="btn btn-primary edit-btn" data-id="">E</button>
                         <button class="btn view">V</button>
-                        <button class="btn view">E</button>
+                        <button class="btn view">L</button>
                         <button class="btn delete">D</button>
                     </td>
                 </tr>
@@ -114,9 +131,56 @@
                         <button class="btn delete">D</button>
                     </td>
                 </tr>
-
             </tbody>
         </table>
+
+        <!-- Modal para edição -->
+        <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editModalLabel">Editar Equipamento</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form id="editForm">
+                        <div class="modal-body">
+                            <input type="hidden" id="Id" name="Id" />
+                            <div class="form-group">
+                                <label for="codigo">Código:</label>
+                                <input type="text" class="form-control" id="codigo" />
+                            </div>
+                            <div class="form-group">
+                                <label for="modelo">Modelo:</label>
+                                <input type="text" class="form-control" id="modelo" />
+                            </div>
+                            <div class="form-group">
+                                <label for="descr">Descrição:</label>
+                                <input type="text" class="form-control" id="descr" />
+                            </div>
+                            <div class="form-group">
+                                <label for="marca">Marca:</label>
+                                <input type="text" class="form-control" id="marca" />
+                            </div>
+                            <div class="form-group">
+                                <label for="sn">Serial Number:</label>
+                                <input type="text" class="form-control" id="sn" />
+                            </div>
+                            <div class="form-group">
+                                <label for="pn">Part Number:</label>
+                                <input type="text" class="form-control" id="pn" />
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-primary">Salvar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
     </div>
 </div>
 
@@ -185,4 +249,47 @@
     btnpPinter.addEventListener('click', ()=>{
         buttonsPrinter.click()
     })
+
+    // Cancelar a abertura do model
+    $('.btn-secondary').on('click', function () {
+        $('#editModal').modal('hide');
+    });
+
+    // Carregar dados no modal para edição
+    $('.edit-btn').on('click', function () {
+        $('#editModal').modal('toggle');
+
+        const id = $(this).data('id');
+        console.log(id);
+
+        $.get(`/Tabela`, function (data) {
+            $('#comprovanteId').val(data.id);
+            $('#valor').val(data.valor);
+            $('#nomeRemetente').val(data.nomeRemetente);
+            $('#nomeBanco').val(data.nomeBanco);
+            $('#tipoComprovante').val(data.tipoComprovante);
+        });
+    });
+
+    // Enviar dados editados para o servidor
+    $('#editForm').on('submit', function (e) {
+        e.preventDefault(); // Evitar envio padrão do formulário
+        const id = $(this).data('id');
+        const formData = $(this).serialize();
+        console.log(id);
+        $.ajax({
+            url: `/Comprovante/Update`,
+            type: 'POST',
+            data: formData,
+            success: function () {
+                $('#editModal').modal('hide');
+                location.reload(); // Recarregar a página para ver as atualizações
+            },
+            error: function (xhr) {
+                console.error('Erro ao atualizar:', xhr.responseText);
+                alert('Erro ao atualizar o comprovante.');
+                console.log(formData);
+            }
+        });
+    });
 </script>

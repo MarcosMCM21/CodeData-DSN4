@@ -5,6 +5,7 @@ namespace CodeData_Connection.Models.Database.Entidade
 {
     public class Equipamento
     {
+        [Key]
         public int Id { get; set; }
 
         [MaxLength(45)]
@@ -30,9 +31,11 @@ namespace CodeData_Connection.Models.Database.Entidade
 
         // Chaves estrangeiras
         public int EstoqueId { get; set; }
+        [ForeignKey("EstoqueId")]
         public Estoque Estoque { get; set; }
 
         public int DocumentoId { get; set; }
+        [ForeignKey("DocumentoId")]
         public Documento Documento { get; set; }
 
         public Equipamento(int id, string codigo, string modelo, string descricao, string marca, string serialNumber, string partNumber, bool condicao, int estoqueId, int documentoId)

@@ -1,6 +1,4 @@
-﻿@model IEnumerable<CodeData_Connection.Models.Database.Entidade.Equipamento>
-
-<head>
+﻿<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="~/css/table.css">
@@ -42,23 +40,22 @@
             </thead>
             <tbody>
 
-                @foreach (var equipamento in Model)
-                {
-                    <tr>
-                        <td>@equipamento.Codigo</td>
-                        <td>@equipamento.Modelo</td>
-                        <td>@equipamento.Descricao</td>
-                        <td>@equipamento.Marca</td>
-                        <td>@equipamento.SerialNumber</td>
-                        <td>@equipamento.PartNumber</td>
-                        <td>@equipamento.Condicao</td>
-                        <td><span class="status locacao">Locação</span></td>
-                        <td>
-                            <button type="button" class="btn btn-primary edit-btn" data-id="@equipamento.Id">E</button>
-                            <button type="button" class="btn btn-danger delete-btn" data-id="@equipamento.Id">D</button>
-                        </td>
-                    </tr>
-                }
+                <tr>
+                    <td></td>
+                    <td>equipamento.Codigo</td>
+                    <td>equipamento.Modelo</td>
+                    <td>equipamento.Descricao</td>
+                    <td>equipamento.Marca</td>
+                    <td>equipamento.SerialNumber</td>
+                    <td>equipamento.PartNumber</td>
+                    <td>equipamento.Condicao</td>
+                    <td><span class="status locacao">Locação</span></td>
+                    <td>
+                        <button type="button" class="btn btn-primary edit-btn" data-id="equipamento.Id">E</button>
+                        <button type="button" class="btn btn-danger delete-btn" data-id="equipamento.Id">D</button>
+                    </td>
+                </tr>
+
 
                 <tr>
                     <td></td>
@@ -200,7 +197,7 @@
         },
 
         columns: [
-            { data: null, orderable: false, searchable: false, render: DataTable.render.select()},
+            { data: null, orderable: false, searchable: false, render: DataTable.render.select() },
             {}, {}, {}, {}, {}, {}, {}, {}, {},
         ],
 
@@ -238,15 +235,15 @@
     console.log(tableSearch)
     console.log(search)
 
-    btnPdf.addEventListener('click', ()=>{
+    btnPdf.addEventListener('click', () => {
         buttonsPDF.click()
     })
 
-    btnXls.addEventListener('click', ()=>{
+    btnXls.addEventListener('click', () => {
         buttonsCSV.click()
     })
 
-    btnpPinter.addEventListener('click', ()=>{
+    btnpPinter.addEventListener('click', () => {
         buttonsPrinter.click()
     })
 
@@ -293,3 +290,4 @@
         });
     });
 </script>
+

@@ -36,6 +36,8 @@ namespace CodeData_Connection.Models.Database
 
             connection.Close();
 
+            Console.WriteLine(lista);
+
             return lista;
         }
     }

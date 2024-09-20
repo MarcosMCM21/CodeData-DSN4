@@ -5,6 +5,7 @@ namespace CodeData_Connection.Models.Database.Entidade
 {
     public class Endereco
     {
+        [Key]
         public int Id { get; set; }
 
         [MaxLength(9)]

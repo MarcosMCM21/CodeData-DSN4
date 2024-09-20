@@ -1,8 +1,9 @@
 ﻿using CodeData_Connection.Areas.Identity.Data;
 using CodeData_Connection.Models.Database;
-using Microsoft.AspNetCore.Authorization;
+using CodeData_Connection.Models.Database.Entidade;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using NuGet.Protocol;
 
 namespace CodeData_Connection.Controllers
 {
@@ -15,19 +16,9 @@ namespace CodeData_Connection.Controllers
             _context = context;
         }
 
-        public IActionResult Index()
-        {
-            return View();
-        }
-
-        public async Task<IActionResult> Tabela()
+        public async Task<IActionResult> Index()
         {
             var equipamentos = await _context.Equipamentos.ToListAsync();
-
-            if (equipamentos == null)
-            {
-                Console.WriteLine("Nenhum equipamento encontrado!");
-            }
 
             return View(equipamentos);
         }

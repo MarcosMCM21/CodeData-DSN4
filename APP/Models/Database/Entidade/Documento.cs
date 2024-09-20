@@ -5,6 +5,7 @@ namespace CodeData_Connection.Models.Database.Entidade
 {
     public class Documento
     {
+        [Key]
         public int Id { get; set; }
 
         [MaxLength(45)]

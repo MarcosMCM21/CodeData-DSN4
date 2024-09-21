@@ -1,4 +1,6 @@
-﻿<head>
+﻿@model IEnumerable<CodeData_Connection.Models.Database.Entidade.Equipamento>
+
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="~/css/table.css">
@@ -12,7 +14,7 @@
             <button class="btn orange" id="pdf">PDF</button>
             <button class="btn orange" id="xls">XLS</button>
             <button class="btn orange" id="printer">Printer</button>
-            <button class="btn orange">Adicionar Equipamento</button>
+            <button class="btn orange register-btn">Adicionar Equipamento</button>
             <button class="btn dark-blue">Importar Equipamentos</button>
         </div>
     </header>
@@ -40,94 +42,25 @@
             </thead>
             <tbody>
 
-                <tr>
-                    <td></td>
-                    <td>equipamento.Codigo</td>
-                    <td>equipamento.Modelo</td>
-                    <td>equipamento.Descricao</td>
-                    <td>equipamento.Marca</td>
-                    <td>equipamento.SerialNumber</td>
-                    <td>equipamento.PartNumber</td>
-                    <td>equipamento.Condicao</td>
-                    <td><span class="status locacao">Locação</span></td>
-                    <td>
-                        <button type="button" class="btn btn-primary edit-btn" data-id="equipamento.Id">E</button>
-                        <button type="button" class="btn btn-danger delete-btn" data-id="equipamento.Id">D</button>
-                    </td>
-                </tr>
+                @foreach(var equipamento in Model) 
+                {
+                    <tr>
+                        <td></td>
+                        <td>@equipamento.Codigo</td>
+                        <td>@equipamento.Modelo</td>
+                        <td>@equipamento.Descricao</td>
+                        <td>@equipamento.Marca</td>
+                        <td>@equipamento.SerialNumber</td>
+                        <td>@equipamento.PartNumber</td>
+                        <td>@equipamento.Condicao</td>
+                        <td><span class="status locacao">Locação</span></td>
+                        <td>
+                            <button type="button" class="btn btn-primary edit-btn" data-id="@equipamento.Id">E</button>
+                            <button type="button" class="btn btn-danger delete-btn" data-id="@equipamento.Id">D</button>
+                        </td>
+                    </tr>
+                }
 
-
-                <tr>
-                    <td></td>
-                    <td>0000001</td>
-                    <td>DT-35</td>
-                    <td>Um equipamento criado para fazer coisas</td>
-                    <td>MRC</td>
-                    <td>5465146451614</td>
-                    <td>65464513</td>
-                    <td><span class="status ativo">Ativo</span></td>
-                    <td><span class="status locacao">Locação</span></td>
-                    <td>
-                        <button type="button" class="btn btn-primary edit-btn" data-id="">E</button>
-                        <button class="btn view">V</button>
-                        <button class="btn view">L</button>
-                        <button class="btn delete">D</button>
-                    </td>
-                </tr>
-
-                <tr>
-                    <td></td>
-                    <td>0000002</td>
-                    <td>DT-40</td>
-                    <td>Um equipamento criado para fazer coisas</td>
-                    <td>MRC</td>
-                    <td>5465146498741</td>
-                    <td>65464789</td>
-                    <td><span class="status ativo">Ativo</span></td>
-                    <td><span class="status homologacao">Homologação</span></td>
-                    <td>
-                        <button class="btn view">L</button>
-                        <button class="btn view">V</button>
-                        <button class="btn view">E</button>
-                        <button class="btn delete">D</button>
-                    </td>
-                </tr>
-
-                <tr>
-                    <td></td>
-                    <td>0000003</td>
-                    <td>DT-60</td>
-                    <td>Um equipamento criado para fazer coisas</td>
-                    <td>MRC</td>
-                    <td>5465146423698</td>
-                    <td>65464456</td>
-                    <td><span class="status ativo">Ativo</span></td>
-                    <td><span class="status estoque">Estoque</span></td>
-                    <td>
-                        <button class="btn view">L</button>
-                        <button class="btn view">V</button>
-                        <button class="btn view">E</button>
-                        <button class="btn delete">D</button>
-                    </td>
-                </tr>
-
-                <tr>
-                    <td></td>
-                    <td>0000004</td>
-                    <td>DT-15</td>
-                    <td>Um equipamento criado para fazer coisas</td>
-                    <td>MRC</td>
-                    <td>5465146423574</td>
-                    <td>65464159</td>
-                    <td><span class="status inativo">Inativo</span></td>
-                    <td><span class="status estoque">Estoque</span></td>
-                    <td>
-                        <button class="btn view">L</button>
-                        <button class="btn view">V</button>
-                        <button class="btn view">E</button>
-                        <button class="btn delete">D</button>
-                    </td>
-                </tr>
             </tbody>
         </table>
 
@@ -247,6 +180,11 @@
         buttonsPrinter.click()
     })
 
+    // Fechar o model
+    $('.close').on('click', function () {
+        $('#editModal').modal('hide');
+    });
+
     // Cancelar a abertura do model
     $('.btn-secondary').on('click', function () {
         $('#editModal').modal('hide');
@@ -254,17 +192,18 @@
 
     // Carregar dados no modal para edição
     $('.edit-btn').on('click', function () {
-        $('#editModal').modal('toggle');
+        $('#editModal').modal('show');
 
         const id = $(this).data('id');
         console.log(id);
 
-        $.get(`/Tabela`, function (data) {
-            $('#comprovanteId').val(data.id);
-            $('#valor').val(data.valor);
-            $('#nomeRemetente').val(data.nomeRemetente);
-            $('#nomeBanco').val(data.nomeBanco);
-            $('#tipoComprovante').val(data.tipoComprovante);
+        $.get(`/GetEquipamentoId/${id}`, function (data) {
+            $('#codigo').val(data.codigo);
+            $('#modelo').val(data.modelo);
+            $('#desct').val(data.descricao);
+            $('#marca').val(data.marca);
+            $('#sn').val(data.serialNumber);
+            $('#pn').val(data.partNumber);
         });
     });
 

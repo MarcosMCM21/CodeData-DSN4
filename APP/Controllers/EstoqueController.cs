@@ -16,11 +16,25 @@ namespace CodeData_Connection.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
+        {
+            return View();
+        }
+
+        public async Task<IActionResult> Tabela()
         {
             var equipamentos = await _context.Equipamentos.ToListAsync();
 
-            return View(equipamentos);
+            Console.WriteLine(equipamentos);
+
+            return PartialView("~/Views/Estoque/Tabela.cshtml", equipamentos);
+        }
+
+        public JsonResult GetEquipamentoId(int id)
+        {
+            var equipamento = _context.Equipamentos.Find(id);
+
+            return Json(equipamento);
         }
     }
 }

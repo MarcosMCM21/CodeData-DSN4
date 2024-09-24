@@ -17,5 +17,4 @@
         public int DocumentoId { get; set; }
         public Documento Documento { get; set; }
     }
-
 }

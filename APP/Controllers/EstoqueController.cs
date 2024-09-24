@@ -16,25 +16,32 @@ namespace CodeData_Connection.Controllers
             _context = context;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
-        }
+            Console.WriteLine("CONTROLLER: Estoque; ACTION: Tabela");
 
-        public async Task<IActionResult> Tabela()
-        {
             var equipamentos = await _context.Equipamentos.ToListAsync();
 
-            Console.WriteLine(equipamentos);
+            Console.WriteLine("\n\nEQUIPAMENTOS:\n\n");
 
-            return PartialView("~/Views/Estoque/Tabela.cshtml", equipamentos);
+            if (equipamentos.Any() || equipamentos == null)
+            {
+                Console.WriteLine("Nenhum equipamento encontrado!");
+
+                return View("Nenhum equipamento encontrado!");
+            }
+
+
+            Console.WriteLine(equipamentos.ToJson());
+
+            return View(equipamentos);
         }
 
-        public JsonResult GetEquipamentoId(int id)
-        {
-            var equipamento = _context.Equipamentos.Find(id);
+        //public JsonResult GetEquipamentoId(int id)
+        //{
+        //    var equipamento = _context.Equipamentos.Find(id);
 
-            return Json(equipamento);
-        }
+        //    return Json(equipamento);
+        //}
     }
 }

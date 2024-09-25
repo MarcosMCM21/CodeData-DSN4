@@ -1,6 +1,4 @@
 ﻿using CodeData_Connection.Areas.Identity.Data;
-using CodeData_Connection.Models.Database;
-using CodeData_Connection.Models.Database.Entidade;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NuGet.Protocol;
@@ -24,15 +22,14 @@ namespace CodeData_Connection.Controllers
 
             Console.WriteLine("\n\nEQUIPAMENTOS:\n\n");
 
-            if (equipamentos.Any() || equipamentos == null)
+            Console.WriteLine(equipamentos.ToJson());
+
+            if (equipamentos == null)
             {
                 Console.WriteLine("Nenhum equipamento encontrado!");
 
                 return View("Nenhum equipamento encontrado!");
             }
-
-
-            Console.WriteLine(equipamentos.ToJson());
 
             return View(equipamentos);
         }

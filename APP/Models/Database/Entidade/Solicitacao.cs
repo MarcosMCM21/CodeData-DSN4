@@ -1,5 +1,4 @@
 ﻿using CodeData_Connection.Areas.Identity.User;
-using MySqlX.XDevAPI;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -27,9 +26,11 @@ namespace CodeData_Connection.Models.Database.Entidade
         // Chaves estrangeiras
         [MaxLength(255)]
         public string UserId { get; set; }
+        [ForeignKey("UserId")]
         public ApplicationUser User { get; set; }
 
         public int ClienteId { get; set; }
+        [ForeignKey("ClienteId")]
         public Cliente Cliente { get; set; }
     }
 

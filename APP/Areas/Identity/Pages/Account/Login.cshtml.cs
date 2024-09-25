@@ -15,6 +15,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using CodeData_Connection.Areas.Identity.User;
+using MySqlX.XDevAPI;
+using NuGet.Protocol;
 
 namespace CodeData_Connection.Areas.Identity.Pages.Account
 {

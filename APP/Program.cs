@@ -15,19 +15,21 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options => {
         options.User.RequireUniqueEmail = true;
     })
     .AddRoles<IdentityRole>()
-    .AddEntityFrameworkStores<ApplicationDbContext>();
+    .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddDefaultTokenProviders();
 
 builder.Services.ConfigureApplicationCookie(options =>
 {
+    options.LoginPath = "/Identity/Account/Login";
     options.AccessDeniedPath = "/Identity/Account/AccessDenied";
     options.Cookie.Name = "CodeData-Connection";
     options.Cookie.HttpOnly = true;
-    options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
-    options.LoginPath = "/Identity/Account/Login";
+    options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
+    options.SlidingExpiration = true;
+
     // ReturnUrlParameter requires 
     //using Microsoft.AspNetCore.Authentication.Cookies;
     options.ReturnUrlParameter = CookieAuthenticationDefaults.ReturnUrlParameter;
-    options.SlidingExpiration = true;
 });
 
 builder.Services.AddTransient<SendGridEmailSender>();

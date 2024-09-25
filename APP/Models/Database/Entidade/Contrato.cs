@@ -1,4 +1,6 @@
-﻿namespace CodeData_Connection.Models.Database.Entidade
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace CodeData_Connection.Models.Database.Entidade
 {
     public class Contrato
     {
@@ -9,6 +11,7 @@
         public Solicitacao Solicitacao { get; set; }
 
         public int DocumentoId { get; set; }
+        [ForeignKey("DocumentoId")]
         public Documento Documento { get; set; }
     }
 

@@ -2,8 +2,10 @@
 @using CodeData_Connection.Areas.Identity.User
 @using CodeData_Connection.Models.Database
 @using CodeData_Connection.Models.Database.Entidade
+@using CodeData_Connection.Areas.Identity.Data
 
 @inject UserManager<ApplicationUser> UserManager
+@inject ApplicationDbContext _context
 
 <head>
     <link href="~/css/navbar.css" id="app-style" rel="stylesheet" type="text/css">
@@ -33,18 +35,21 @@
         </div>
 
         @{
-            var notificacoes = new ComandosNotificacao().GetAll(UserManager.GetUserAsync(User).Result.Id);
+            var notificacoes = _context.Notificacoes.Where(n => n.UserId == UserManager.GetUserAsync(User).Result.Id).ToList();
         }
 
         <div class="dropdown d-inline-block">
-            <button type="button" class="btn header-item noti-icon waves-effect" id="page-header-notifications-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <i class="bx bx-bell bx-tada"></i>
+            <button type="button" class="btn header-item noti-icon" id="page-header-notifications-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 
                 @if(notificacoes.Count >= 1)
                 {
+                    <i class="bx bx-bell bx-tada"></i>
                     <span class="badge bg-danger rounded-pill">@notificacoes.Count</span>
+                } else
+                {
+                     <i class="bx bx-bell"></i>
                 }
-                
+
             </button>
             <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end p-0" aria-labelledby="page-header-notifications-dropdown" style="">
                 <div class="p-3">
@@ -130,15 +135,6 @@
     </div>
 
     <script>
-        function openFullscreen() {
-
-            if (document.fullscreenElement == null) {
-                document.documentElement.requestFullscreen()
-            } else {
-                document.exitFullscreen();
-            }
-        }
-
         let darkTheme = document.getElementById('dark-theme')
 
         darkTheme.addEventListener('click', () => {
@@ -155,5 +151,14 @@
             }
 
         })
+
+        function openFullscreen() {
+
+            if (document.fullscreenElement == null) {
+                document.documentElement.requestFullscreen()
+            } else {
+                document.exitFullscreen();
+            }
+        }
     </script>
 </div>

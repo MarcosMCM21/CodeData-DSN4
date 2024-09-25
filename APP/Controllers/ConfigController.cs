@@ -10,5 +10,10 @@ namespace CodeData_Connection.Controllers
         {
             return View();
         }
+
+        public IActionResult Usuarios()
+        {
+            return View();
+        }
     }
 }

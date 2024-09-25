@@ -1,5 +1,5 @@
-﻿using MySqlX.XDevAPI;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CodeData_Connection.Models.Database.Entidade
 {
@@ -15,6 +15,7 @@ namespace CodeData_Connection.Models.Database.Entidade
 
         // Chave estrangeira
         public int EnderecoId { get; set; }
+        [ForeignKey("EnderecoId")]
         public Endereco Endereco { get; set; }
     }
 }

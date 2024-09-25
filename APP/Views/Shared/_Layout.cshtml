@@ -17,83 +17,80 @@
 </head>
 <body class="theme-light">
 
-    @if (SignInManager.IsSignedIn(User))
-    {
-        <div class="sidebar">
+    <div class="sidebar">
 
-            <script>
-                let sidebar = document.querySelector('.sidebar')
-                let isMinimized = sessionStorage.getItem("isMinimized");
+        <script>
+            let sidebar = document.querySelector('.sidebar')
+            let isMinimized = sessionStorage.getItem("isMinimized");
 
-                if (!isMinimized) {
-                    sessionStorage.setItem("isMinimized", "true");
-                } else {
-                    if (isMinimized === "true") {
-                        sidebar.classList.remove("active")
-                    }
-                    else if (isMinimized === "false") {
-                        sidebar.classList.add("active")
-                    }
+            if (!isMinimized) {
+                sessionStorage.setItem("isMinimized", "true");
+            } else {
+                if (isMinimized === "true") {
+                    sidebar.classList.remove("active")
                 }
-            </script>
-
-            <div class="logo">
-                <a asp-controller="Home" asp-action="Index">
-                    <img src="~/img/logo-codedata.svg" alt="">
-                </a>
-
-            </div>
-
-            <ul>
-                <li>
-                    <a asp-controller="Estoque" asp-action="Index">
-                        <img src="~/img/icon-patrimonio.svg" alt="">
-                        <span class="nav-item">ESTOQUE</span>
-                    </a>
-                    @* <span class="tooltip">ESTOQUE</span> *@
-                </li>
-                <li>
-                    <a asp-controller="Locacao" asp-action="Index">
-                        <div class="background-link"></div>
-                        <img src="~/img/icon-locacao.svg" alt="">
-                        <span class="nav-item">LOCAÇÃO</span>
-                    </a>
-                    @* <span class="tooltip">LOCAÇÃO</span> *@
-                </li>
-                <li>
-                    <a asp-controller="Homologacao" asp-action="Index">
-                        <img src="~/img/icon-homologacao.svg" alt="">
-                        <span class="nav-item">HOMOLOGAÇÃO</span>
-                    </a>
-                    @* <span class="tooltip">HOMOLOGAÇÃO</span> *@
-                </li>
-
-                <li>
-                    <a asp-controller="Clientes" asp-action="Index">
-                        <img src="~/img/icon-clientes.svg" alt="">
-                        <span class="nav-item">CLIENTES</span>
-                    </a>
-                    @* <span class="tooltip">CLIENTES</span> *@
-                </li>
-
-                @if(await UserManager.IsInRoleAsync(await UserManager.GetUserAsync(User).ConfigureAwait(false), Role.Administrador.ToString()))
-                {
-                    <li>
-                        <a asp-controller="Config" asp-action="Index">
-                            <img src="~/img/icon-config.svg" alt="">
-                            <span class="nav-item">CONFIGURAÇÕES</span>
-                        </a>
-                        @* <span class="tooltip">CONFIGURAÇÕES</span> *@
-                    </li>
+                else if (isMinimized === "false") {
+                    sidebar.classList.add("active")
                 }
+            }
+        </script>
 
-            </ul>
+        <div class="logo">
+            <a asp-controller="Home" asp-action="Index">
+                <img src="~/img/logo-codedata.svg" alt="">
+            </a>
 
         </div>
 
-        @await Html.PartialAsync("_Navbar")
-    }
+        <ul>
+            <li>
+                <a asp-controller="Estoque" asp-action="Index">
+                    <img src="~/img/icon-patrimonio.svg" alt="">
+                    <span class="nav-item">ESTOQUE</span>
+                </a>
+                @* <span class="tooltip">ESTOQUE</span> *@
+            </li>
+            <li>
+                <a asp-controller="Locacao" asp-action="Index">
+                    <div class="background-link"></div>
+                    <img src="~/img/icon-locacao.svg" alt="">
+                    <span class="nav-item">LOCAÇÃO</span>
+                </a>
+                @* <span class="tooltip">LOCAÇÃO</span> *@
+            </li>
+            <li>
+                <a asp-controller="Homologacao" asp-action="Index">
+                    <img src="~/img/icon-homologacao.svg" alt="">
+                    <span class="nav-item">HOMOLOGAÇÃO</span>
+                </a>
+                @* <span class="tooltip">HOMOLOGAÇÃO</span> *@
+            </li>
 
+            <li>
+                <a asp-controller="Clientes" asp-action="Index">
+                    <img src="~/img/icon-clientes.svg" alt="">
+                    <span class="nav-item">CLIENTES</span>
+                </a>
+                @* <span class="tooltip">CLIENTES</span> *@
+            </li>
+
+            @if(await UserManager.IsInRoleAsync(await UserManager.GetUserAsync(User).ConfigureAwait(false), Role.Administrador.ToString()))
+            {
+                <li>
+                    <a asp-controller="Config" asp-action="Index">
+                        <img src="~/img/icon-config.svg" alt="">
+                        <span class="nav-item">CONFIGURAÇÕES</span>
+                    </a>
+                    @* <span class="tooltip">CONFIGURAÇÕES</span> *@
+                </li>
+            }
+
+        </ul>
+
+    </div>
+
+    @await Html.PartialAsync("_Navbar")
+    
     <div class="main-content">
             <main role="main">
                 @RenderBody()
@@ -109,9 +106,8 @@
         if (!itemSelected) {
             sessionStorage.setItem("itemSelected", "");
         } else {
-
             items.forEach(i => {
-                if (i.innerHTML.includes(itemSelected) && window.location.pathname.length > 1) {
+                if (i.innerHTML.includes("@ViewContext.RouteData.Values["controller"].ToString()")) {
                     i.classList.add("selected")
                 }
             })

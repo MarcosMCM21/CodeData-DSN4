@@ -25,6 +25,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Solicitacao> Solicitacoes { get; set; }
     public DbSet<Cliente> Clientes { get; set; }
     public DbSet<Contrato> Contratos { get; set; }
+    public DbSet<Notificacao> Notificacoes {  get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -103,7 +104,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             entity
                 .HasOne(e => e.User)
                 .WithMany()
-                .HasForeignKey(e => e.UserID);
+                .HasForeignKey(e => e.UserId);
         });
 
         builder.Entity<ApplicationUser>()

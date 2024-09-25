@@ -20,18 +20,10 @@ namespace CodeData_Connection.Models.Database.Entidade
         [Column(TypeName = "DATETIME")]
         public DateTime DataHora { get; set; }
 
-        // Relacionamento com a entidade ASPNETUSERS
         [MaxLength(255)]
-        public string UserID { get; set; }
-        public ApplicationUser User { get; set; }
+        public string UserId { get; set; }
 
-        public Notificacao(int id, string titulo, string mensagem, bool visualizado, DateTime dataHora)
-        {
-            Id = id;
-            Titulo = titulo;
-            Mensagem = mensagem;
-            Visualizado = visualizado;
-            DataHora = dataHora;
-        }
+        [ForeignKey("UserID")]
+        public ApplicationUser User { get; set; }
     }
 }

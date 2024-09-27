@@ -97,12 +97,8 @@ table th, table td {
     background-color: #ffc107;
 }
 
-.status.ativo {
-    color: black;
-}
-
-.status.inativo {
-    background-color: #a1a1a1;
+.inativo {
+    background-color: #a1a1a1 !important;
 }
 
 .created-by {

@@ -1,4 +1,6 @@
-﻿@model IEnumerable<CodeData_Connection.Models.Database.Entidade.Equipamento>
+﻿@using System.Text.RegularExpressions;
+
+@model IEnumerable<CodeData_Connection.Models.EquipamentoStatus>
 
 <head>
     <meta charset="UTF-8">
@@ -42,23 +44,26 @@
             </thead>
             <tbody>
 
-                @foreach(var equipamento in Model) 
+                @foreach(var e in Model) 
                 {
-                    var condicao = equipamento.Condicao ? "Ativo" : "Inativo";
+                    var condicao = e.Equipamento.Condicao ? "Ativo" : "Inativo";
+
+                    //Utiliza o status do equipamento para aplicar o estilo correspondente
+                    var statusStyle = Regex.Replace(@e.Status.Normalize(System.Text.NormalizationForm.FormD), @"\p{IsCombiningDiacriticalMarks}+", "").ToLower();
 
                     <tr>
                         <td></td>
-                        <td>@equipamento.Codigo</td>
-                        <td>@equipamento.Modelo</td>
-                        <td>@equipamento.Descricao</td>
-                        <td>@equipamento.Marca</td>
-                        <td>@equipamento.SerialNumber</td>
-                        <td>@equipamento.PartNumber</td>
+                        <td>@e.Equipamento.Codigo</td>
+                        <td>@e.Equipamento.Modelo</td>
+                        <td>@e.Equipamento.Descricao</td>
+                        <td>@e.Equipamento.Marca</td>
+                        <td>@e.Equipamento.SerialNumber</td>
+                        <td>@e.Equipamento.PartNumber</td>
                         <td>@condicao</td>
-                        <td><span class="status locacao">Locação</span></td>
+                        <td><span class="status @statusStyle @condicao.ToLower()">@e.Status</span></td>
                         <td>
-                            <button type="button" class="btn btn-primary edit-btn" data-id="@equipamento.Id">E</button>
-                            <button type="button" class="btn btn-danger delete-btn" data-id="@equipamento.Id">D</button>
+                            <button type="button" class="btn btn-primary edit-btn" data-id="@e.Equipamento.Id">E</button>
+                            <button type="button" class="btn btn-danger delete-btn" data-id="@e.Equipamento.Id">D</button>
                         </td>
                     </tr>
                 }
@@ -117,7 +122,10 @@
 </div>
 
 <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
-<script src="https://cdn.datatables.net/v/dt/jqc-1.12.4/dt-2.1.7/b-3.1.2/sl-2.1.0/datatables.min.js"></script>
+<script src="https://cdn.datatables.net/2.1.5/js/dataTables.js"></script>
+<script src="https://cdn.datatables.net/select/2.0.5/js/dataTables.select.js"></script>
+<script src="https://cdn.datatables.net/select/2.0.5/js/select.dataTables.js"></script>
+<script src="~/js/datatables.js"></script>
 
 <script>
     window.addEventListener('load', () => {
@@ -167,9 +175,6 @@
         let btnXls = document.getElementById('xls')
         let btnpPinter = document.getElementById('printer')
         let search = document.getElementById('table-search')
-
-        console.log(tableSearch)
-        console.log(search)
 
         btnPdf.addEventListener('click', () => {
             buttonsPDF.click()

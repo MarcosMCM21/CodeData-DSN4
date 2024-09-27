@@ -23,7 +23,7 @@ namespace CodeData_Connection.Models.Database.Entidade
         [MaxLength(255)]
         public string UserId { get; set; }
 
-        [ForeignKey("UserID")]
+        [ForeignKey("UserId")]
         public ApplicationUser User { get; set; }
     }
 }

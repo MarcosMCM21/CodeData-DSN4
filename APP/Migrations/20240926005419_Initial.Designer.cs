@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CodeData_Connection.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240908185606_createInitial")]
-    partial class createInitial
+    [Migration("20240926005419_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -33,6 +33,14 @@ namespace CodeData_Connection.Migrations
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("longtext");
+
+                    b.Property<DateTime?>("DataAtualizado")
+                        .HasColumnType("DATETIME");
+
+                    b.Property<DateTime>("DataCadastro")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("DATETIME")
+                        .HasDefaultValueSql("NOW()");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256)
@@ -113,6 +121,14 @@ namespace CodeData_Connection.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("varchar(20)");
 
+                    b.Property<DateTime?>("DataAtualizado")
+                        .HasColumnType("DATETIME");
+
+                    b.Property<DateTime>("DataCadastro")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("DATETIME")
+                        .HasDefaultValueSql("NOW()");
+
                     b.Property<int>("EnderecoId")
                         .HasColumnType("int");
 
@@ -133,6 +149,14 @@ namespace CodeData_Connection.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    b.Property<DateTime?>("DataAtualizado")
+                        .HasColumnType("DATETIME");
+
+                    b.Property<DateTime>("DataCadastro")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("DATETIME")
+                        .HasDefaultValueSql("NOW()");
 
                     b.Property<int>("DocumentoId")
                         .HasColumnType("int");
@@ -158,6 +182,14 @@ namespace CodeData_Connection.Migrations
                     b.Property<byte[]>("Anexo")
                         .IsRequired()
                         .HasColumnType("MEDIUMBLOB");
+
+                    b.Property<DateTime?>("DataAtualizado")
+                        .HasColumnType("DATETIME");
+
+                    b.Property<DateTime>("DataCadastro")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("DATETIME")
+                        .HasDefaultValueSql("NOW()");
 
                     b.Property<string>("Nome")
                         .IsRequired()
@@ -240,6 +272,14 @@ namespace CodeData_Connection.Migrations
 
                     b.Property<bool>("Condicao")
                         .HasColumnType("TINYINT(1)");
+
+                    b.Property<DateTime?>("DataAtualizado")
+                        .HasColumnType("DATETIME");
+
+                    b.Property<DateTime>("DataCadastro")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("DATETIME")
+                        .HasDefaultValueSql("NOW()");
 
                     b.Property<string>("Descricao")
                         .IsRequired()
@@ -339,9 +379,7 @@ namespace CodeData_Connection.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTime>("DataHora")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("DATETIME")
-                        .HasDefaultValueSql("NOW()");
+                        .HasColumnType("DATETIME");
 
                     b.Property<string>("Mensagem")
                         .IsRequired()
@@ -352,7 +390,7 @@ namespace CodeData_Connection.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("varchar(100)");
 
-                    b.Property<string>("UserID")
+                    b.Property<string>("UserId")
                         .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("varchar(255)");
@@ -364,9 +402,9 @@ namespace CodeData_Connection.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserID");
+                    b.HasIndex("UserId");
 
-                    b.ToTable("Notificacao");
+                    b.ToTable("Notificacoes");
                 });
 
             modelBuilder.Entity("CodeData_Connection.Models.Database.Entidade.Solicitacao", b =>
@@ -377,6 +415,14 @@ namespace CodeData_Connection.Migrations
 
                     b.Property<int>("ClienteId")
                         .HasColumnType("int");
+
+                    b.Property<DateTime?>("DataAtualizado")
+                        .HasColumnType("DATETIME");
+
+                    b.Property<DateTime>("DataCadastro")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("DATETIME")
+                        .HasDefaultValueSql("NOW()");
 
                     b.Property<DateTime>("DataFinal")
                         .HasColumnType("DATETIME");
@@ -652,7 +698,7 @@ namespace CodeData_Connection.Migrations
                 {
                     b.HasOne("CodeData_Connection.Areas.Identity.User.ApplicationUser", "User")
                         .WithMany()
-                        .HasForeignKey("UserID")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

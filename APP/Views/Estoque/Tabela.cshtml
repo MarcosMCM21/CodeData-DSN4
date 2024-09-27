@@ -1,77 +1,236 @@
 ﻿@model IEnumerable<CodeData_Connection.Models.Database.Entidade.Equipamento>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Codigo)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Modelo)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Descricao)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Marca)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.SerialNumber)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PartNumber)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Condicao)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Estoque)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Documento)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model) {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Codigo)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Modelo)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Descricao)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Marca)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.SerialNumber)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.PartNumber)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Condicao)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Estoque.Id)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Documento.Id)
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="~/css/table.css">
+    <link rel="stylesheet" href="~/css/datatables.css">
+</head>
+
+<div class="container-table-1">
+    <header>
+        <h1>Lista de Patrimônio</h1>
+        <div class="actions">
+            <button class="btn orange" id="pdf">PDF</button>
+            <button class="btn orange" id="xls">XLS</button>
+            <button class="btn orange" id="printer">Printer</button>
+            <button class="btn orange register-btn">Adicionar Equipamento</button>
+            <button class="btn dark-blue">Importar Equipamentos</button>
+        </div>
+    </header>
+
+    <div class="container-table">
+        <div class="search-sort">
+            <input type="text" placeholder="Search" id="table-search">
+            <button class="btn-filter">Sort by Date</button>
+        </div>
+
+        <table id="userTable">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Patrimônio</th>
+                    <th>Modelo</th>
+                    <th>Descrição</th>
+                    <th>Marca</th>
+                    <th>SN</th>
+                    <th>PN</th>
+                    <th>Condição</th>
+                    <th>Status</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @foreach(var equipamento in Model) 
+                {
+                    var condicao = equipamento.Condicao ? "Ativo" : "Inativo";
+
+                    <tr>
+                        <td></td>
+                        <td>@equipamento.Codigo</td>
+                        <td>@equipamento.Modelo</td>
+                        <td>@equipamento.Descricao</td>
+                        <td>@equipamento.Marca</td>
+                        <td>@equipamento.SerialNumber</td>
+                        <td>@equipamento.PartNumber</td>
+                        <td>@condicao</td>
+                        <td><span class="status locacao">Locação</span></td>
+                        <td>
+                            <button type="button" class="btn btn-primary edit-btn" data-id="@equipamento.Id">E</button>
+                            <button type="button" class="btn btn-danger delete-btn" data-id="@equipamento.Id">D</button>
+                        </td>
+                    </tr>
+                }
+
+            </tbody>
+        </table>
+
+        <!-- Modal para edição -->
+        <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editModalLabel">Editar Equipamento</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form id="editForm">
+                        <div class="modal-body">
+                            <input type="hidden" id="Id" name="Id" />
+                            <div class="form-group">
+                                <label for="codigo">Código:</label>
+                                <input type="text" class="form-control" id="codigo" />
+                            </div>
+                            <div class="form-group">
+                                <label for="modelo">Modelo:</label>
+                                <input type="text" class="form-control" id="modelo" />
+                            </div>
+                            <div class="form-group">
+                                <label for="descr">Descrição:</label>
+                                <input type="text" class="form-control" id="descr" />
+                            </div>
+                            <div class="form-group">
+                                <label for="marca">Marca:</label>
+                                <input type="text" class="form-control" id="marca" />
+                            </div>
+                            <div class="form-group">
+                                <label for="sn">Serial Number:</label>
+                                <input type="text" class="form-control" id="sn" />
+                            </div>
+                            <div class="form-group">
+                                <label for="pn">Part Number:</label>
+                                <input type="text" class="form-control" id="pn" />
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-primary">Salvar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://cdn.datatables.net/v/dt/jqc-1.12.4/dt-2.1.7/b-3.1.2/sl-2.1.0/datatables.min.js"></script>
+
+<script>
+    window.addEventListener('load', () => {
+        let table = new DataTable('#userTable', {
+            language: {
+                url: '//cdn.datatables.net/plug-ins/2.1.7/i18n/pt-BR.json',
+            },
+
+            lengthMenu: [10, 25, 50, { label: 'Todos', value: -1 }],
+
+            search: {
+                return: false
+            },
+
+            columns: [
+                { data: null, orderable: false, searchable: false, render: DataTable.render.select() },
+                {}, {}, {}, {}, {}, {}, {}, {}, {},
+            ],
+
+            columnDefs: [{
+                targets: [9],
+                orderable: false
+            }],
+
+            select: {
+                style: 'multi',
+                selector: 'td:first-child'
+            },
+
+            layout: {
+                topStart: {
+                    'pageLength': true,
+                    buttons: ['csv', 'pdf', 'print']
+                }
+            }
+        });
+
+        let buttons = document.getElementsByClassName('dt-buttons')[0]
+        buttons.style.display = 'none'
+
+        let buttonsPDF = document.getElementsByClassName('buttons-pdf')[0]
+        let buttonsCSV = document.getElementsByClassName('buttons-csv')[0]
+        let buttonsPrinter = document.getElementsByClassName('buttons-print')[0]
+        let tableSearch = document.getElementById('dt-search-0')
+
+        let btnPdf = document.getElementById('pdf')
+        let btnXls = document.getElementById('xls')
+        let btnpPinter = document.getElementById('printer')
+        let search = document.getElementById('table-search')
+
+        console.log(tableSearch)
+        console.log(search)
+
+        btnPdf.addEventListener('click', () => {
+            buttonsPDF.click()
+        })
+
+        btnXls.addEventListener('click', () => {
+            buttonsCSV.click()
+        })
+
+        btnpPinter.addEventListener('click', () => {
+            buttonsPrinter.click()
+        })
+
+        // Fechar o model
+        $('.close').on('click', function () {
+            $('#editModal').modal('hide');
+        });
+
+        // Cancelar a abertura do model
+        $('.btn-secondary').on('click', function () {
+            $('#editModal').modal('hide');
+        });
+
+        // Carregar dados no modal para edição
+        $('.edit-btn').on('click', function () {
+            $('#editModal').modal('show');
+
+            const id = $(this).data('id');
+            console.log(id);
+
+            $.get(`/GetEquipamentoId/${id}`, function (data) {
+                $('#codigo').val(data.codigo);
+                $('#modelo').val(data.modelo);
+                $('#desct').val(data.descricao);
+                $('#marca').val(data.marca);
+                $('#sn').val(data.serialNumber);
+                $('#pn').val(data.partNumber);
+            });
+        });
+
+        // Enviar dados editados para o servidor
+        $('#editForm').on('submit', function (e) {
+            e.preventDefault(); // Evitar envio padrão do formulário
+            const id = $(this).data('id');
+            const formData = $(this).serialize();
+            console.log(id);
+            $.ajax({
+                url: `/Comprovante/Update`,
+                type: 'POST',
+                data: formData,
+                success: function () {
+                    $('#editModal').modal('hide');
+                    location.reload(); // Recarregar a página para ver as atualizações
+                },
+                error: function (xhr) {
+                    console.error('Erro ao atualizar:', xhr.responseText);
+                    alert('Erro ao atualizar o comprovante.');
+                    console.log(formData);
+                }
+            });
+        });
+    })
+</script>
+

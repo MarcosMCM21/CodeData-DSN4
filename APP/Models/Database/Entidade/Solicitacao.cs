@@ -23,7 +23,12 @@ namespace CodeData_Connection.Models.Database.Entidade
         [Column(TypeName = "TEXT")]
         public string Descricao { get; set; }
 
-        // Chaves estrangeiras
+        [Column(TypeName = "DATETIME")]
+        public DateTime DataCadastro { get; set; }
+
+        [Column(TypeName = "DATETIME")]
+        public DateTime? DataAtualizado { get; set; }
+
         [MaxLength(255)]
         public string UserId { get; set; }
         [ForeignKey("UserId")]

@@ -19,6 +19,11 @@ namespace CodeData_Connection.Models.Database.Entidade
 
         [MaxLength(20)]
         public string Tipo { get; set; }
-    }
 
+        [Column(TypeName = "DATETIME")]
+        public DateTime DataCadastro { get; set; }
+
+        [Column(TypeName = "DATETIME")]
+        public DateTime? DataAtualizado { get; set; }
+    }
 }

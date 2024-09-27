@@ -31,6 +31,14 @@ namespace CodeData_Connection.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("longtext");
 
+                    b.Property<DateTime?>("DataAtualizado")
+                        .HasColumnType("DATETIME");
+
+                    b.Property<DateTime>("DataCadastro")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("DATETIME")
+                        .HasDefaultValueSql("NOW()");
+
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("varchar(256)");
@@ -110,6 +118,14 @@ namespace CodeData_Connection.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("varchar(20)");
 
+                    b.Property<DateTime?>("DataAtualizado")
+                        .HasColumnType("DATETIME");
+
+                    b.Property<DateTime>("DataCadastro")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("DATETIME")
+                        .HasDefaultValueSql("NOW()");
+
                     b.Property<int>("EnderecoId")
                         .HasColumnType("int");
 
@@ -130,6 +146,14 @@ namespace CodeData_Connection.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    b.Property<DateTime?>("DataAtualizado")
+                        .HasColumnType("DATETIME");
+
+                    b.Property<DateTime>("DataCadastro")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("DATETIME")
+                        .HasDefaultValueSql("NOW()");
 
                     b.Property<int>("DocumentoId")
                         .HasColumnType("int");
@@ -155,6 +179,14 @@ namespace CodeData_Connection.Migrations
                     b.Property<byte[]>("Anexo")
                         .IsRequired()
                         .HasColumnType("MEDIUMBLOB");
+
+                    b.Property<DateTime?>("DataAtualizado")
+                        .HasColumnType("DATETIME");
+
+                    b.Property<DateTime>("DataCadastro")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("DATETIME")
+                        .HasDefaultValueSql("NOW()");
 
                     b.Property<string>("Nome")
                         .IsRequired()
@@ -237,6 +269,14 @@ namespace CodeData_Connection.Migrations
 
                     b.Property<bool>("Condicao")
                         .HasColumnType("TINYINT(1)");
+
+                    b.Property<DateTime?>("DataAtualizado")
+                        .HasColumnType("DATETIME");
+
+                    b.Property<DateTime>("DataCadastro")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("DATETIME")
+                        .HasDefaultValueSql("NOW()");
 
                     b.Property<string>("Descricao")
                         .IsRequired()
@@ -336,9 +376,7 @@ namespace CodeData_Connection.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTime>("DataHora")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("DATETIME")
-                        .HasDefaultValueSql("NOW()");
+                        .HasColumnType("DATETIME");
 
                     b.Property<string>("Mensagem")
                         .IsRequired()
@@ -348,10 +386,6 @@ namespace CodeData_Connection.Migrations
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("varchar(100)");
-
-                    b.Property<string>("UserID")
-                        .IsRequired()
-                        .HasColumnType("longtext");
 
                     b.Property<string>("UserId")
                         .IsRequired()
@@ -378,6 +412,14 @@ namespace CodeData_Connection.Migrations
 
                     b.Property<int>("ClienteId")
                         .HasColumnType("int");
+
+                    b.Property<DateTime?>("DataAtualizado")
+                        .HasColumnType("DATETIME");
+
+                    b.Property<DateTime>("DataCadastro")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("DATETIME")
+                        .HasDefaultValueSql("NOW()");
 
                     b.Property<DateTime>("DataFinal")
                         .HasColumnType("DATETIME");

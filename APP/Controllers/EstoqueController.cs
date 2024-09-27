@@ -16,13 +16,7 @@ namespace CodeData_Connection.Controllers
 
         public async Task<IActionResult> Index()
         {
-            Console.WriteLine("CONTROLLER: Estoque; ACTION: Tabela");
-
             var equipamentos = await _context.Equipamentos.ToListAsync();
-
-            Console.WriteLine("\n\nEQUIPAMENTOS:\n\n");
-
-            Console.WriteLine(equipamentos.ToJson());
 
             if (equipamentos == null)
             {

@@ -13,7 +13,12 @@ namespace CodeData_Connection.Models.Database.Entidade
         [MaxLength(20)]
         public string CNPJ { get; set; }
 
-        // Chave estrangeira
+        [Column(TypeName = "DATETIME")]
+        public DateTime DataCadastro { get; set; }
+
+        [Column(TypeName = "DATETIME")]
+        public DateTime? DataAtualizado { get; set; }
+
         public int EnderecoId { get; set; }
         [ForeignKey("EnderecoId")]
         public Endereco Endereco { get; set; }

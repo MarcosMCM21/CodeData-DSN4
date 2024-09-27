@@ -29,6 +29,12 @@ namespace CodeData_Connection.Models.Database.Entidade
         [Column(TypeName = "TINYINT(1)")]
         public bool Condicao { get; set; }
 
+        [Column(TypeName = "DATETIME")]
+        public DateTime DataCadastro { get; set; }
+
+        [Column(TypeName = "DATETIME")]
+        public DateTime? DataAtualizado { get; set; }
+
         // Chaves estrangeiras
         public int EstoqueId { get; set; }
         [ForeignKey("EstoqueId")]

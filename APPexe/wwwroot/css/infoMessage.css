@@ -1,0 +1,109 @@
+﻿body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f0f2f5;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+.container {
+    text-align: center;
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 500px;
+}
+
+.container1 {
+    text-align: center;
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+    width: 90%;
+    max-width: 500px;
+}
+
+.content {
+    margin: 0 auto;
+}
+
+h1 {
+    color: #333;
+    margin-bottom: 15px;
+    font-size: 24px;
+}
+
+p {
+    color: #555;
+    margin-bottom: 20px;
+    font-size: 16px;
+}
+
+.btn {
+    display: inline-block;
+    padding: 12px 24px;
+    font-size: 16px;
+    color: #ffffff;
+    text-decoration: none;
+    border-radius: 8px;
+    margin: 5px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn-primary {
+    background-color: #007bff;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+    transform: scale(1.05);
+}
+
+.error h1 {
+    color: #dc3545;
+}
+
+.success h1 {
+    color: #28a745;
+}
+
+/* Adiciona estilo para a imagem de erro */
+.error-image {
+    width: 10%;
+    max-width: 300px; /* Define a largura máxima para 300px */
+    height: auto; /* Mantém a proporção da imagem */
+    margin-bottom: 20px; /* Espaço abaixo da imagem */
+}
+
+/* Adiciona estilo para imagens de confirmação e outras imagens */
+.confirmation-image {
+    width: 10%; /* Ajusta a largura da imagem para 80% do contêiner pai */
+    max-width: 300px; /* Define a largura máxima para 300px */
+    height: auto; /* Mantém a proporção da imagem */
+    margin-bottom: 20px; /* Espaço abaixo da imagem */
+}
+
+.additional-options {
+    margin-top: 20px;
+}
+
+@media (max-width: 600px) {
+    .container {
+        width: 95%;
+        padding: 20px;
+    }
+}

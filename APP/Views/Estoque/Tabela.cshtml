@@ -81,39 +81,51 @@
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <form id="editForm">
+
+                    <form asp-action="Update" method="post">
                         <div class="modal-body">
-                            <input type="hidden" id="Id" name="Id" />
+                            <input type="hidden" id="id"/>
+
                             <div class="form-group">
                                 <label for="codigo">Código:</label>
-                                <input type="text" class="form-control" id="codigo" />
+                                <input type="text" class="form-control" id="codigo"/>
                             </div>
+
                             <div class="form-group">
                                 <label for="modelo">Modelo:</label>
                                 <input type="text" class="form-control" id="modelo" />
                             </div>
+
                             <div class="form-group">
                                 <label for="descr">Descrição:</label>
                                 <input type="text" class="form-control" id="descr" />
                             </div>
+
                             <div class="form-group">
                                 <label for="marca">Marca:</label>
                                 <input type="text" class="form-control" id="marca" />
                             </div>
+
                             <div class="form-group">
                                 <label for="sn">Serial Number:</label>
                                 <input type="text" class="form-control" id="sn" />
                             </div>
+
                             <div class="form-group">
                                 <label for="pn">Part Number:</label>
                                 <input type="text" class="form-control" id="pn" />
                             </div>
+
+                            <input type="hidden" id="condicao"/>
+
+
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                             <button type="submit" class="btn btn-primary">Salvar</button>
                         </div>
                     </form>
+
                 </div>
             </div>
         </div>
@@ -164,7 +176,6 @@
         });
 
         let buttons = document.getElementsByClassName('dt-buttons')[0]
-        buttons.style.display = 'none'
 
         let buttonsPDF = document.getElementsByClassName('buttons-pdf')[0]
         let buttonsCSV = document.getElementsByClassName('buttons-csv')[0]
@@ -203,39 +214,42 @@
             $('#editModal').modal('show');
 
             const id = $(this).data('id');
-            console.log(id);
 
-            $.get(`/GetEquipamentoId/${id}`, function (data) {
+            $.get(`/Estoque/GetById/${id}`, function (data) {
+                console.log(data)
+                $('#id').val(data.id);
                 $('#codigo').val(data.codigo);
                 $('#modelo').val(data.modelo);
-                $('#desct').val(data.descricao);
+                $('#descr').val(data.descricao);
                 $('#marca').val(data.marca);
                 $('#sn').val(data.serialNumber);
                 $('#pn').val(data.partNumber);
+                $('#condicao').val(data.partNumber);
             });
+            
         });
 
-        // Enviar dados editados para o servidor
-        $('#editForm').on('submit', function (e) {
-            e.preventDefault(); // Evitar envio padrão do formulário
-            const id = $(this).data('id');
-            const formData = $(this).serialize();
-            console.log(id);
-            $.ajax({
-                url: `/Comprovante/Update`,
-                type: 'POST',
-                data: formData,
-                success: function () {
-                    $('#editModal').modal('hide');
-                    location.reload(); // Recarregar a página para ver as atualizações
-                },
-                error: function (xhr) {
-                    console.error('Erro ao atualizar:', xhr.responseText);
-                    alert('Erro ao atualizar o comprovante.');
-                    console.log(formData);
-                }
-            });
-        });
+        // // Enviar dados editados para o servidor
+        // $('#editForm').on('submit', function (e) {
+        //     e.preventDefault();
+
+        //     const id = $(this).data('id');
+        //     const formData = $(this).serialize();
+
+        //     $.ajax({
+        //         url: `/Estoque/Update`,
+        //         type: 'POST',
+        //         data: formData,
+        //         success: function () {
+        //             $('#editModal').modal('hide');
+        //             location.reload(); // Recarregar a página para ver as atualizações
+        //         },
+        //         error: function (xhr) {
+        //             console.error('Erro ao atualizar:', xhr.responseText);
+        //             alert('Erro ao atualizar o patrimônio.');
+        //         }
+        //     });
+        // });
     })
 </script>
 

@@ -4,6 +4,7 @@ using CodeData_Connection.Models.Database.Entidade;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NuGet.Protocol;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace CodeData_Connection.Controllers
 {
@@ -51,11 +52,46 @@ namespace CodeData_Connection.Controllers
             return View(equipamentosStatus);
         }
 
-        //public JsonResult GetEquipamentoId(int id)
-        //{
-        //    var equipamento = _context.Equipamentos.Find(id);
+        [HttpGet]
+        public IActionResult GetById(int id)
+        {
+            var equipamento = _context.Equipamentos.Find(id);
 
-        //    return Json(equipamento);
-        //}
+            return Json(equipamento);
+        }
+
+        [HttpPost]
+        public IActionResult Update(Equipamento model)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var equipamento = _context.Equipamentos.Find(model.Id);
+
+                    if (equipamento == null)
+                    {
+                        return NotFound();
+                    }
+
+                    // Atualizar os campos necessários
+                    equipamento.Codigo = model.Codigo;
+                    equipamento.Modelo = model.Modelo;
+                    equipamento.Descricao = model.Descricao;
+                    equipamento.Marca = model.Marca;
+                    equipamento.SerialNumber = model.SerialNumber;
+                    equipamento.PartNumber = model.PartNumber;
+
+                    // Salvar as alterações
+                    _context.SaveChanges();
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest($"Erro ao atualizar: {ex.Message}");
+                }
+            }
+
+            return BadRequest("Dados inválidos");
+        }
     }
 }

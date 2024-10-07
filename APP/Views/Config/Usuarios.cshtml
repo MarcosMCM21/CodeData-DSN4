@@ -1,3 +1,7 @@
-﻿﻿@{
+﻿@model IEnumerable<CodeData_Connection.Areas.Identity.User.ApplicationUser>
+
+﻿@{
     ViewData["Title"] = "Usuários";
 }
+
+@Html.Partial("Tabela", Model)

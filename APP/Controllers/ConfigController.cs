@@ -1,19 +1,30 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using CodeData_Connection.Areas.Identity.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace CodeData_Connection.Controllers
 {
     [Authorize(Roles = "Administrador")]
     public class ConfigController : Controller
     {
+        private readonly ApplicationDbContext _context;
+
+        public ConfigController(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+
         public IActionResult Index()
         {
             return View();
         }
 
-        public IActionResult Usuarios()
+        public async Task<IActionResult> Usuarios()
         {
-            return View();
+            var usuarios = await _context.ApplicationUser.ToListAsync();
+
+            return View(usuarios);
         }
     }
 }

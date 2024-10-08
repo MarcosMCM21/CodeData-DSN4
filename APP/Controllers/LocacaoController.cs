@@ -18,7 +18,7 @@ namespace CodeData_Connection.Controllers
         public async Task<IActionResult> Index()
         {
             var usuarioId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var locacoesVC = new List<SolicitacaoVendedorCliente>();
+            var locacoesVC = new List<Solicitacoes>();
 
             if (User.IsInRole("Usuario"))
             {
@@ -29,7 +29,7 @@ namespace CodeData_Connection.Controllers
                     string cliente = _context.Clientes.FindAsync(locacao.ClienteId).Result.Nome;
                     string vendedor = _context.ApplicationUser.FindAsync(locacao.UserId).Result.Email;
 
-                    locacoesVC.Add(new SolicitacaoVendedorCliente() { Solicitacao = locacao, Cliente = cliente });
+                    locacoesVC.Add(new Solicitacoes() { Solicitacao = locacao, Cliente = cliente });
                 }
 
                 return View(locacoesVC);
@@ -45,7 +45,7 @@ namespace CodeData_Connection.Controllers
                     string cliente = _context.Clientes.FindAsync(locacao.ClienteId).Result.Nome;
                     string vendedor = _context.ApplicationUser.FindAsync(locacao.UserId).Result.Email;
 
-                    locacoesVC.Add(new SolicitacaoVendedorCliente() { Solicitacao = locacao, Cliente = cliente });
+                    locacoesVC.Add(new Solicitacoes() { Solicitacao = locacao, Cliente = cliente });
                 }
 
                 return View(locacoesVC);
@@ -60,7 +60,7 @@ namespace CodeData_Connection.Controllers
                     string cliente = _context.Clientes.FindAsync(locacao.ClienteId).Result.Nome;
                     string vendedor = _context.ApplicationUser.FindAsync(locacao.UserId).Result.Email;
 
-                    locacoesVC.Add(new SolicitacaoVendedorCliente() { Solicitacao = locacao, Cliente = cliente });
+                    locacoesVC.Add(new Solicitacoes() { Solicitacao = locacao, Cliente = cliente });
                 }
 
                 return View(locacoesVC);

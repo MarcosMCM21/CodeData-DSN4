@@ -11,7 +11,16 @@
 
 <div class="container-table-1">
     <header>
-        <h1>Lista de Homologação</h1>
+        @{
+            if (Model.First().Solicitacao.Tipo == false)
+            {
+                <h1>Lista de Homologação</h1>
+            } else
+            {
+                <h1>Lista de Locação</h1>
+            }
+        }
+        
         <div class="actions">
             <button class="btn orange" id="pdf">PDF</button>
             <button class="btn orange" id="xls">XLS</button>

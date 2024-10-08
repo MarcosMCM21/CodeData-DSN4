@@ -44,14 +44,14 @@
 
         <ul>
             <li>
-                <a asp-controller="Estoque" asp-action="Index">
+                <a asp-controller="Patrimonio" asp-action="Index">
                     <img src="~/img/icon-patrimonio.svg" alt="">
-                    <span class="nav-item">ESTOQUE</span>
+                    <span class="nav-item">PATRIMÔNIO</span>
                 </a>
                 @* <span class="tooltip">ESTOQUE</span> *@
             </li>
             <li>
-                <a asp-controller="Locacao" asp-action="Index">
+                <a asp-controller="Solicitacao" asp-action="Locacao">
                     <div class="background-link"></div>
                     <img src="~/img/icon-locacao.svg" alt="">
                     <span class="nav-item">LOCAÇÃO</span>
@@ -59,7 +59,7 @@
                 @* <span class="tooltip">LOCAÇÃO</span> *@
             </li>
             <li>
-                <a asp-controller="Homologacao" asp-action="Index">
+                <a asp-controller="Solicitacao" asp-action="Homologacao">
                     <img src="~/img/icon-homologacao.svg" alt="">
                     <span class="nav-item">HOMOLOGAÇÃO</span>
                 </a>
@@ -108,14 +108,22 @@
         } else {
             items.forEach(i => {
                 if (i.innerHTML.includes("@ViewContext.RouteData.Values["controller"].ToString()")) {
-                    i.classList.add("selected")
+                    if ("@ViewContext.RouteData.Values["controller"].ToString()" == "Solicitacao") {
+                            console.log(i.innerHTML)
+                            i.classList.add("selected")
+                        
+                    } else {
+                        console.log("Não entrou no Controller")
+                        i.classList.add("selected")
+                    }
+
+                    
                 }
             })
         }
 
         btn.addEventListener('click', () => {
             sidebar.classList.toggle("active")
-
             sessionStorage.setItem("isMinimized", sidebar.classList.contains("active") ? false : true)
         })
 

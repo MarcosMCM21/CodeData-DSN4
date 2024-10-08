@@ -2,7 +2,7 @@
 
 namespace CodeData_Connection.Models
 {
-    public class SolicitacaoVendedorCliente
+    public class Solicitacoes
     {
         public Solicitacao Solicitacao { get; set; }
         public string Cliente { get; set; }

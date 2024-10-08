@@ -21,7 +21,7 @@ namespace CodeData_Connection.Controllers
         public async Task<IActionResult> Index()
         {
             var usuarioId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var homologacoesVC = new List<SolicitacaoVendedorCliente>();
+            var homologacoesVC = new List<Solicitacoes>();
 
             if (User.IsInRole("Usuario"))
             {
@@ -32,7 +32,7 @@ namespace CodeData_Connection.Controllers
                     string cliente = _context.Clientes.FindAsync(homologacao.ClienteId).Result.Nome;
                     string vendedor = _context.ApplicationUser.FindAsync(homologacao.UserId).Result.Email;
 
-                    homologacoesVC.Add(new SolicitacaoVendedorCliente() { Solicitacao = homologacao, Cliente = cliente });
+                    homologacoesVC.Add(new Solicitacoes() { Solicitacao = homologacao, Cliente = cliente });
                 }
 
                 return View(homologacoesVC);
@@ -48,7 +48,7 @@ namespace CodeData_Connection.Controllers
                     string cliente = _context.Clientes.FindAsync(homologacao.ClienteId).Result.Nome;
                     string vendedor = _context.ApplicationUser.FindAsync(homologacao.UserId).Result.Email;
 
-                    homologacoesVC.Add(new SolicitacaoVendedorCliente() { Solicitacao = homologacao, Cliente = cliente, Vendedor = vendedor });
+                    homologacoesVC.Add(new Solicitacoes() { Solicitacao = homologacao, Cliente = cliente, Vendedor = vendedor });
                 }
 
                 return View(homologacoesVC);
@@ -63,7 +63,7 @@ namespace CodeData_Connection.Controllers
                     string cliente = _context.Clientes.FindAsync(homologacao.ClienteId).Result.Nome;
                     string vendedor = _context.ApplicationUser.FindAsync(homologacao.UserId).Result.Email;
 
-                    homologacoesVC.Add(new SolicitacaoVendedorCliente() { Solicitacao = homologacao, Cliente = cliente, Vendedor = vendedor });
+                    homologacoesVC.Add(new Solicitacoes() { Solicitacao = homologacao, Cliente = cliente, Vendedor = vendedor });
                 }
 
                 return View(homologacoesVC);

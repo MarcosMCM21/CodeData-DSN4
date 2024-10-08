@@ -20,6 +20,7 @@
     <div class="sidebar">
 
         <script>
+            // Script para verificar o estado do menu lateral para ele aparecer maximizado ou minimizado
             let sidebar = document.querySelector('.sidebar')
             let isMinimized = sessionStorage.getItem("isMinimized");
 
@@ -89,52 +90,44 @@
 
     </div>
 
+    @* Exibe o menu superior da página *@
     @await Html.PartialAsync("_Navbar")
     
     <div class="main-content">
             <main role="main">
+                @* Renderiza as outras páginas da aplicação dentro dessa div *@
                 @RenderBody()
             </main>
     </div>
 
     <script>
-        let btn = document.getElementById('vertical-menu-btn')
+        let btn = document.getElementById('vertical-menu-btn') // ID está no "_Navbar" que é chamado no PartialAsync
         let links = document.querySelectorAll('a')
         let items = document.querySelectorAll('li')
         let itemSelected = sessionStorage.getItem("itemSelected")
 
-        if (!itemSelected) {
-            sessionStorage.setItem("itemSelected", "");
-        } else {
-            items.forEach(i => {
-                if (i.innerHTML.includes("@ViewContext.RouteData.Values["controller"].ToString()")) {
-                    if ("@ViewContext.RouteData.Values["controller"].ToString()" == "Solicitacao") {
-                            console.log(i.innerHTML)
-                            i.classList.add("selected")
-                        
-                    } else {
-                        console.log("Não entrou no Controller")
-                        i.classList.add("selected")
-                    }
+        // Remove o estilo que indica que o botão está selecionado
+        items.forEach(i => i.classList.remove('selected'))
 
-                    
+        // Pega o caminho da página atual "/Controller/Action"
+        let pathName = window.location.pathname
+        console.log(pathName)
+
+        items.forEach(i => {
+            //Verifica se não está na página Home
+            if (pathName != "/") {
+                // Verifica qual dos botões de navegação abre essa página e aplica o estilo para indicar que está selecionado
+                if (i.innerHTML.includes(pathName)) {
+                    i.classList.add("selected");
                 }
-            })
-        }
-
-        btn.addEventListener('click', () => {
-            sidebar.classList.toggle("active")
-            sessionStorage.setItem("isMinimized", sidebar.classList.contains("active") ? false : true)
+            }
         })
 
-        links.forEach(link => {
-            link.addEventListener('click', () => {
-                let items = document.querySelectorAll('li')
-                items.forEach(i => i.classList.remove('selected'))
-
-                let li = link.parentNode
-                sessionStorage.setItem("itemSelected", li.innerHTML)
-            })
+        // Maximiza e minimiza o menu lateral
+        btn.addEventListener('click', () => {
+            sidebar.classList.toggle("active")
+            // Salva na sessionStorage o estado do menu durante as trocas de página
+            sessionStorage.setItem("isMinimized", sidebar.classList.contains("active") ? false : true)
         })
     </script>
 

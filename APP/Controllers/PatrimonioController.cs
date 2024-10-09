@@ -129,6 +129,20 @@ namespace CodeData_Connection.Controllers
                     }
                     else
                     {
+                        var EstoqueEndereco = _context.Estoques.Where(e => e.Id == equipamento.EstoqueId)
+                            .Select(e => e.EnderecoId)
+                            .FirstOrDefault();
+
+                        // Verifica se encontrou um EnderecoId
+                        if (EstoqueEndereco != default(int)) // Aqui, assumimos que EnderecoId é do tipo int. Ajuste o tipo conforme necessário.
+                        {
+                            // Usa o EnderecoId para obter os dados completos do endereço
+                            var enderecoEquipamento = _context.Enderecos.FirstOrDefault(e => e.Id == EstoqueEndereco);
+                            Console.WriteLine(enderecoEquipamento.ToJson());
+
+                            dadosEquipamento.Endereco = enderecoEquipamento;
+                        }
+
                         Console.WriteLine("Endereço não encontrado para o equipamento especificado.");
                     }
                 }

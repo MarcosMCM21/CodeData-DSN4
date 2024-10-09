@@ -1,0 +1,23 @@
+﻿<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBT6VVRMlElM3uC1bAm9KlmkoG6Kv88fMw&callback=initMap" async defer></script>
+
+<div id="map" style="height: 400px;"></div>
+
+<script>
+    function initMap() {
+        // 3. Defina as coordenadas do local desejado
+        var localizacao = { lat: -22.9068, lng: -47.0633 }; // Exemplo: Campinas, SP
+
+        // 4. Crie o mapa
+        var mapa = new google.maps.Map(document.getElementById('map'), {
+            zoom: 14,
+            center: localizacao
+        });
+
+        // 5. Adicione um marcador (opcional)
+        var marcador = new google.maps.Marker({
+            position: localizacao,
+            map: mapa,
+            title: 'Campinas, SP'
+        });
+    }
+</script>

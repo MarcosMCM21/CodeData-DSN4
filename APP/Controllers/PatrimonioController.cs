@@ -18,7 +18,7 @@ namespace CodeData_Connection.Controllers
         public async Task<IActionResult> Index()
         {
             var equipamentos = await _context.Equipamentos.ToListAsync();
-            var equipamentosStatus = new List<EquipamentoStatus>();
+            var equipamentosStatus = new List<DadosEquipamento>();
 
             if (equipamentos == null)
             {
@@ -27,27 +27,17 @@ namespace CodeData_Connection.Controllers
 
             foreach (var equipamento in equipamentos)
             {
-                try
-                {
-                    var status = _context.MovimentacoesEquipamentos
-                    .Join(
-                        _context.Solicitacoes,
-                        me => me.SolicitacaoId,
-                        s => s.Id,
-                        (me, s) => new { me.EquipamentoId, s.Tipo }
-                        )
-                        .Where(joined => joined.EquipamentoId == equipamento.Id)
-                        .ToList();
-
-                    equipamentosStatus.Add(new EquipamentoStatus() { Equipamento = equipamento, Status = status[0].Tipo ? "LOCAÇÃO" : "HOMOLOGAÇÃO" });
-                }
-                catch (Exception ex)
-                {
-                    equipamentosStatus.Add(new EquipamentoStatus() { Equipamento = equipamento, Status = "ESTOQUE" });
-                }
+                equipamentosStatus.Add(DadosByEquip(equipamento, false));
             }
 
             return View(equipamentosStatus);
+        }
+
+        public IActionResult Equipamento(int id)
+        {
+            var equipamento = _context.Equipamentos.Find(id);
+
+            return View(DadosByEquip(equipamento, false));
         }
 
         [HttpGet]
@@ -90,6 +80,59 @@ namespace CodeData_Connection.Controllers
             }
 
             return BadRequest("Dados inválidos");
+        }
+
+        public DadosEquipamento DadosByEquip(Equipamento equipamento, bool getEndereco)
+        {
+            DadosEquipamento dadosEquipamento = new DadosEquipamento();
+            
+            try
+            {
+                var movimentacaoSolicitacao = _context.MovimentacoesEquipamentos
+                    .Where(me => me.EquipamentoId == equipamento.Id)
+                    .Select(me => me.SolicitacaoId)
+                    .FirstOrDefault();
+
+                // Verifica se encontrou uma SolicitacaoId
+                if (movimentacaoSolicitacao != default(int)) // Aqui, assumimos que SolicitacaoId é do tipo int. Ajuste o tipo conforme necessário.
+                {
+                    // Usa o SolicitacaoId para obter o tipo de solicitacao
+                    bool status = _context.Solicitacoes.FirstOrDefault(s => s.Id == movimentacaoSolicitacao).Tipo;
+                    dadosEquipamento = new DadosEquipamento() { Equipamento = equipamento, Status = status ? "LOCAÇÃO" : "HOMOLOGAÇÃO" };
+                }
+                else
+                {
+                    dadosEquipamento = new DadosEquipamento() { Equipamento = equipamento, Status = "ESTOQUE" };
+                    Console.WriteLine("Solicitação não encontrada para o equipamento especificado.");
+                }
+
+                if (getEndereco)
+                {
+                    // Primeiro, filtra MovimentacoesEquipamentos para obter o EnderecoId relacionado ao EquipamentoId
+                    var movimentacaoEndereco = _context.MovimentacoesEquipamentos
+                        .Where(me => me.EquipamentoId == equipamento.Id)
+                        .Select(me => me.EnderecoId)
+                        .FirstOrDefault();
+
+                    // Verifica se encontrou um EnderecoId
+                    if (movimentacaoEndereco != default(int)) // Aqui, assumimos que EnderecoId é do tipo int. Ajuste o tipo conforme necessário.
+                    {
+                        // Usa o EnderecoId para obter os dados completos do endereço
+                        var enderecoEquipamento = _context.Enderecos.FirstOrDefault(e => e.Id == movimentacaoEndereco);
+                        dadosEquipamento.Endereco = enderecoEquipamento;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Endereço não encontrado para o equipamento especificado.");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+
+            return dadosEquipamento;
         }
     }
 }

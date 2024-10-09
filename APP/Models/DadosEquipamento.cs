@@ -2,9 +2,10 @@
 
 namespace CodeData_Connection.Models
 {
-    public class EquipamentoStatus
+    public class DadosEquipamento
     {
         public Equipamento Equipamento { get; set; }
+        public Endereco? Endereco { get; set; }
         public string Status { get; set; }
     }
 }

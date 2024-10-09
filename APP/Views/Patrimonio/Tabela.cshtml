@@ -1,6 +1,6 @@
 ﻿@using System.Text.RegularExpressions;
 
-@model IEnumerable<CodeData_Connection.Models.EquipamentoStatus>
+@model IEnumerable<CodeData_Connection.Models.DadosEquipamento>
 
 <head>
     <meta charset="UTF-8">
@@ -60,8 +60,8 @@
                         <td>@condicao</td>
                         <td><span class="status @statusStyle @condicao.ToLower()">@e.Status</span></td>
                         <td>
-                            <button type="button" class="btn btn-primary edit-btn" data-id="@e.Equipamento.Id">E</button>
-                            <button type="button" class="btn btn-danger delete-btn" data-id="@e.Equipamento.Id">D</button>
+                            <button type="button" class="btn btn-primary edit-btn">E</button>
+                            <a type="button" class="btn btn-danger delete-btn" asp-controller="Patrimonio" asp-action="Equipamento" asp-route-id="@e.Equipamento.Id">D</a>
                         </td>
                     </tr>
                 }

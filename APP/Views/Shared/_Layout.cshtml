@@ -111,7 +111,6 @@
 
         // Pega o caminho da página atual "/Controller/Action"
         let pathName = window.location.pathname
-        console.log(pathName)
 
         items.forEach(i => {
             //Verifica se não está na página Home
@@ -119,6 +118,19 @@
                 // Verifica qual dos botões de navegação abre essa página e aplica o estilo para indicar que está selecionado
                 if (i.innerHTML.includes(pathName)) {
                     i.classList.add("selected");
+                } else {
+                    let controller = "@ViewContext.RouteData.Values["controller"].ToString()"
+                    let action = "@ViewContext.RouteData.Values["action"].ToString()"
+
+                    if (controller.includes("Solicitacao")) {
+                        if (i.innerHTML.includes(action)) {
+                            i.classList.add("selected");
+                        }
+                    } else {
+                        if (i.innerHTML.includes(controller)) {
+                            i.classList.add("selected");
+                        }
+                    }
                 }
             }
         })

@@ -12,19 +12,20 @@
 <p>@Model.Equipamento.Marca</p>
 <p>@Model.Equipamento.SerialNumber</p>
 <p>@Model.Equipamento.PartNumber</p>
-<p>@Model.Equipamento.Codigo</p>
 <p>@Model.Status</p>
 
-<p>@Model.Endereco.CEP</p>
-<p>@Model.Endereco.Rua</p>
-<p>@Model.Endereco.Numero</p>
-<p>@Model.Endereco.Cidade</p>
-<p>@Model.Endereco.Estado</p>
-<p>@Model.Endereco.Complemento</p>
-<p>@Model.Endereco.Localizacao</p>
-<p>@Model.Endereco.Localizacao.XCoordinate</p>
-<p>@Model.Endereco.Localizacao.YCoordinate</p>
-
+@if(Model.Endereco != null)
+{
+    <p>@Model.Endereco.CEP</p>
+    <p>@Model.Endereco.Rua</p>
+    <p>@Model.Endereco.Numero</p>
+    <p>@Model.Endereco.Cidade</p>
+    <p>@Model.Endereco.Estado</p>
+    <p>@Model.Endereco.Complemento</p>
+    <p>@Model.Endereco.Localizacao</p>
+    <p>@Model.Endereco.Localizacao.XCoordinate</p>
+    <p>@Model.Endereco.Localizacao.YCoordinate</p>
+}
 
 <h2>Localização</h2>
 

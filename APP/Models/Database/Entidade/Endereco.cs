@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using MySql.Data.Types;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CodeData_Connection.Models.Database.Entidade
@@ -29,7 +30,7 @@ namespace CodeData_Connection.Models.Database.Entidade
         public string Complemento { get; set; }
 
         [Column(TypeName = "POINT")]
-        public string Localizacao { get; set; }
+        public MySqlGeometry Localizacao { get; set; }
     }
 
 }

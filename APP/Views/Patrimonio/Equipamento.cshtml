@@ -22,8 +22,10 @@
 <p>@Model.Endereco.Estado</p>
 <p>@Model.Endereco.Complemento</p>
 <p>@Model.Endereco.Localizacao</p>
+<p>@Model.Endereco.Localizacao.XCoordinate</p>
+<p>@Model.Endereco.Localizacao.YCoordinate</p>
 
 
 <h2>Localização</h2>
 
-@Html.Partial("~/Views/Components/_GoogleMaps.cshtml")
+@Html.Partial("~/Views/Components/_GoogleMaps.cshtml", Model.Endereco.Localizacao)

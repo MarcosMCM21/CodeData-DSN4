@@ -3,6 +3,7 @@ using CodeData_Connection.Models.Database.Entidade;
 using CodeData_Connection.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using NuGet.Protocol;
 
 namespace CodeData_Connection.Controllers
 {
@@ -37,7 +38,7 @@ namespace CodeData_Connection.Controllers
         {
             var equipamento = _context.Equipamentos.Find(id);
 
-            return View(DadosByEquip(equipamento, false));
+            return View(DadosByEquip(equipamento, true));
         }
 
         [HttpGet]
@@ -108,17 +109,22 @@ namespace CodeData_Connection.Controllers
 
                 if (getEndereco)
                 {
+                    Console.WriteLine("Procurar Endereço do Equipamento");
                     // Primeiro, filtra MovimentacoesEquipamentos para obter o EnderecoId relacionado ao EquipamentoId
                     var movimentacaoEndereco = _context.MovimentacoesEquipamentos
                         .Where(me => me.EquipamentoId == equipamento.Id)
                         .Select(me => me.EnderecoId)
                         .FirstOrDefault();
 
+                    Console.WriteLine(movimentacaoEndereco.ToJson());
+
                     // Verifica se encontrou um EnderecoId
                     if (movimentacaoEndereco != default(int)) // Aqui, assumimos que EnderecoId é do tipo int. Ajuste o tipo conforme necessário.
                     {
                         // Usa o EnderecoId para obter os dados completos do endereço
                         var enderecoEquipamento = _context.Enderecos.FirstOrDefault(e => e.Id == movimentacaoEndereco);
+                        Console.WriteLine(enderecoEquipamento.ToJson());
+
                         dadosEquipamento.Endereco = enderecoEquipamento;
                     }
                     else
@@ -131,6 +137,8 @@ namespace CodeData_Connection.Controllers
             {
                 Console.WriteLine(ex.ToString());
             }
+
+            Console.WriteLine(dadosEquipamento.ToJson());
 
             return dadosEquipamento;
         }

@@ -1,11 +1,19 @@
-﻿<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBT6VVRMlElM3uC1bAm9KlmkoG6Kv88fMw&callback=initMap" async defer></script>
+﻿@model MySql.Data.Types.MySqlGeometry
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBT6VVRMlElM3uC1bAm9KlmkoG6Kv88fMw&callback=initMap" async defer></script>
 
 <div id="map" style="height: 400px;"></div>
 
 <script>
     function initMap() {
+        let lat = "@Model.XCoordinate"
+        let lng = "@Model.YCoordinate"
+
+        let latFMT = parseFloat(lat.replace(/,/g, "."))
+        let lngFMT = parseFloat(lng.replace(/,/g, "."))
+
         // 3. Defina as coordenadas do local desejado
-        var localizacao = { lat: -22.9068, lng: -47.0633 }; // Exemplo: Campinas, SP
+        var localizacao = { lat: latFMT , lng: lngFMT }; // Exemplo: Campinas, SP
 
         // 4. Crie o mapa
         var mapa = new google.maps.Map(document.getElementById('map'), {

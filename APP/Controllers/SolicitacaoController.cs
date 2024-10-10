@@ -37,10 +37,10 @@ namespace CodeData_Connection.Controllers
             return View(locacoes);
         }
 
-        public async Task<List<Solicitacoes>> GetSolicitacoes(bool tipoSolicitacao)
+        public async Task<List<DadosSolicitacao>> GetSolicitacoes(bool tipoSolicitacao)
         {
             var usuarioId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var solicitacoesVC = new List<Solicitacoes>();
+            var solicitacoesVC = new List<DadosSolicitacao>();
 
             if (User.IsInRole("Usuario"))
             {
@@ -51,7 +51,7 @@ namespace CodeData_Connection.Controllers
                     string cliente = _context.Clientes.FindAsync(homologacao.ClienteId).Result.Nome;
                     string vendedor = _context.ApplicationUser.FindAsync(homologacao.UserId).Result.Email;
 
-                    solicitacoesVC.Add(new Solicitacoes() { Solicitacao = homologacao, Cliente = cliente });
+                    solicitacoesVC.Add(new DadosSolicitacao() { Solicitacao = homologacao, Cliente = cliente });
                 }
             }
 
@@ -65,7 +65,7 @@ namespace CodeData_Connection.Controllers
                     string cliente = _context.Clientes.FindAsync(homologacao.ClienteId).Result.Nome;
                     string vendedor = _context.ApplicationUser.FindAsync(homologacao.UserId).Result.Email;
 
-                    solicitacoesVC.Add(new Solicitacoes() { Solicitacao = homologacao, Cliente = cliente, Vendedor = vendedor });
+                    solicitacoesVC.Add(new DadosSolicitacao() { Solicitacao = homologacao, Cliente = cliente, Vendedor = vendedor });
                 }
             }
 
@@ -78,7 +78,7 @@ namespace CodeData_Connection.Controllers
                     string cliente = _context.Clientes.FindAsync(homologacao.ClienteId).Result.Nome;
                     string vendedor = _context.ApplicationUser.FindAsync(homologacao.UserId).Result.Email;
 
-                    solicitacoesVC.Add(new Solicitacoes() { Solicitacao = homologacao, Cliente = cliente, Vendedor = vendedor });
+                    solicitacoesVC.Add(new DadosSolicitacao() { Solicitacao = homologacao, Cliente = cliente, Vendedor = vendedor });
                 }
             }
 

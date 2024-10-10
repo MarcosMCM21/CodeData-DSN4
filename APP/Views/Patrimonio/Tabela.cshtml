@@ -44,8 +44,6 @@
 
                 @foreach(var e in Model) 
                 {
-                    var condicao = e.Equipamento.Condicao ? "Ativo" : "Inativo";
-
                     //Utiliza o status do equipamento para aplicar o estilo correspondente
                     var statusStyle = Regex.Replace(@e.Status.Normalize(System.Text.NormalizationForm.FormD), @"\p{IsCombiningDiacriticalMarks}+", "").ToLower();
 
@@ -57,76 +55,18 @@
                         <td>@e.Equipamento.Marca</td>
                         <td>@e.Equipamento.SerialNumber</td>
                         <td>@e.Equipamento.PartNumber</td>
-                        <td>@condicao</td>
+                        <td>@{ var condicao = e.Equipamento.Condicao ? "ATIVO" : "INATIVO";}@condicao</td>
                         <td><span class="status @statusStyle @condicao.ToLower()">@e.Status</span></td>
                         <td>
-                            <button type="button" class="btn btn-primary edit-btn">E</button>
-                            <a type="button" class="btn btn-danger delete-btn" asp-controller="Patrimonio" asp-action="Equipamento" asp-route-id="@e.Equipamento.Id">D</a>
+                            <a type="button" class="btn btn-primary" asp-action="Detalhes" asp-route-id="@e.Equipamento.Id">Detalhes</a>
+                            <a type="button" class="btn btn-warning" asp-action="Editar" asp-route-id="@e.Equipamento.Id">Editar</a>
+                            <a type="button" class="btn btn-danger" asp-action="" asp-route-id="@e.Equipamento.Id">Deletar</a>
                         </td>
                     </tr>
                 }
 
             </tbody>
         </table>
-
-        <!-- Modal para edição -->
-        <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="editModalLabel">Editar Equipamento</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-
-                    <form asp-action="Update" method="post">
-                        <div class="modal-body">
-                            <input type="hidden" id="id"/>
-
-                            <div class="form-group">
-                                <label for="codigo">Código:</label>
-                                <input type="text" class="form-control" id="codigo"/>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="modelo">Modelo:</label>
-                                <input type="text" class="form-control" id="modelo" />
-                            </div>
-
-                            <div class="form-group">
-                                <label for="descr">Descrição:</label>
-                                <input type="text" class="form-control" id="descr" />
-                            </div>
-
-                            <div class="form-group">
-                                <label for="marca">Marca:</label>
-                                <input type="text" class="form-control" id="marca" />
-                            </div>
-
-                            <div class="form-group">
-                                <label for="sn">Serial Number:</label>
-                                <input type="text" class="form-control" id="sn" />
-                            </div>
-
-                            <div class="form-group">
-                                <label for="pn">Part Number:</label>
-                                <input type="text" class="form-control" id="pn" />
-                            </div>
-
-                            <input type="hidden" id="condicao"/>
-
-
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                            <button type="submit" class="btn btn-primary">Salvar</button>
-                        </div>
-                    </form>
-
-                </div>
-            </div>
-        </div>
 
     </div>
 </div>
@@ -262,14 +202,6 @@
     });
 
     window.addEventListener('load', () => {
-        let buttons = document.getElementsByClassName('dt-buttons');
-
-        if (buttons.length > 0) {
-            buttons[0].style.display = 'none';
-        } else {
-            console.log('Nenhuma div encontrada com a classe "dt-buttons".');
-        }
-
         let btnPdf = document.getElementById('pdf')
         let btnXls = document.getElementById('xls')
 
@@ -280,57 +212,5 @@
         btnXls.addEventListener('click', () => {
             document.getElementsByClassName('buttons-excel')[0].click()
         })
-
-        // Fechar o model
-        $('.close').on('click', function () {
-            $('#editModal').modal('hide');
-        });
-
-        // Cancelar a abertura do model
-        $('.btn-secondary').on('click', function () {
-            $('#editModal').modal('hide');
-        });
-
-        // Carregar dados no modal para edição
-        $('.edit-btn').on('click', function () {
-            $('#editModal').modal('show');
-
-            const id = $(this).data('id');
-
-            $.get(`/Estoque/GetById/${id}`, function (data) {
-                console.log(data)
-                $('#id').val(data.id);
-                $('#codigo').val(data.codigo);
-                $('#modelo').val(data.modelo);
-                $('#descr').val(data.descricao);
-                $('#marca').val(data.marca);
-                $('#sn').val(data.serialNumber);
-                $('#pn').val(data.partNumber);
-                $('#condicao').val(data.partNumber);
-            });
-            
-        });
-
-        // // Enviar dados editados para o servidor
-        // $('#editForm').on('submit', function (e) {
-        //     e.preventDefault();
-
-        //     const id = $(this).data('id');
-        //     const formData = $(this).serialize();
-
-        //     $.ajax({
-        //         url: `/Estoque/Update`,
-        //         type: 'POST',
-        //         data: formData,
-        //         success: function () {
-        //             $('#editModal').modal('hide');
-        //             location.reload(); // Recarregar a página para ver as atualizações
-        //         },
-        //         error: function (xhr) {
-        //             console.error('Erro ao atualizar:', xhr.responseText);
-        //             alert('Erro ao atualizar o patrimônio.');
-        //         }
-        //     });
-        // });
     })
 </script>

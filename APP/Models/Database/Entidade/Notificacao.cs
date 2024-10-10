@@ -18,7 +18,7 @@ namespace CodeData_Connection.Models.Database.Entidade
         public bool Visualizado { get; set; }
 
         [Column(TypeName = "DATETIME")]
-        public DateTime DataHora { get; set; }
+        public DateTime? DataHora { get; set; }
 
         [MaxLength(255)]
         public string UserId { get; set; }

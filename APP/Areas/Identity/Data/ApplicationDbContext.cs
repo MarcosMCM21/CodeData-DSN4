@@ -21,7 +21,6 @@ namespace CodeData_Connection.Areas.Identity.Data
         public DbSet<Estoque> Estoques { get; set; }
         public DbSet<Solicitacao> Solicitacoes { get; set; }
         public DbSet<Cliente> Clientes { get; set; }
-        public DbSet<Contrato> Contratos { get; set; }
         public DbSet<Notificacao> Notificacoes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -103,21 +102,6 @@ namespace CodeData_Connection.Areas.Identity.Data
                     .HasOne(s => s.Cliente)
                     .WithMany()
                     .HasForeignKey(s => s.ClienteId);
-            });
-
-            builder.Entity<Contrato>(entity =>
-            {
-                entity.Property(e => e.DataCadastro).HasDefaultValueSql("NOW()");
-
-                entity
-                    .HasOne(c => c.Solicitacao)
-                    .WithMany()
-                    .HasForeignKey(c => c.SolicitacaoId);
-
-                entity
-                    .HasOne(c => c.Documento)
-                    .WithMany()
-                    .HasForeignKey(c => c.DocumentoId);
             });
 
             builder.Entity<Notificacao>(entity =>

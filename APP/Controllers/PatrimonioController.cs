@@ -21,130 +21,143 @@ namespace CodeData_Connection.Controllers
             var equipamentos = await _context.Equipamentos.ToListAsync();
             var equipamentosStatus = new List<DadosEquipamento>();
 
-            if (equipamentos == null)
-            {
-                Console.WriteLine("Nenhum equipamento encontrado!");
-            }
+            if (equipamentos == null) return NotFound("Nenhum equipamento encontrado!");
 
             foreach (var equipamento in equipamentos)
             {
-                equipamentosStatus.Add(DadosByEquip(equipamento, false));
+                equipamentosStatus.Add(DadosEquipamento(equipamento, false));
             }
 
             return View(equipamentosStatus);
         }
 
-        public IActionResult Equipamento(int id)
+        public async Task<IActionResult> Detalhes(int? id)
         {
-            var equipamento = _context.Equipamentos.Find(id);
+            if (id == null) return NotFound();
+            
+            var equipamento = await _context.Equipamentos.FirstOrDefaultAsync(e => e.Id == id);
 
-            return View(DadosByEquip(equipamento, true));
+            if (equipamento == null) return NotFound("Equipamento não encontrado!");
+
+            return View(DadosEquipamento(equipamento, true));
         }
 
-        [HttpGet]
-        public IActionResult GetById(int id)
+        public async Task<IActionResult> Editar(int? id)
         {
-            var equipamento = _context.Equipamentos.Find(id);
+            if (id == null) return NotFound();
 
-            return Json(equipamento);
+            var equipamento = await _context.Equipamentos.FirstOrDefaultAsync(e => e.Id == id);
+
+            if (equipamento == null) return NotFound("Equipamento não encontrado!");
+
+            // Buscar documentos e estoques do banco de dados
+            ViewBag.Documentos = await _context.Documentos.Select(d => new EstoqueDocumento { Id = d.Id, Nome = d.Nome }).ToListAsync();
+            ViewBag.Estoques = await _context.Estoques.Select(e => new EstoqueDocumento { Id = e.Id, Nome = e.Nome }).ToListAsync();
+
+            return View(equipamento);
         }
 
         [HttpPost]
-        public IActionResult Update(Equipamento model)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Editar(int id, [Bind("Id, Codigo, Modelo, Descricao, Marca, SerialNumber, PartNumber, Condicao, EstoqueId, DocumentoId")] Equipamento equipamento)
         {
+            if (id != equipamento.Id)
+            {
+                return NotFound();
+            }
+
             if (ModelState.IsValid)
             {
                 try
                 {
-                    var equipamento = _context.Equipamentos.Find(model.Id);
+                    _context.Update(equipamento);
 
-                    if (equipamento == null)
+                    _context.Entry(equipamento).State = EntityState.Modified;
+                    _context.Entry(equipamento).Property(e => e.DataCadastro).IsModified = false; // Impede atualização
+
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!_context.Equipamentos.Contains(equipamento))
                     {
                         return NotFound();
                     }
-
-                    // Atualizar os campos necessários
-                    equipamento.Codigo = model.Codigo;
-                    equipamento.Modelo = model.Modelo;
-                    equipamento.Descricao = model.Descricao;
-                    equipamento.Marca = model.Marca;
-                    equipamento.SerialNumber = model.SerialNumber;
-                    equipamento.PartNumber = model.PartNumber;
-
-                    // Salvar as alterações
-                    _context.SaveChanges();
+                    else
+                    {
+                        throw;
+                    }
                 }
-                catch (Exception ex)
+                return RedirectToAction(nameof(Index));
+            }
+            else
+            {
+                foreach (var erro in ModelState.Values.SelectMany(v => v.Errors))
                 {
-                    return BadRequest($"Erro ao atualizar: {ex.Message}");
+                    // Acesse a mensagem de erro: erro.ErrorMessage
+                    // Acesse a exceção, se houver: erro.Exception
+                    Console.WriteLine(erro.ErrorMessage);
+                    Console.WriteLine(erro.Exception);
                 }
             }
 
-            return BadRequest("Dados inválidos");
+            // Buscar documentos e estoques do banco de dados
+            ViewBag.Documentos = await _context.Documentos.Select(d => new EstoqueDocumento { Id = d.Id, Nome = d.Nome }).ToListAsync();
+            ViewBag.Estoques = await _context.Estoques.Select(e => new EstoqueDocumento { Id = e.Id, Nome = e.Nome }).ToListAsync();
+
+            return View(equipamento);
         }
 
-        public DadosEquipamento DadosByEquip(Equipamento equipamento, bool getEndereco)
+        public DadosEquipamento DadosEquipamento(Equipamento equipamento, bool getDetalhes)
         {
-            DadosEquipamento dadosEquipamento = new DadosEquipamento();
+            DadosEquipamento dadosEquipamento = new DadosEquipamento() { Equipamento = equipamento, Status = "ESTOQUE" };
             
             try
             {
-                var movimentacaoSolicitacao = _context.MovimentacoesEquipamentos
+                var detalhes = _context.MovimentacoesEquipamentos
                     .Where(me => me.EquipamentoId == equipamento.Id)
-                    .Select(me => me.SolicitacaoId)
+                    .Select(me => new { SolicitacaoId = me.SolicitacaoId, EnderecoId = me.EnderecoId })
                     .FirstOrDefault();
 
-                // Verifica se encontrou uma SolicitacaoId
-                if (movimentacaoSolicitacao != default(int)) // Aqui, assumimos que SolicitacaoId é do tipo int. Ajuste o tipo conforme necessário.
+                if (detalhes == null)
                 {
-                    // Usa o SolicitacaoId para obter o tipo de solicitacao
-                    bool status = _context.Solicitacoes.FirstOrDefault(s => s.Id == movimentacaoSolicitacao).Tipo;
-                    dadosEquipamento = new DadosEquipamento() { Equipamento = equipamento, Status = status ? "LOCAÇÃO" : "HOMOLOGAÇÃO" };
-                }
+                    var estoque = _context.Estoques.FirstOrDefault(s => s.Id == equipamento.EstoqueId);
+                    if (estoque != null) dadosEquipamento.Estoque = estoque;
+                } 
                 else
                 {
-                    dadosEquipamento = new DadosEquipamento() { Equipamento = equipamento, Status = "ESTOQUE" };
-                    Console.WriteLine("Solicitação não encontrada para o equipamento especificado.");
+                    var solicitacaoEquipamento = _context.Solicitacoes.FirstOrDefault(s => s.Id == detalhes.SolicitacaoId);
+
+                    if (solicitacaoEquipamento != null) 
+                    {
+                        dadosEquipamento.DadosSolicitacao = new DadosSolicitacao();
+
+                        dadosEquipamento.DadosSolicitacao.Solicitacao = solicitacaoEquipamento;
+                        dadosEquipamento.Status = dadosEquipamento.DadosSolicitacao.Solicitacao.Tipo ? "LOCAÇÃO" : "HOMOLOGAÇÃO";
+                    }
                 }
 
-                if (getEndereco)
+                if (getDetalhes)
                 {
-                    Console.WriteLine("Procurar Endereço do Equipamento");
-                    // Primeiro, filtra MovimentacoesEquipamentos para obter o EnderecoId relacionado ao EquipamentoId
-                    var movimentacaoEndereco = _context.MovimentacoesEquipamentos
-                        .Where(me => me.EquipamentoId == equipamento.Id)
-                        .Select(me => me.EnderecoId)
-                        .FirstOrDefault();
-
-                    Console.WriteLine(movimentacaoEndereco.ToJson());
-
-                    // Verifica se encontrou um EnderecoId
-                    if (movimentacaoEndereco != default(int)) // Aqui, assumimos que EnderecoId é do tipo int. Ajuste o tipo conforme necessário.
+                    if (dadosEquipamento.DadosSolicitacao != null)
                     {
-                        // Usa o EnderecoId para obter os dados completos do endereço
-                        var enderecoEquipamento = _context.Enderecos.FirstOrDefault(e => e.Id == movimentacaoEndereco);
-                        Console.WriteLine(enderecoEquipamento.ToJson());
+                        string cliente = _context.Clientes.FirstOrDefault(c => c.Id == dadosEquipamento.DadosSolicitacao.Solicitacao.ClienteId).Nome;
+                        string vendedor = _context.ApplicationUser.FirstOrDefault(v => v.Id == dadosEquipamento.DadosSolicitacao.Solicitacao.UserId).Email;
 
-                        dadosEquipamento.Endereco = enderecoEquipamento;
+                        dadosEquipamento.DadosSolicitacao.Cliente = cliente;
+                        dadosEquipamento.DadosSolicitacao.Vendedor = vendedor;
+
+                        var enderecoEquipamento = _context.Enderecos.FirstOrDefault(e => e.Id == detalhes.EnderecoId);
+                        if (enderecoEquipamento != null) dadosEquipamento.Endereco = enderecoEquipamento;
                     }
                     else
                     {
-                        var EstoqueEndereco = _context.Estoques.Where(e => e.Id == equipamento.EstoqueId)
-                            .Select(e => e.EnderecoId)
-                            .FirstOrDefault();
-
-                        // Verifica se encontrou um EnderecoId
-                        if (EstoqueEndereco != default(int)) // Aqui, assumimos que EnderecoId é do tipo int. Ajuste o tipo conforme necessário.
-                        {
-                            // Usa o EnderecoId para obter os dados completos do endereço
-                            var enderecoEquipamento = _context.Enderecos.FirstOrDefault(e => e.Id == EstoqueEndereco);
-                            Console.WriteLine(enderecoEquipamento.ToJson());
-
-                            dadosEquipamento.Endereco = enderecoEquipamento;
-                        }
-
-                        Console.WriteLine("Endereço não encontrado para o equipamento especificado.");
+                        var enderecoEquipamento = _context.Enderecos.FirstOrDefault(e => e.Id == dadosEquipamento.Estoque.EnderecoId);
+                        if (enderecoEquipamento != null) dadosEquipamento.Endereco = enderecoEquipamento;
                     }
+
+                    var documentoEquipamento = _context.Documentos.FirstOrDefault(d => d.Id == equipamento.DocumentoId);
+                    if (documentoEquipamento != null) dadosEquipamento.Documento = documentoEquipamento;
                 }
             }
             catch (Exception ex)

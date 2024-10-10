@@ -6,7 +6,7 @@ namespace CodeData_Connection.Models.Database.Entidade
     public class Equipamento
     {
         [Key]
-        public int Id { get; set; }
+        public int? Id { get; set; }
 
         [MaxLength(45)]
         public string Codigo { get; set; }
@@ -30,7 +30,7 @@ namespace CodeData_Connection.Models.Database.Entidade
         public bool Condicao { get; set; }
 
         [Column(TypeName = "DATETIME")]
-        public DateTime DataCadastro { get; set; }
+        public DateTime? DataCadastro { get; set; }
 
         [Column(TypeName = "DATETIME")]
         public DateTime? DataAtualizado { get; set; }
@@ -38,24 +38,10 @@ namespace CodeData_Connection.Models.Database.Entidade
         // Chaves estrangeiras
         public int EstoqueId { get; set; }
         [ForeignKey("EstoqueId")]
-        public Estoque Estoque { get; set; }
+        public Estoque? Estoque { get; set; }
 
         public int DocumentoId { get; set; }
         [ForeignKey("DocumentoId")]
-        public Documento Documento { get; set; }
-
-        public Equipamento(int id, string codigo, string modelo, string descricao, string marca, string serialNumber, string partNumber, bool condicao, int estoqueId, int documentoId)
-        {
-            Id = id;
-            Codigo = codigo;
-            Modelo = modelo;
-            Descricao = descricao;
-            Marca = marca;
-            SerialNumber = serialNumber;
-            PartNumber = partNumber;
-            Condicao = condicao;
-            EstoqueId = estoqueId;
-            DocumentoId = documentoId;
-        }
+        public Documento? Documento { get; set; }
     }
 }

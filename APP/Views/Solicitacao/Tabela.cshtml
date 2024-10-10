@@ -49,19 +49,20 @@
             </thead>
             <tbody>
 
-                @foreach(var h in Model) 
+                @foreach(var s in Model) 
                 {
                     <tr>
                         <td></td>
-                        <td>@h.Solicitacao.Numero</td>
-                        <td>@h.Solicitacao.Descricao</td>
-                        <td>@h.Solicitacao.DataInicio</td>
-                        <td>@h.Solicitacao.DataFinal</td>
-                        <td>@h.Cliente</td>
-                        <td>@h.Vendedor</td>
+                        <td>@s.Solicitacao.Numero</td>
+                        <td>@s.Solicitacao.Descricao</td>
+                        <td>@s.Solicitacao.DataInicio</td>
+                        <td>@s.Solicitacao.DataFinal</td>
+                        <td>@s.Cliente</td>
+                        <td>@s.Vendedor</td>
                         <td>
-                            <button type="button" class="btn btn-primary edit-btn" data-id="@h.Solicitacao.Id">E</button>
-                            <button type="button" class="btn btn-danger delete-btn" data-id="@h.Solicitacao.Id">D</button>
+                            <a type="button" class="btn btn-primary" asp-action="Detalhes" asp-route-id="@s.Solicitacao.Id">Detalhes</a>
+                            <a type="button" class="btn btn-warning" asp-action="Editar" asp-route-id="@s.Solicitacao.Id">Editar</a>
+                            <a type="button" class="btn btn-danger" asp-action="" asp-route-id="@s.Solicitacao.Id">Deletar</a>
                         </td>
                     </tr>
                 }

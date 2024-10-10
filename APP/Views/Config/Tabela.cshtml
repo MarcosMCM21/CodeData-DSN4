@@ -47,8 +47,7 @@
                         <td>@u.UserName</td>
                         <td>@u.Email</td>
                         <td>
-                            <button type="button" class="btn btn-primary edit-btn" data-id="@u.Id">E</button>
-                            <button type="button" class="btn btn-danger delete-btn" data-id="@u.Id">D</button>
+                            <a type="button" class="btn btn-primary" asp-action="Detalhes" asp-route-id="@u.Id">Detalhes</a>
                         </td>
                     </tr>
                 }

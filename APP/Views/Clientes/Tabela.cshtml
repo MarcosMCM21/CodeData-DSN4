@@ -45,8 +45,9 @@
                         <td>@c.CNPJ</td>
                         <td>@c.DataCadastro</td>
                         <td>
-                            <button type="button" class="btn btn-primary edit-btn" data-id="@c.Id">E</button>
-                            <button type="button" class="btn btn-danger delete-btn" data-id="@c.Id">D</button>
+                            <a type="button" class="btn btn-primary" asp-action="Detalhes" asp-route-id="@c.Id">Detalhes</a>
+                            <a type="button" class="btn btn-warning" asp-action="Editar" asp-route-id="@c.Id">Editar</a>
+                            <a type="button" class="btn btn-danger" asp-action="" asp-route-id="@c.Id">Deletar</a>
                         </td>
                     </tr>
                 }

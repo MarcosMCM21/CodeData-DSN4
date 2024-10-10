@@ -18,17 +18,20 @@ namespace CodeData_Connection.Controllers
 
         public async Task<IActionResult> Index()
         {
+            var dadosPatrimonio = new DadosPatrimonio();
+
             var equipamentos = await _context.Equipamentos.ToListAsync();
-            var equipamentosStatus = new List<DadosEquipamento>();
 
             if (equipamentos == null) return NotFound("Nenhum equipamento encontrado!");
 
             foreach (var equipamento in equipamentos)
             {
-                equipamentosStatus.Add(DadosEquipamento(equipamento, false));
+                dadosPatrimonio.DadosEquipamento.Add(DadosEquipamento(equipamento, false));
             }
 
-            return View(equipamentosStatus);
+            dadosPatrimonio.ListaEnderecos = EnderecosEquipamento();
+
+            return View(dadosPatrimonio);
         }
 
         public async Task<IActionResult> Detalhes(int? id)
@@ -168,6 +171,38 @@ namespace CodeData_Connection.Controllers
             Console.WriteLine(dadosEquipamento.ToJson());
 
             return dadosEquipamento;
+        }
+
+        public List<Endereco> EnderecosEquipamento()
+        {
+            var equipamentos = _context.Equipamentos.ToList();
+            var listaEnderecos = new List<Endereco>();
+
+            foreach (var equipamento in equipamentos) 
+            {
+                var enderecoId = _context.MovimentacoesEquipamentos
+                    .Where(me => me.EquipamentoId == equipamento.Id)
+                    .Select(me => me.EnderecoId)
+                    .FirstOrDefault();
+
+                if (enderecoId != null)
+                {
+                    var endereco = _context.Enderecos.FirstOrDefault(e => e.Id == enderecoId);
+                    listaEnderecos.Add(endereco);
+                }
+                else
+                {
+                    var enderecoIdEstoque = _context.Estoques
+                    .Where(e => e.Id == equipamento.EstoqueId)
+                    .Select(e => e.EnderecoId)
+                    .FirstOrDefault();
+
+                    var endereco = _context.Enderecos.FirstOrDefault(e => e.Id == enderecoId);
+                    listaEnderecos.Add(endereco);
+                }
+            }
+
+            return listaEnderecos;
         }
     }
 }

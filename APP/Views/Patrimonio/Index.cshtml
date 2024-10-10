@@ -1,7 +1,15 @@
-﻿@model IEnumerable<CodeData_Connection.Models.DadosEquipamento>
+﻿@using CodeData_Connection.Models.Database.Entidade;
+
+@model IEnumerable<CodeData_Connection.Models.DadosPatrimonio>
 ﻿
 @{
     ViewData["Title"] = "Patrimônio";
 }
 
 @Html.Partial("Tabela", Model)
+
+@Html.Partial("~/Views/Components/_GoogleMapsMultiple.cshtml", Model)
+
+<script>
+    console.log("Tela Carregou!")
+</script>

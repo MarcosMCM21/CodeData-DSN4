@@ -1,17 +1,12 @@
 ﻿@using CodeData_Connection.Models.Database.Entidade;
 
-@model CodeData_Connection.Models.DadosPatrimonio
+@model CodeData_Connection.Controllers.DadosPatrimonioViewModel
 ﻿
 @{
     ViewData["Title"] = "Patrimônio";
 }
 
-<h1>LISTA DOS PATRIMÔNIOS</h1>
 @await Html.PartialAsync("Tabela", Model.DadosEquipamento)
 
 <h1>LOCALIZAÇÃO DOS PATRIMÔNIOS</h1>
 @await Html.PartialAsync("~/Views/Components/_GoogleMapsMultiple.cshtml", Model.ListaEnderecos)
-
-<script>
-    console.log("Tela Carregou!")
-</script>

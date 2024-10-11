@@ -4,6 +4,7 @@ using CodeData_Connection.Areas.Identity.Data;
 using CodeData_Connection.Areas.Identity.User;
 using CodeData.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using CodeData_Connection.Controllers;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("ApplicationDbContextConnection") ?? throw new InvalidOperationException("Connection string 'ApplicationDbContextConnection' not found.");

@@ -1,4 +1,4 @@
-﻿@model CodeData_Connection.Models.DadosEquipamento
+﻿@model CodeData_Connection.Controllers.DetalhesEquipamentoViewModel
 
 @{
     ViewData["Title"] = "Equipamento";
@@ -28,8 +28,9 @@
 {
     <h2>SOLICITAÇÃO</h2>
 
-    <p><strong>TIPO:</strong> @{var tipo = Model.Equipamento.Condicao ? "LOCAÇÃO" : "HOMOLOGAÇÃO";}@tipo</p>
+    <p><strong>TIPO:</strong> @{var tipo = Model.DadosSolicitacao.Solicitacao.Tipo ? "LOCAÇÃO" : "HOMOLOGAÇÃO";}@tipo</p>
     <p><strong>NÚMERO:</strong> @Model.DadosSolicitacao.Solicitacao.Numero</p>
+    <p><strong>DESCRIÇÃO:</strong> @Model.DadosSolicitacao.Solicitacao.Descricao</p>
     <p><strong>CLIENTE:</strong> @Model.DadosSolicitacao.Cliente</p>
     <p><strong>VENDEDOR:</strong> @Model.DadosSolicitacao.Vendedor</p>
 } else

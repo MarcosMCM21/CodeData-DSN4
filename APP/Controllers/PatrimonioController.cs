@@ -3,7 +3,6 @@ using CodeData_Connection.Models.Database.Entidade;
 using CodeData_Connection.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using NuGet.Protocol;
 
 namespace CodeData_Connection.Controllers
 {
@@ -18,46 +17,71 @@ namespace CodeData_Connection.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var dadosPatrimonio = new DadosPatrimonio { DadosEquipamento = new List<DadosEquipamento>(), ListaEnderecos = new List<Endereco>()};
-
+            // 1. Obter os equipamentos do banco de dados
             var equipamentos = await _context.Equipamentos.ToListAsync();
 
-            if (equipamentos == null) return NotFound("Nenhum equipamento encontrado!");
-
-            foreach (var equipamento in equipamentos)
+            if (equipamentos == null || !equipamentos.Any())
             {
-                dadosPatrimonio.DadosEquipamento.Add(DadosEquipamento(equipamento, false));
+                return NotFound("Nenhum equipamento encontrado!");
             }
 
-            dadosPatrimonio.ListaEnderecos = EnderecosEquipamento();
+            // 2. Criar uma instância de DadosPatrimonio e popular suas propriedades
+            var dadosPatrimonio = new DadosPatrimonioViewModel
+            {
+                DadosEquipamento = equipamentos.Select(e => ObterDadosBasicosEquipamento(e)).ToList(),
+                ListaEnderecos = ObterEnderecosEquipamentos()
+            };
 
             return View(dadosPatrimonio);
         }
 
         public async Task<IActionResult> Detalhes(int? id)
         {
-            if (id == null) return NotFound();
-            
-            var equipamento = await _context.Equipamentos.FirstOrDefaultAsync(e => e.Id == id);
+            if (id == null)
+            {
+                return NotFound();
+            }
 
-            if (equipamento == null) return NotFound("Equipamento não encontrado!");
+            // 1. Buscar o equipamento pelo ID, incluindo os dados relacionados (se necessário)
+            var equipamento = await _context.Equipamentos
+                // .Include(e => e.PropriedadeRelacionada) // Inclua propriedades relacionadas se necessário
+                .FirstOrDefaultAsync(e => e.Id == id);
 
-            return View(DadosEquipamento(equipamento, true));
+            if (equipamento == null)
+            {
+                return NotFound("Equipamento não encontrado!");
+            }
+
+            // 2. Obter os dados detalhados do equipamento
+            var dadosEquipamento = ObterDetalhesEquipamento(equipamento);
+
+            return View(dadosEquipamento);
         }
 
         public async Task<IActionResult> Editar(int? id)
         {
-            if (id == null) return NotFound();
+            if (id == null)
+            {
+                return NotFound();
+            }
 
-            var equipamento = await _context.Equipamentos.FirstOrDefaultAsync(e => e.Id == id);
+            // 1. Buscar o equipamento pelo ID
+            var equipamento = await _context.Equipamentos.FindAsync(id);
 
-            if (equipamento == null) return NotFound("Equipamento não encontrado!");
+            if (equipamento == null)
+            {
+                return NotFound("Equipamento não encontrado!");
+            }
 
-            // Buscar documentos e estoques do banco de dados
-            ViewBag.Documentos = await _context.Documentos.Select(d => new EstoqueDocumento { Id = d.Id, Nome = d.Nome }).ToListAsync();
-            ViewBag.Estoques = await _context.Estoques.Select(e => new EstoqueDocumento { Id = e.Id, Nome = e.Nome }).ToListAsync();
+            // 2. Criar um ViewModel para a view de edição (recomendado)
+            var viewModel = new EditarEquipamentoViewModel
+            {
+                Equipamento = equipamento,
+                Documentos = await _context.Documentos.Select(d => new EstoqueDocumento { Id = d.Id, Nome = d.Nome }).ToListAsync(),
+                Estoques = await _context.Estoques.Select(e => new EstoqueDocumento { Id = e.Id, Nome = e.Nome }).ToListAsync()
+            };
 
-            return View(equipamento);
+            return View(viewModel);
         }
 
         [HttpPost]
@@ -73,146 +97,179 @@ namespace CodeData_Connection.Controllers
             {
                 try
                 {
-                    _context.Update(equipamento);
-
+                    // 1. Marcar a entidade como modificada
                     _context.Entry(equipamento).State = EntityState.Modified;
-                    _context.Entry(equipamento).Property(e => e.DataCadastro).IsModified = false; // Impede atualização
 
+                    // 2. Impedir a atualização da propriedade DataCadastro
+                    _context.Entry(equipamento).Property(e => e.DataCadastro).IsModified = false;
+
+                    // 3. Salvar as alterações no banco de dados
                     await _context.SaveChangesAsync();
+
+                    TempData["Mensagem"] = "Patrimônio atualizado com sucesso!";
+                    TempData["TipoMensagem"] = "success";
+
+                    return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!_context.Equipamentos.Contains(equipamento))
+                    if (!_context.Equipamentos.Any(e => e.Id == id))
                     {
                         return NotFound();
                     }
                     else
                     {
-                        throw;
+                        throw; // Re-lançar a exceção para tratamento em outro nível
                     }
                 }
-
-                TempData["Mensagem"] = "Patrimônio atualizado criado com sucesso!";
-                TempData["TipoMensagem"] = "success"; // ou "error" para fracasso
-
-                return RedirectToAction(nameof(Index));
             }
-            else
+
+            // 4. Se houver erros de validação, exibir a view de edição novamente com as mensagens de erro
+            var viewModel = new EditarEquipamentoViewModel
             {
-                TempData["Mensagem"] = "Erro ao atualizar o patrimônio!";
-                TempData["TipoMensagem"] = "error";
+                Equipamento = equipamento,
+                Documentos = await _context.Documentos.Select(d => new EstoqueDocumento { Id = d.Id, Nome = d.Nome }).ToListAsync(),
+                Estoques = await _context.Estoques.Select(e => new EstoqueDocumento { Id = e.Id, Nome = e.Nome }).ToListAsync()
+            };
 
-                foreach (var erro in ModelState.Values.SelectMany(v => v.Errors))
-                {
-                    // Acesse a mensagem de erro: erro.ErrorMessage
-                    // Acesse a exceção, se houver: erro.Exception
-                    Console.WriteLine(erro.ErrorMessage);
-                    Console.WriteLine(erro.Exception);
-                }
+            TempData["Mensagem"] = "Erro ao atualizar o patrimônio!";
+            TempData["TipoMensagem"] = "error";
+
+            // Logar os erros de validação (opcional)
+            foreach (var erro in ModelState.Values.SelectMany(v => v.Errors))
+            {
+                Console.WriteLine(erro.ErrorMessage);
+                Console.WriteLine(erro.Exception);
             }
 
-            // Buscar documentos e estoques do banco de dados
-            ViewBag.Documentos = await _context.Documentos.Select(d => new EstoqueDocumento { Id = d.Id, Nome = d.Nome }).ToListAsync();
-            ViewBag.Estoques = await _context.Estoques.Select(e => new EstoqueDocumento { Id = e.Id, Nome = e.Nome }).ToListAsync();
-
-            return View(equipamento);
+            return View(viewModel);
         }
 
-        public DadosEquipamento DadosEquipamento(Equipamento equipamento, bool getDetalhes)
+        // Método para obter os dados básicos do equipamento, incluindo o status
+        public DetalhesEquipamentoViewModel ObterDadosBasicosEquipamento(Equipamento equipamento)
         {
-            DadosEquipamento dadosEquipamento = new DadosEquipamento() { Equipamento = equipamento, Status = "ESTOQUE" };
-            
+            var dadosEquipamento = new DetalhesEquipamentoViewModel { Equipamento = equipamento, Status = "ESTOQUE" };
+
             try
             {
-                var detalhes = _context.MovimentacoesEquipamentos
-                    .Where(me => me.EquipamentoId == equipamento.Id)
-                    .Select(me => new { SolicitacaoId = me.SolicitacaoId, EnderecoId = me.EnderecoId })
-                    .FirstOrDefault();
+                var movimentacao = _context.MovimentacoesEquipamentos
+                    .FirstOrDefault(me => me.EquipamentoId == equipamento.Id);
 
-                if (detalhes == null)
+                if (movimentacao != null)
                 {
-                    var estoque = _context.Estoques.FirstOrDefault(s => s.Id == equipamento.EstoqueId);
-                    if (estoque != null) dadosEquipamento.Estoque = estoque;
-                } 
-                else
-                {
-                    var solicitacaoEquipamento = _context.Solicitacoes.FirstOrDefault(s => s.Id == detalhes.SolicitacaoId);
+                    var solicitacao = _context.Solicitacoes.FirstOrDefault(s => s.Id == movimentacao.SolicitacaoId);
 
-                    if (solicitacaoEquipamento != null) 
+                    if (solicitacao != null)
                     {
-                        dadosEquipamento.DadosSolicitacao = new DadosSolicitacao();
+                        dadosEquipamento.DadosSolicitacao = new DadosSolicitacao
+                        {
+                            Solicitacao = solicitacao,
+                            Cliente = ObterNomeCliente(solicitacao.ClienteId),
+                            Vendedor = ObterNomeVendedor(solicitacao.UserId)
+                        };
 
-                        dadosEquipamento.DadosSolicitacao.Solicitacao = solicitacaoEquipamento;
-                        dadosEquipamento.Status = dadosEquipamento.DadosSolicitacao.Solicitacao.Tipo ? "LOCAÇÃO" : "HOMOLOGAÇÃO";
+                        dadosEquipamento.Status = solicitacao.Tipo ? "LOCAÇÃO" : "HOMOLOGAÇÃO";
                     }
-                }
-
-                if (getDetalhes)
-                {
-                    if (dadosEquipamento.DadosSolicitacao != null)
-                    {
-                        string cliente = _context.Clientes.FirstOrDefault(c => c.Id == dadosEquipamento.DadosSolicitacao.Solicitacao.ClienteId).Nome;
-                        var vendedor = _context.ApplicationUser
-                            .Where(v => v.Id == dadosEquipamento.DadosSolicitacao.Solicitacao.UserId)
-                            .Select(v => new { FirstName = v.FirstName, LastName = v.LastName })
-                            .FirstOrDefault();
-
-                        dadosEquipamento.DadosSolicitacao.Cliente = cliente;
-                        dadosEquipamento.DadosSolicitacao.Vendedor = $"{vendedor.FirstName} {vendedor.LastName}";
-
-                        var enderecoEquipamento = _context.Enderecos.FirstOrDefault(e => e.Id == detalhes.EnderecoId);
-                        if (enderecoEquipamento != null) dadosEquipamento.Endereco = enderecoEquipamento;
-                    }
-                    else
-                    {
-                        var enderecoEquipamento = _context.Enderecos.FirstOrDefault(e => e.Id == dadosEquipamento.Estoque.EnderecoId);
-                        if (enderecoEquipamento != null) dadosEquipamento.Endereco = enderecoEquipamento;
-                    }
-
-                    var documentoEquipamento = _context.Documentos.FirstOrDefault(d => d.Id == equipamento.DocumentoId);
-                    if (documentoEquipamento != null) dadosEquipamento.Documento = documentoEquipamento;
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.ToString());
+                Console.WriteLine(ex.ToString()); // Log de erro
             }
-
-            Console.WriteLine(dadosEquipamento.ToJson());
 
             return dadosEquipamento;
         }
 
-        public List<Endereco> EnderecosEquipamento()
+        // Método para obter os detalhes adicionais do equipamento, como endereço, estoque e documento
+        public DetalhesEquipamentoViewModel ObterDetalhesEquipamento(Equipamento equipamento)
         {
-            var equipamentos = _context.Equipamentos.ToList();
-            var listaEnderecos = new List<Endereco>();
+            var dadosEquipamento = ObterDadosBasicosEquipamento(equipamento); // Reutiliza o método básico
 
-            foreach (var equipamento in equipamentos) 
+            try
             {
-                var enderecoId = _context.MovimentacoesEquipamentos
-                    .Where(me => me.EquipamentoId == equipamento.Id)
-                    .Select(me => me.EnderecoId)
-                    .FirstOrDefault();
+                var movimentacao = _context.MovimentacoesEquipamentos
+                    .FirstOrDefault(me => me.EquipamentoId == equipamento.Id);
 
-                if (enderecoId != null)
+                if (movimentacao != null)
                 {
-                    var endereco = _context.Enderecos.FirstOrDefault(e => e.Id == enderecoId);
-                    listaEnderecos.Add(endereco);
+                    dadosEquipamento.Endereco = _context.Enderecos.FirstOrDefault(e => e.Id == movimentacao.EnderecoId);
                 }
                 else
                 {
-                    var enderecoIdEstoque = _context.Estoques
-                    .Where(e => e.Id == equipamento.EstoqueId)
-                    .Select(e => e.EnderecoId)
-                    .FirstOrDefault();
-
-                    var endereco = _context.Enderecos.FirstOrDefault(e => e.Id == enderecoId);
-                    listaEnderecos.Add(endereco);
+                    var estoque = _context.Estoques.FirstOrDefault(s => s.Id == equipamento.EstoqueId);
+                    if (estoque != null)
+                    {
+                        dadosEquipamento.Estoque = estoque;
+                        dadosEquipamento.Endereco = _context.Enderecos.FirstOrDefault(e => e.Id == estoque.EnderecoId);
+                    }
                 }
+
+                dadosEquipamento.Documento = _context.Documentos.FirstOrDefault(d => d.Id == equipamento.DocumentoId);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString()); // Log de erro
             }
 
-            return listaEnderecos;
+            return dadosEquipamento;
         }
+
+
+        // Método para obter o nome do cliente
+        private string ObterNomeCliente(int clienteId)
+        {
+            return _context.Clientes.FirstOrDefault(c => c.Id == clienteId)?.Nome;
+        }
+
+        // Método para obter o nome do vendedor
+        private string ObterNomeVendedor(string userId)
+        {
+            var vendedor = _context.ApplicationUser
+                .FirstOrDefault(v => v.Id == userId);
+
+            return vendedor != null ? $"{vendedor.FirstName} {vendedor.LastName}" : string.Empty;
+        }
+
+        // Método para obter os endereços dos equipamentos
+        public List<Endereco> ObterEnderecosEquipamentos()
+        {
+            // Utiliza uma consulta LINQ para obter os endereços dos equipamentos de forma eficiente
+            var enderecos = _context.Equipamentos
+                .Select(equipamento => _context.MovimentacoesEquipamentos
+                    .Where(me => me.EquipamentoId == equipamento.Id)
+                    .Select(me => me.EnderecoId)
+                    .FirstOrDefault())
+                .Where(enderecoId => enderecoId != null)
+                .Select(enderecoId => _context.Enderecos.FirstOrDefault(e => e.Id == enderecoId))
+                .ToList();
+
+            return enderecos;
+        }
+    }
+
+    // ViewModel para a view do Index
+    public class DadosPatrimonioViewModel
+    {
+        public List<DetalhesEquipamentoViewModel> DadosEquipamento { get; set; }
+        public List<Endereco> ListaEnderecos { get; set; }
+    }
+
+    // ViewModel para a view de detalhes
+    public class DetalhesEquipamentoViewModel
+    {
+        public Equipamento Equipamento { get; set; }
+        public Documento? Documento { get; set; }
+        public DadosSolicitacao? DadosSolicitacao { get; set; }
+        public Estoque? Estoque { get; set; }
+        public Endereco? Endereco { get; set; }
+        public string Status { get; set; }
+    }
+
+    // ViewModel para a view de edição
+    public class EditarEquipamentoViewModel
+    {
+        public Equipamento Equipamento { get; set; }
+        public List<EstoqueDocumento> Documentos { get; set; }
+        public List<EstoqueDocumento> Estoques { get; set; }
     }
 }

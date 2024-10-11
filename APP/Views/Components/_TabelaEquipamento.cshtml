@@ -1,6 +1,6 @@
 ﻿@using System.Text.RegularExpressions;
 
-@model IEnumerable<CodeData_Connection.Models.DadosSolicitacao>
+@model IEnumerable<CodeData_Connection.Models.Database.Entidade.Equipamento>
 
 <head>
     <meta charset="UTF-8">
@@ -11,59 +11,45 @@
 
 <div class="container-table-1">
     <header>
-        @{
-            if (Model.First().Solicitacao.Tipo == false)
-            {
-                <h1>LISTA DE HOMOLOGAÇÕES</h1>
-            } else
-            {
-                <h1>LISTA DE LOCAÇÕES</h1>
-            }
-        }
-        
         <div class="actions">
             <button class="btn orange" id="pdf">PDF</button>
             <button class="btn orange" id="xls">XLS</button>
-            <button class="btn orange register-btn">Adicionar Homologação</button>
-            @* <button class="btn dark-blue">Importar Equipamentos</button> *@
         </div>
     </header>
 
     <div class="container-table">
-        <div class="search-sort">
-            <button class="btn-filter">Sort by Date</button>
-        </div>
 
         <table id="userTable">
             <thead>
                 <tr>
                     <th></th>
-                    <th>Número</th>
+                    <th>Patrimônio</th>
+                    <th>Modelo</th>
                     <th>Descrição</th>
-                    <th>Data Início</th>
-                    <th>Data Final</th>
-                    <th>Cliente</th>
-                    <th>Vendedor</th>
-                    <th>Ações</th>
+                    <th>Marca</th>
+                    <th>SN</th>
+                    <th>PN</th>
                 </tr>
             </thead>
             <tbody>
 
-                @foreach(var s in Model) 
+                @foreach(var equipamento in Model) 
                 {
                     <tr>
                         <td></td>
-                        <td>@s.Solicitacao.Numero</td>
-                        <td>@s.Solicitacao.Descricao</td>
-                        <td>@s.Solicitacao.DataInicio</td>
-                        <td>@s.Solicitacao.DataFinal</td>
-                        <td>@s.Cliente</td>
-                        <td>@s.Vendedor</td>
+                        <td>@equipamento.Codigo</td>
+                        <td>@equipamento.Modelo</td>
+                        <td>@equipamento.Descricao</td>
+                        <td>@equipamento.Marca</td>
+                        <td>@equipamento.SerialNumber</td>
+                        <td>@equipamento.PartNumber</td>
+                        @* <td>@{ var condicao = e.Equipamento.Condicao ? "ATIVO" : "INATIVO";}@condicao</td>
+                        <td><span class="status @statusStyle @condicao.ToLower()">@e.Status</span></td>
                         <td>
-                            <a type="button" class="btn btn-primary" asp-action="Detalhes" asp-route-id="@s.Solicitacao.Id">Detalhes</a>
-                            <a type="button" class="btn btn-warning" asp-action="Editar" asp-route-id="@s.Solicitacao.Id">Editar</a>
-                            <a type="button" class="btn btn-danger" asp-action="" asp-route-id="@s.Solicitacao.Id">Deletar</a>
-                        </td>
+                            <a type="button" class="btn btn-primary" asp-action="Detalhes" asp-route-id="@e.Equipamento.Id">Detalhes</a>
+                            <a type="button" class="btn btn-warning" asp-action="Editar" asp-route-id="@e.Equipamento.Id">Editar</a>
+                            <a type="button" class="btn btn-danger" asp-action="" asp-route-id="@e.Equipamento.Id">Deletar</a>
+                        </td> *@
                     </tr>
                 }
 
@@ -93,11 +79,11 @@
 
         columns: [
             { data: null, searchable: false, render: DataTable.render.select() },
-            {}, {}, {}, {}, {}, {}, {}
+            {}, {}, {}, {}, {}, {}
         ],
 
         columnDefs: [
-            { orderable: false, targets: [0, 7] },
+            { orderable: false, targets: [0] },
             { className: 'dt-head-left dt-body-left', targets: [1] },
             { className: 'dt-center', targets: '_all' }
         ],

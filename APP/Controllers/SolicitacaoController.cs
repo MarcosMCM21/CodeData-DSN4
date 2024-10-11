@@ -1,6 +1,8 @@
 ﻿using CodeData_Connection.Areas.Identity.Data;
 using CodeData_Connection.Models;
+using CodeData_Connection.Models.Database.Entidade;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.EntityFrameworkCore;
 using NuGet.Protocol;
 using System.Security.Claims;
@@ -21,68 +23,227 @@ namespace CodeData_Connection.Controllers
             return View();
         }
 
-        public async Task<IActionResult> Homologacao()
+        public IActionResult Homologacao()
         {
             ViewData["Title"] = "Homologação";
-            var homologacoes = await GetSolicitacoes(false);
 
-            return View(homologacoes);
+            // 1. Obter as homologações do banco de dados
+            var homologacoes = ObterDadosBasicosSolicitacoes(false); // Usar o método assíncrono
+
+            if (homologacoes == null)
+            {
+                return NotFound("Nenhuma homologação encontrada!");
+            }
+
+            // 2. Criar uma instância de DadosPatrimonio e popular suas propriedades
+            var dadosHomologacao = new DadosSolicitacaoViewModel
+            {
+                DadosSolicitacao = homologacoes.Result,
+                ListaEnderecos = ObterEnderecosSolicitacoes(false)
+            };
+
+            return View(dadosHomologacao);
         }
 
-        public async Task<IActionResult> Locacao()
+        public IActionResult Locacao()
         {
             ViewData["Title"] = "Locação";
-            var locacoes = await GetSolicitacoes(true);
 
-            return View(locacoes);
+            // 1. Obter as locações do banco de dados
+            var locacoes = ObterDadosBasicosSolicitacoes(true); // Usar o método assíncrono
+
+            if (locacoes == null)
+            {
+                return NotFound("Nenhuma homologação encontrada!");
+            }
+
+            // 2. Criar uma instância de DadosPatrimonio e popular suas propriedades
+            var dadosHomologacao = new DadosSolicitacaoViewModel
+            {
+                DadosSolicitacao = locacoes.Result,
+                ListaEnderecos = ObterEnderecosSolicitacoes(false)
+            };
+
+            return View(dadosHomologacao);
         }
 
-        public async Task<List<DadosSolicitacao>> GetSolicitacoes(bool tipoSolicitacao)
+        public IActionResult Detalhes(int id)
+        {
+            // 1. Buscar a solicitação pelo ID, incluindo os dados relacionados (se necessário)
+            var dadosEquipamento = ObterDetalhesSolicitacao(id);
+
+            if (dadosEquipamento == null)
+            {
+                return NotFound("Solicitação não encontrada.");
+            }
+
+            return View(dadosEquipamento);
+        }
+
+        public async Task<List<DadosSolicitacao>> ObterDadosBasicosSolicitacoes(bool tipoSolicitacao)
         {
             var usuarioId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var solicitacoesVC = new List<DadosSolicitacao>();
 
+            // 1. Obter as solicitações com base na regra do usuário (com Include)
+            List<Solicitacao> solicitacoes = new();
             if (User.IsInRole("Usuario"))
             {
-                var solicitacoes = await _context.Solicitacoes.Where(h => h.Tipo == tipoSolicitacao && h.UserId == usuarioId).ToListAsync();
-
-                foreach (var homologacao in solicitacoes)
-                {
-                    string cliente = _context.Clientes.FindAsync(homologacao.ClienteId).Result.Nome;
-                    string vendedor = _context.ApplicationUser.FindAsync(homologacao.UserId).Result.Email;
-
-                    solicitacoesVC.Add(new DadosSolicitacao() { Solicitacao = homologacao, Cliente = cliente });
-                }
+                solicitacoes = await _context.Solicitacoes
+                    .Include(s => s.Cliente)
+                    .Where(h => h.Tipo == tipoSolicitacao && h.UserId == usuarioId)
+                    .ToListAsync();
             }
-
-            if (User.IsInRole("Gerente"))
+            else if (User.IsInRole("Gerente"))
             {
-                var vendedoresIds = await _context.ApplicationUser.Where(u => u.GerenteID == usuarioId).Select(u => u.Id).ToListAsync();
-                var solicitacoes = await _context.Solicitacoes.Where(h => h.Tipo == tipoSolicitacao && vendedoresIds.Contains(h.UserId)).ToListAsync();
+                var vendedoresIds = await _context.ApplicationUser
+                    .Where(u => u.GerenteID == usuarioId)
+                    .Select(u => u.Id)
+                    .ToListAsync();
 
-                foreach (var homologacao in solicitacoes)
-                {
-                    string cliente = _context.Clientes.FindAsync(homologacao.ClienteId).Result.Nome;
-                    string vendedor = _context.ApplicationUser.FindAsync(homologacao.UserId).Result.Email;
-
-                    solicitacoesVC.Add(new DadosSolicitacao() { Solicitacao = homologacao, Cliente = cliente, Vendedor = vendedor });
-                }
+                solicitacoes = await _context.Solicitacoes
+                    .Include(s => s.Cliente)
+                    .Include(s => s.User)
+                    .Where(h => h.Tipo == tipoSolicitacao && vendedoresIds.Contains(h.UserId))
+                    .ToListAsync();
             }
-
-            if (User.IsInRole("Administrador"))
+            else if (User.IsInRole("Administrador"))
             {
-                var solicitacoes = await _context.Solicitacoes.Where(h => h.Tipo == tipoSolicitacao).ToListAsync();
-
-                foreach (var homologacao in solicitacoes)
-                {
-                    string cliente = _context.Clientes.FindAsync(homologacao.ClienteId).Result.Nome;
-                    string vendedor = _context.ApplicationUser.FindAsync(homologacao.UserId).Result.Email;
-
-                    solicitacoesVC.Add(new DadosSolicitacao() { Solicitacao = homologacao, Cliente = cliente, Vendedor = vendedor });
-                }
+                solicitacoes = await _context.Solicitacoes
+                    .Include(s => s.Cliente)
+                    .Include(s => s.User)
+                    .Where(h => h.Tipo == tipoSolicitacao)
+                    .ToListAsync();
             }
 
-            return solicitacoesVC;
+            // 2. Mapear as solicitações para o ViewModel
+            return solicitacoes.Select(s => new DadosSolicitacao
+            {
+                Solicitacao = s,
+                Cliente = s.Cliente.Nome,
+                Vendedor = s.User != null? $"{s.User.FirstName} {s.User.LastName }" : ""
+            }).ToList();
+        }
+
+        public DetalhesSolicitacaoViewModel ObterDetalhesSolicitacao(int solicitacaoId)
+        {
+            // 1. Obter a solicitação correspondente ao ID
+            var solicitacao = _context.Solicitacoes
+                    .Include(s => s.Cliente)
+                    .Include(s => s.User)
+                    .FirstOrDefault(s => s.Id == solicitacaoId);
+
+            Console.WriteLine(solicitacao.ToJson());
+
+            if (solicitacao == null)
+            {
+                return null; // ou lançar uma exceção se preferir
+            }
+
+            // 2. Obter os documentos associados à solicitação
+            var documentos = ObterDocumentosSolicitacao(solicitacaoId);
+
+            // 3. Obter os documentos associados à solicitação
+            var equipamentos = ObterEquipamentosSolicitacao(solicitacaoId);
+
+            // 4. Obter o endereço associado à solicitação
+            var endereco = ObterEnderecoSolicitacao(solicitacaoId);
+
+            // 5. Criar a instância do ViewModel e popular suas propriedades
+            var detalhesSolicitacao = new DetalhesSolicitacaoViewModel
+            {
+                DadosSolicitacao = new DadosSolicitacao
+                {
+                    Solicitacao = solicitacao,
+                    Cliente = solicitacao.Cliente.Nome,
+                    Vendedor = solicitacao.User != null ? $"{solicitacao.User.FirstName} {solicitacao.User.LastName}" : ""
+                },
+                Documentos = documentos,
+                Equipamentos = equipamentos,
+                Endereco = endereco
+            };
+
+            return detalhesSolicitacao; // Retorna o ViewModel preenchido
+        }
+
+
+        // Método para obter os endereço da solicitação
+        public Endereco ObterEnderecoSolicitacao(int solicitacaoId)
+        {
+            // Obtém o EnderecoId diretamente da tabela MovimentacoesEquipamentos
+            var enderecoId = _context.MovimentacoesEquipamentos
+                .Where(me => me.SolicitacaoId == solicitacaoId) // Filtra pela solicitação ID
+                .Select(me => me.EnderecoId)
+                .FirstOrDefault(); // Pega o primeiro EnderecoId correspondente ou null
+
+            // Retorna o endereço correspondente ou null caso não encontre
+            return enderecoId != null ? _context.Enderecos.FirstOrDefault(e => e.Id == enderecoId) : null;
+        }
+
+        // Método para obter os endereços das solicitações
+        public List<Endereco> ObterEnderecosSolicitacoes(bool tipoSolicitacao)
+        {
+            // Utiliza uma consulta LINQ para obter os endereços das solicitacoes de forma eficiente
+            var enderecos = _context.MovimentacoesEquipamentos
+                   .Join(
+                       _context.Solicitacoes,
+                       movimentacao => movimentacao.SolicitacaoId,
+                       solicitacao => solicitacao.Id,
+                       (movimentacao, solicitacao) => new { movimentacao.EnderecoId, solicitacao.Tipo }
+                   )
+                   .Where(ms => ms.Tipo == tipoSolicitacao) // Filtra pelo tipo de solicitação (booleano)
+                   .Select(ms => ms.EnderecoId)
+                   .Distinct() // Remove duplicatas de EnderecoId, se houver
+                   .Select(enderecoId => _context.Enderecos.FirstOrDefault(e => e.Id == enderecoId))
+                   .Where(endereco => endereco != null)
+                   .ToList();
+
+            return enderecos;
+        }
+
+        public List<Documento> ObterDocumentosSolicitacao(int solicitacaoId)
+{
+            // Obtém todos os IDs de documentos da tabela MovimentacoesEquipamentos
+            var documentoIds = _context.MovimentacoesEquipamentos
+                .Where(me => me.SolicitacaoId == solicitacaoId) // Filtra pela solicitação ID
+                .Select(me => me.DocumentoId) // Supondo que você tenha um campo DocumentoId
+                .Distinct() // Remove duplicatas, se houver
+                .ToList(); // Converte para lista
+
+            // Busca os documentos correspondentes na tabela Documentos
+            return _context.Documentos
+                .Where(d => documentoIds.Contains(d.Id)) // Filtra os documentos pelo ID
+                .ToList(); // Retorna a lista de documentos
+        }
+
+        public List<Equipamento> ObterEquipamentosSolicitacao(int solicitacaoId)
+        {
+            // Obtém todos os IDs de documentos da tabela MovimentacoesEquipamentos
+            var equipamentosIds = _context.MovimentacoesEquipamentos
+                .Where(me => me.SolicitacaoId == solicitacaoId) // Filtra pela solicitação ID
+                .Select(me => me.EquipamentoId) // Supondo que você tenha um campo DocumentoId
+                .Distinct() // Remove duplicatas, se houver
+                .ToList(); // Converte para lista
+
+            // Busca os documentos correspondentes na tabela Documentos
+            return _context.Equipamentos
+                .Where(e => equipamentosIds.Contains(e.Id)) // Filtra os documentos pelo ID
+                .ToList(); // Retorna a lista de documentos
         }
     }
+
+    public class DadosSolicitacaoViewModel
+    {
+        public List<DadosSolicitacao> DadosSolicitacao { get; set; }
+        public List<Endereco> ListaEnderecos { get; set; }
+    }
+
+    public class DetalhesSolicitacaoViewModel
+    {
+        public DadosSolicitacao DadosSolicitacao { get; set; }
+        public List<Documento>? Documentos { get; set; }
+        public List<Equipamento>? Equipamentos { get; set; }
+        public Endereco? Endereco { get; set; }
+    }
+
+
 }

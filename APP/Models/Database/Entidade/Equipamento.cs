@@ -6,7 +6,7 @@ namespace CodeData_Connection.Models.Database.Entidade
     public class Equipamento
     {
         [Key]
-        public int? Id { get; set; }
+        public int Id { get; set; }
 
         [MaxLength(45)]
         public string Codigo { get; set; }

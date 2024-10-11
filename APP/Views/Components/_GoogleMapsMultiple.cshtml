@@ -1,27 +1,28 @@
-﻿@model List<CodeData_Connection.Models.Database.Entidade.Endereco>
+﻿@model IEnumerable<CodeData_Connection.Models.Database.Entidade.Endereco>
 
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBT6VVRMlElM3uC1bAm9KlmkoG6Kv88fMw&callback=initMap" async defer></script>
 
-<div id="map" style="height: 400px;"></div>
+<div id="map" style="height: 50rem;"></div>
 
 <script>
     function initMap() {
-        const mapCenter = { lat: -15.7942, lng: -47.8822 };
-        const map = new google.maps.Map(document.getElementById("map"), {
-            zoom: 4,
+        const mapCenter = { lat: -22.926506007396114, lng: -47.075046998329476 };
+
+        const mapa = new google.maps.Map(document.getElementById("map"), {
+            zoom: 5,
             center: mapCenter
         });
 
         const locations = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model));
 
-        console.log(locations)
-
         locations.forEach((location) => {
-            // 5. Adicione um marcador (opcional)
+
             var marcador = new google.maps.Marker({
-                position: { lat: location., lng: location.Longitude },
+                position: { lat: location.Localizacao.XCoordinate, lng: location.Localizacao.YCoordinate },
                 map: mapa,
                 title: 'Campinas, SP'
             });
+
         });
+    }
 </script>

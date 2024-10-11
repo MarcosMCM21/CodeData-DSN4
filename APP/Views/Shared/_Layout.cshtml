@@ -12,12 +12,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - CodeData Connection</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    <link href="~/lib/toastr/build/toastr.css" rel="stylesheet" />
+
     <link href="~/lib/select2/css/select2.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/CodeData Connection.styles.css" asp-append-version="true" />
 </head>
 <body class="theme-light">
-
     <div class="sidebar">
 
         <script>
@@ -93,7 +95,7 @@
 
     @* Exibe o menu superior da página *@
     @await Html.PartialAsync("_Navbar")
-    
+
     <div class="main-content">
             <main role="main">
                 @* Renderiza as outras páginas da aplicação dentro dessa div *@
@@ -142,12 +144,39 @@
             // Salva na sessionStorage o estado do menu durante as trocas de página
             sessionStorage.setItem("isMinimized", sidebar.classList.contains("active") ? false : true)
         })
+
+        $(function(){
+            toastr.options = {
+                "positionClass": "toast-bottom-right",
+                "timeOut": "3000", // Duração do Toast em milissegundos
+                "closeButton": true, // Botão para fechar o Toast
+                "progressBar": true
+            };
+
+            var toast = '@TempData["Mensagem"]';
+
+            if (toast != null) {
+                console.log("Será que vai dar certo!")
+                var tipoMensagem = '@TempData["TipoMensagem"]';
+                var mensagem = '@TempData["Mensagem"]';
+
+                if (tipoMensagem === "success") {
+                    toastr.success(mensagem);
+                }
+                else if (tipoMensagem === "error") {
+                    toastr.error(mensagem);
+                }
+            }
+        } )
     </script>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/lib/select2/js/select2.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <script src="~/lib/toastr/build/toastr.min.js"></script>
+
     @await RenderSectionAsync("Scripts", required: false)
 
 </body>

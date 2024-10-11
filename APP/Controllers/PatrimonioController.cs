@@ -18,7 +18,7 @@ namespace CodeData_Connection.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var dadosPatrimonio = new DadosPatrimonio();
+            var dadosPatrimonio = new DadosPatrimonio { DadosEquipamento = new List<DadosEquipamento>(), ListaEnderecos = new List<Endereco>()};
 
             var equipamentos = await _context.Equipamentos.ToListAsync();
 
@@ -91,10 +91,17 @@ namespace CodeData_Connection.Controllers
                         throw;
                     }
                 }
+
+                TempData["Mensagem"] = "Patrimônio atualizado criado com sucesso!";
+                TempData["TipoMensagem"] = "success"; // ou "error" para fracasso
+
                 return RedirectToAction(nameof(Index));
             }
             else
             {
+                TempData["Mensagem"] = "Erro ao atualizar o patrimônio!";
+                TempData["TipoMensagem"] = "error";
+
                 foreach (var erro in ModelState.Values.SelectMany(v => v.Errors))
                 {
                     // Acesse a mensagem de erro: erro.ErrorMessage
@@ -145,10 +152,13 @@ namespace CodeData_Connection.Controllers
                     if (dadosEquipamento.DadosSolicitacao != null)
                     {
                         string cliente = _context.Clientes.FirstOrDefault(c => c.Id == dadosEquipamento.DadosSolicitacao.Solicitacao.ClienteId).Nome;
-                        string vendedor = _context.ApplicationUser.FirstOrDefault(v => v.Id == dadosEquipamento.DadosSolicitacao.Solicitacao.UserId).Email;
+                        var vendedor = _context.ApplicationUser
+                            .Where(v => v.Id == dadosEquipamento.DadosSolicitacao.Solicitacao.UserId)
+                            .Select(v => new { FirstName = v.FirstName, LastName = v.LastName })
+                            .FirstOrDefault();
 
                         dadosEquipamento.DadosSolicitacao.Cliente = cliente;
-                        dadosEquipamento.DadosSolicitacao.Vendedor = vendedor;
+                        dadosEquipamento.DadosSolicitacao.Vendedor = $"{vendedor.FirstName} {vendedor.LastName}";
 
                         var enderecoEquipamento = _context.Enderecos.FirstOrDefault(e => e.Id == detalhes.EnderecoId);
                         if (enderecoEquipamento != null) dadosEquipamento.Endereco = enderecoEquipamento;

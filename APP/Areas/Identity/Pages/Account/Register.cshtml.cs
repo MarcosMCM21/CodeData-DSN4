@@ -2,25 +2,17 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 #nullable disable
 
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Text;
 using System.Text.Encodings.Web;
-using System.Threading;
-using System.Threading.Tasks;
 using CodeData.Services;
 using CodeData_Connection.Areas.Identity.Enums;
 using CodeData_Connection.Areas.Identity.User;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.Extensions.Logging;
 
 namespace CodeData_Connection.Areas.Identity.Pages.Account
 {
@@ -77,7 +69,7 @@ namespace CodeData_Connection.Areas.Identity.Pages.Account
         public class InputModel
         {
             [Required]
-            [Display(Name = "Nome")]
+            [Display(Name = "Primeiro Nome")]
             public string FirstName { get; set; }
 
             [Required]
@@ -94,14 +86,14 @@ namespace CodeData_Connection.Areas.Identity.Pages.Account
             public string Email { get; set; }
 
             [Required]
-            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+            [StringLength(100, ErrorMessage = "O {0} deve ter pelo menos {2} e no máximo {1} caracteres.", MinimumLength = 6)]
             [DataType(DataType.Password)]
             [Display(Name = "Senha")]
             public string Password { get; set; }
 
             [DataType(DataType.Password)]
             [Display(Name = "Confirmar Senha")]
-            [Compare("Password", ErrorMessage = "A senha e a confirmação da senha não são iguais.")]
+            [Compare("Password", ErrorMessage = "A senha e a senha de confirmação não são iguais.")]
             public string ConfirmPassword { get; set; }
         }
 
@@ -142,7 +134,7 @@ namespace CodeData_Connection.Areas.Identity.Pages.Account
                         values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
                         protocol: Request.Scheme);
 
-                    await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
+                    await _emailSender.SendEmailAsync(Input.Email, "Confirme seu e-mail",
                         $"Por favor, confirme sua conta com o link a seguir <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clique aqui</a>.");
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
@@ -197,7 +189,7 @@ namespace CodeData_Connection.Areas.Identity.Pages.Account
         {
             if (!_userManager.SupportsUserEmail)
             {
-                throw new NotSupportedException("The default UI requires a user store with email support.");
+                throw new NotSupportedException("A interface do usuário padrão requer um repositório de usuário com suporte por email.");
             }
             return (IUserEmailStore<ApplicationUser>)_userStore;
         }

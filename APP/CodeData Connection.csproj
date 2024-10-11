@@ -36,6 +36,8 @@
 
   <ItemGroup>
     <Folder Include="Migrations\" />
+    <Folder Include="Resources\en-US\" />
+    <Folder Include="Resources\pt-BR\" />
     <Folder Include="wwwroot\img\" />
   </ItemGroup>
 

@@ -4,7 +4,7 @@ using CodeData_Connection.Areas.Identity.Data;
 using CodeData_Connection.Areas.Identity.User;
 using CodeData.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using CodeData_Connection.Controllers;
+using CodeData_Connection.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("ApplicationDbContextConnection") ?? throw new InvalidOperationException("Connection string 'ApplicationDbContextConnection' not found.");
@@ -17,7 +17,8 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options => {
     })
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
-    .AddDefaultTokenProviders();
+    .AddDefaultTokenProviders()
+    .AddErrorDescriber<IdentityErrorDescriberPtBr>(); // Registro do descritor customizado
 
 builder.Services.ConfigureApplicationCookie(options =>
 {

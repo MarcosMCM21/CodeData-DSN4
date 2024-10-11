@@ -1,0 +1,57 @@
+﻿using CodeData_Connection.Areas.Identity.Data;
+using CodeData_Connection.Models.Database.Entidade;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
+
+namespace CodeData_Connection.Controllers
+{
+    public class DocumentoController : Controller
+    {
+        private readonly ApplicationDbContext _context;
+
+        public DocumentoController(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+
+        public async Task<IActionResult> Index()
+        {
+            // 1. Obter os documentos do banco de dados
+            var documentos = await _context.Documentos
+                .Select(d => new DadosDocumentoViewModel { Id = d.Id, Numero = d.Numero, Nome = d.Nome, Tipo = d.Tipo })
+                .ToListAsync();
+
+            if (documentos == null || !documentos.Any())
+            {
+                return NotFound("Nenhum equipamento encontrado!");
+            }
+
+            return View(documentos);
+        }
+
+        public async Task<IActionResult> Detalhes(int id)
+        {
+            // 1. Obter os documentos do banco de dados
+            var documentos = await _context.Documentos
+                .Where(d => d.Id == id)
+                .FirstOrDefaultAsync();
+
+            if (documentos == null)
+            {
+                return NotFound("Nenhum equipamento encontrado!");
+            }
+
+            return View(documentos);
+        }
+    }
+
+    public class DadosDocumentoViewModel
+    {
+        public int Id { get; set; }
+        public string Numero { get; set; }
+        public string Nome { get; set; }
+        public string Tipo { get; set; }
+    }
+}

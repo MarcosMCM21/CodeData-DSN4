@@ -25,7 +25,7 @@ namespace CodeData_Connection.Controllers
 
         public IActionResult Homologacao()
         {
-            ViewData["Title"] = "Homologação";
+            ViewData["Title"] = "Homologações";
 
             // 1. Obter as homologações do banco de dados
             var homologacoes = ObterDadosBasicosSolicitacoes(false); // Usar o método assíncrono
@@ -47,7 +47,7 @@ namespace CodeData_Connection.Controllers
 
         public IActionResult Locacao()
         {
-            ViewData["Title"] = "Locação";
+            ViewData["Title"] = "Locações";
 
             // 1. Obter as locações do banco de dados
             var locacoes = ObterDadosBasicosSolicitacoes(true); // Usar o método assíncrono

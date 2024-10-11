@@ -1,6 +1,4 @@
-﻿@using System.Text.RegularExpressions;
-
-@model IEnumerable<CodeData_Connection.Models.DadosSolicitacao>
+﻿@model IEnumerable<CodeData_Connection.Models.DadosSolicitacao>
 
 <head>
     <meta charset="UTF-8">
@@ -30,9 +28,6 @@
     </header>
 
     <div class="container-table">
-        <div class="search-sort">
-            <button class="btn-filter">Sort by Date</button>
-        </div>
 
         <table id="userTable">
             <thead>
@@ -49,20 +44,20 @@
             </thead>
             <tbody>
 
-                @foreach(var s in Model) 
+                @foreach(var solicitacao in Model) 
                 {
                     <tr>
                         <td></td>
-                        <td>@s.Solicitacao.Numero</td>
-                        <td>@s.Solicitacao.Descricao</td>
-                        <td>@s.Solicitacao.DataInicio</td>
-                        <td>@s.Solicitacao.DataFinal</td>
-                        <td>@s.Cliente</td>
-                        <td>@s.Vendedor</td>
+                        <td>@solicitacao.Solicitacao.Numero</td>
+                        <td>@solicitacao.Solicitacao.Descricao</td>
+                        <td>@solicitacao.Solicitacao.DataInicio</td>
+                        <td>@solicitacao.Solicitacao.DataFinal</td>
+                        <td>@solicitacao.Cliente</td>
+                        <td>@solicitacao.Vendedor</td>
                         <td>
-                            <a type="button" class="btn btn-primary" asp-action="Detalhes" asp-route-id="@s.Solicitacao.Id">Detalhes</a>
-                            <a type="button" class="btn btn-warning" asp-action="Editar" asp-route-id="@s.Solicitacao.Id">Editar</a>
-                            <a type="button" class="btn btn-danger" asp-action="" asp-route-id="@s.Solicitacao.Id">Deletar</a>
+                            <a type="button" class="btn btn-primary" asp-action="Detalhes" asp-route-id="@solicitacao.Solicitacao.Id">Detalhes</a>
+                            <a type="button" class="btn btn-warning" asp-action="Editar" asp-route-id="@solicitacao.Solicitacao.Id">Editar</a>
+                            <a type="button" class="btn btn-danger" asp-action="" asp-route-id="@solicitacao.Solicitacao.Id">Deletar</a>
                         </td>
                     </tr>
                 }
@@ -114,7 +109,7 @@
                     {
                         extend: 'pdfHtml5',
                         text: 'Exportar PDF',
-                        title: 'RELATÓRIO DO PATRIMÔNIO', // Título do documento
+                        title: 'RELATÓRIO DAS SOLICITAÇÕES', // Título do documento
                         exportOptions: {
                             columns: [1, 2, 3, 4, 5, 6]
                         },
@@ -184,20 +179,11 @@
                     {
                         extend: 'excelHtml5',
                         text: 'Exportar XLS',
+                        title: 'RELATÓRIO DAS SOLICITAÇÕES',
                         exportOptions: {
                             columns: [1, 2, 3, 4, 5, 6]
                         }
                     }
-                    // {
-                    //     extend: 'csvHtml5',
-                    //     text: 'Exportar CSV',
-                    //     bom: true,  // Força a inclusão de BOM
-                    //     charset: 'UTF-8',
-                    //     fieldSeparator: ',',
-                    //     exportOptions: {
-                    //         columns: [1, 2, 3, 4, 5, 6, 7, 8]
-                    //     }
-                    // }
                 ]
             }
         }

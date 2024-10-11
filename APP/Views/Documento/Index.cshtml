@@ -1,0 +1,9 @@
+﻿@using CodeData_Connection.Models.Database.Entidade;
+
+@model IEnumerable<CodeData_Connection.Controllers.DadosDocumentoViewModel>
+﻿
+@{
+    ViewData["Title"] = "Documentos";
+}
+
+@await Html.PartialAsync("Tabela", Model)

@@ -81,6 +81,14 @@
             @if(await UserManager.IsInRoleAsync(await UserManager.GetUserAsync(User).ConfigureAwait(false), Role.Administrador.ToString()))
             {
                 <li>
+                    <a asp-controller="Documento" asp-action="Index">
+                        <img src="~/img/icon-doc.svg" alt="">
+                        <span class="nav-item">DOCUMENTOS</span>
+                    </a>
+                    @* <span class="tooltip">DOCUMENTOS</span> *@
+                </li>
+
+                <li>
                     <a asp-controller="Config" asp-action="Index">
                         <img src="~/img/icon-config.svg" alt="">
                         <span class="nav-item">CONFIGURAÇÕES</span>

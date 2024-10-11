@@ -9,9 +9,13 @@
 
   <ItemGroup>
     <Compile Remove="Models\User\**" />
+    <Compile Remove="Resources\**" />
     <Content Remove="Models\User\**" />
+    <Content Remove="Resources\**" />
     <EmbeddedResource Remove="Models\User\**" />
+    <EmbeddedResource Remove="Resources\**" />
     <None Remove="Models\User\**" />
+    <None Remove="Resources\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -36,8 +40,6 @@
 
   <ItemGroup>
     <Folder Include="Migrations\" />
-    <Folder Include="Resources\en-US\" />
-    <Folder Include="Resources\pt-BR\" />
     <Folder Include="wwwroot\img\" />
   </ItemGroup>
 

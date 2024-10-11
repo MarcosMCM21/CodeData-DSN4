@@ -1,7 +1,7 @@
 ﻿@model CodeData_Connection.Controllers.DetalhesSolicitacaoViewModel
 
 @{
-    ViewData["Title"] = Model.DadosSolicitacao.Solicitacao.Tipo ? "LOCAÇÃO" : "HOMOLOGAÇÃO";
+    ViewData["Title"] = Model.DadosSolicitacao.Solicitacao.Tipo ? "Locação" : "Homologação";
 }
 
 <h1>DADOS DA SOLICITAÇÃO</h1>
@@ -18,12 +18,7 @@
 {
     <h2>DOCUMENTOS</h2>
 
-    @foreach(var documento in Model.Documentos)
-    {
-        <p><strong>NÚMERO:</strong> @documento.Numero</p>
-        <p><strong>NOME:</strong> @documento.Nome</p>
-        <p><strong>TIPO:</strong> @documento.Tipo</p>
-    }
+    @await Html.PartialAsync("~/Views/Components/_TabelaDocumento.cshtml", Model.Documentos)
 }
 
 @if (Model.Equipamentos != null)

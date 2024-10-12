@@ -3,25 +3,24 @@
     padding: 0;
     box-sizing: border-box;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--color-text)
 }
 
 .theme-light {
-    --bg-sidebar: #ffffff;
-    --bg-menu: #ffffff;
+    --bg-menu: white;
     --bg-content: #e3e3e3;
+    --color-text: black;
     --color-header-item: #555b6d;
-    --color-noti-icon: #555b6d;
-    --color-dropdown-item: #74788d;
+    --color-dropdown-item: white;
     --color-dropdown-item-hover: #eff2f7
 }
 
 .theme-dark {
-    --bg-sidebar: #1a1a1a; /* Cor do fundo da barra lateral */
-    --bg-menu: #1a1a1a; /* Cor do fundo do menu */
-    --bg-content: #2e2e2e; /* Cor do fundo do conteúdo */
+    --bg-menu: #1a1a1a;
+    --bg-content: #2e2e2e;
+    --color-text: white;
     --color-header-item: #c0c0c0; /* Cor dos itens do cabeçalho */
-    --color-noti-icon: #c0c0c0; /* Cor dos ícones de notificação */
-    --color-dropdown-item: #a3a3a3; /* Cor dos itens do dropdown */
+    --color-dropdown-item: #1a1a1a; /* Cor dos itens do dropdown */
     --color-dropdown-item-hover: #3a3a3a; /* Cor do item do dropdown ao passar o mouse */
 }
 
@@ -57,7 +56,7 @@ a {
     left: 0;
     height: 100vh;
     width: 64px;
-    background-color: var(--bg-sidebar);
+    background-color: var(--bg-menu);
     box-shadow: 0px 5px 5px 5px rgba(0, 0, 0, 0.2);
     z-index: 999
 }

@@ -20,8 +20,23 @@
     <link rel="stylesheet" href="~/CodeData Connection.styles.css" asp-append-version="true" />
 </head>
 <body class="theme-light">
-    <div class="sidebar">
+    <script>
+        // Script para verificar se o site está no modo escuro ou claro
+        // Mudança de tema está no arquivo _Navbar.cshtml
+        let body = document.querySelector("body");
+        let themeMode = sessionStorage.getItem("isDarkTheme");
 
+        if (themeMode === "true") {
+            body.classList.remove('theme-light')
+            body.classList.add('theme-dark')
+        }
+        else if (themeMode === "false") {
+            body.classList.remove('theme-dark')
+            body.classList.add('theme-light')
+        }
+    </script>
+
+    <div class="sidebar">
         <script>
             // Script para verificar o estado do menu lateral para ele aparecer maximizado ou minimizado
             let sidebar = document.querySelector('.sidebar')

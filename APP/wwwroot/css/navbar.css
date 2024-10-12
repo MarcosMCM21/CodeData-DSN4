@@ -24,7 +24,7 @@
 }
 
 .navbar-header .dropdown .show.header-item {
-    background-color: #f8f9fa
+    background-color: var(--color-dropdown-item)
 }
 
 .navbar-brand-box {
@@ -50,7 +50,7 @@
 
 .noti-icon i {
     font-size: 22px;
-    color: var(--color-noti-icon);
+    color: var(--color-header-item);
 }
 
 .noti-icon .badge {
@@ -64,7 +64,7 @@
 }
 
 .notification-item .d-flex:hover {
-    background-color: #f6f6f6
+    background-color: var( --color-dropdown-item)
 }
 
 .dropdown-menu {
@@ -95,6 +95,15 @@
 
 .dropdown-icon-item:hover {
     border-color: var(--color-dropdown-item-hover)
+}
+
+.dropdown-menu {
+    background-color: var(--bg-menu); 
+    color: var(--color-text)
+}
+
+.dropdown-item:hover {
+    background-color: var(--bg-content);
 }
 
 .fa-moon-o {

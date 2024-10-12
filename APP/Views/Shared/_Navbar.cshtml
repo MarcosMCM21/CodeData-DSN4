@@ -137,6 +137,8 @@
     <script>
         let darkTheme = document.getElementById('dark-theme')
 
+         darkTheme.checked = sessionStorage.getItem("isDarkTheme")?true:false
+
         darkTheme.addEventListener('click', () => {
             let body = document.querySelector("body");
             let isDark = darkTheme.checked
@@ -145,9 +147,13 @@
                 body.classList.remove('theme-dark')
                 body.classList.add('theme-light')
 
+                sessionStorage.setItem("isDarkTheme", false);
+
             } else {
                 body.classList.remove('theme-light')
                 body.classList.add('theme-dark')
+
+                sessionStorage.setItem("isDarkTheme", true);
             }
 
         })

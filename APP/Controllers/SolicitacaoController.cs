@@ -2,7 +2,6 @@
 using CodeData_Connection.Models;
 using CodeData_Connection.Models.Database.Entidade;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.EntityFrameworkCore;
 using NuGet.Protocol;
 using System.Security.Claims;
@@ -132,8 +131,6 @@ namespace CodeData_Connection.Controllers
                     .Include(s => s.User)
                     .FirstOrDefault(s => s.Id == solicitacaoId);
 
-            Console.WriteLine(solicitacao.ToJson());
-
             if (solicitacao == null)
             {
                 return null; // ou lançar uma exceção se preferir
@@ -244,6 +241,4 @@ namespace CodeData_Connection.Controllers
         public List<Equipamento>? Equipamentos { get; set; }
         public Endereco? Endereco { get; set; }
     }
-
-
 }

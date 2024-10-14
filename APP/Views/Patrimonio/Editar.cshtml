@@ -57,7 +57,7 @@
 
     <div class="form-group">
         <label asp-for="Equipamento.EstoqueId" class="control-label">Estoques</label>
-        <select asp-for="Equipamento.EstoqueId" class="form-control select2">
+        <select asp-for="Equipamento.EstoqueId" class="form-control">
             @foreach (var estoque in Model.Estoques)
             {
                 <option value="@estoque.Id">@estoque.Nome</option>
@@ -68,7 +68,7 @@
 
     <div class="form-group">
         <label asp-for="Equipamento.DocumentoId" class="control-label">Documentos</label>
-        <select asp-for="Equipamento.DocumentoId" class="form-control select2">
+        <select asp-for="Equipamento.DocumentoId" class="form-control">
             @foreach (var documento in Model.Documentos)
             {
                 <option value="@documento.Id">@documento.Nome</option>
@@ -81,14 +81,6 @@
         <input type="submit" value="Salvar" class="btn btn-primary" />
     </div>
 </form>
-
-<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
-
-<script>
-    $(document).ready(function() {
-        $('.select2').select2();
-    });
-</script>
 
 <div>
     <a asp-action="Index">Voltar para a Lista</a>

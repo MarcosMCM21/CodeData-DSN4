@@ -17,6 +17,8 @@ namespace CodeData_Connection.Controllers
 
         public async Task<IActionResult> Index()
         {
+            ViewBag.ExibirTelaDeCarregamento = true;
+
             // 1. Obter os equipamentos do banco de dados
             var equipamentos = await _context.Equipamentos.ToListAsync();
 

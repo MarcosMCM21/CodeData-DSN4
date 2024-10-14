@@ -12,10 +12,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - CodeData Connection</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-
     <link href="~/lib/toastr/build/toastr.css" rel="stylesheet" />
-
-    <link href="~/lib/select2/css/select2.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/CodeData Connection.styles.css" asp-append-version="true" />
 </head>
@@ -86,7 +83,7 @@
             </li>
 
             <li>
-                <a asp-controller="Clientes" asp-action="Index">
+                <a asp-controller="Cliente" asp-action="Index">
                     <img src="~/img/icon-clientes.svg" alt="">
                     <span class="nav-item">CLIENTES</span>
                 </a>
@@ -104,7 +101,7 @@
                 </li>
 
                 <li>
-                    <a asp-controller="Config" asp-action="Index">
+                    <a asp-controller="Configuracao" asp-action="Index">
                         <img src="~/img/icon-config.svg" alt="">
                         <span class="nav-item">CONFIGURAÇÕES</span>
                     </a>
@@ -119,84 +116,90 @@
     @* Exibe o menu superior da página *@
     @await Html.PartialAsync("_Navbar")
 
+    @* "Tela" de loaging *@
+    <div id="loading-screen" style="display: none;">
+        <div class="loader"></div>
+        <p style="color: white">Carregando...</p>
+    </div>
+
     <div class="main-content">
-            <main role="main">
-                @* Renderiza as outras páginas da aplicação dentro dessa div *@
-                @RenderBody()
-            </main>
+        @* Renderiza as páginas da aplicação *@
+        <main role="main">
+            @RenderBody()
+        </main>
     </div>
 
     <script>
-        let btn = document.getElementById('vertical-menu-btn') // ID está no "_Navbar" que é chamado no PartialAsync
-        let links = document.querySelectorAll('a')
-        let items = document.querySelectorAll('li')
-        let itemSelected = sessionStorage.getItem("itemSelected")
+        window.addEventListener("load", function() {
+            let btn = document.getElementById('vertical-menu-btn') // ID está no "_Navbar" que é chamado no PartialAsync
+            let links = document.querySelectorAll('a')
+            let items = document.querySelectorAll('li')
+            let itemSelected = sessionStorage.getItem("itemSelected")
 
-        // Remove o estilo que indica que o botão está selecionado
-        items.forEach(i => i.classList.remove('selected'))
+            // Remove o estilo que indica que o botão está selecionado
+            items.forEach(i => i.classList.remove('selected'))
 
-        // Pega o caminho da página atual "/Controller/Action"
-        let pathName = window.location.pathname
+            // Pega o caminho da página atual "/Controller/Action"
+            let pathName = window.location.pathname
 
-        items.forEach(i => {
-            //Verifica se não está na página Home
-            if (pathName != "/") {
-                // Verifica qual dos botões de navegação abre essa página e aplica o estilo para indicar que está selecionado
-                if (i.innerHTML.includes(pathName)) {
-                    i.classList.add("selected");
-                } else {
-                    let controller = "@ViewContext.RouteData.Values["controller"].ToString()"
-                    let action = "@ViewContext.RouteData.Values["action"].ToString()"
-
-                    if (controller.includes("Solicitacao")) {
-                        if (i.innerHTML.includes(action)) {
-                            i.classList.add("selected");
-                        }
+            items.forEach(i => {
+                //Verifica se não está na página Home
+                if (pathName != "/") {
+                    // Verifica qual dos botões de navegação abre essa página e aplica o estilo para indicar que está selecionado
+                    if (i.innerHTML.includes(pathName)) {
+                        i.classList.add("selected");
                     } else {
-                        if (i.innerHTML.includes(controller)) {
-                            i.classList.add("selected");
+                        let controller = "@ViewContext.RouteData.Values["controller"].ToString()"
+                        let action = "@ViewContext.RouteData.Values["action"].ToString()"
+
+                        if (controller.includes("Solicitacao")) {
+                            if (i.innerHTML.includes(action)) {
+                                i.classList.add("selected");
+                            }
+                        } else {
+                            if (i.innerHTML.includes(controller)) {
+                                i.classList.add("selected");
+                            }
                         }
                     }
                 }
-            }
-        })
+            })
 
-        // Maximiza e minimiza o menu lateral
-        btn.addEventListener('click', () => {
-            sidebar.classList.toggle("active")
-            // Salva na sessionStorage o estado do menu durante as trocas de página
-            sessionStorage.setItem("isMinimized", sidebar.classList.contains("active") ? false : true)
-        })
+            // Maximiza e minimiza o menu lateral
+            btn.addEventListener('click', () => {
+                sidebar.classList.toggle("active")
+                // Salva na sessionStorage o estado do menu durante as trocas de página
+                sessionStorage.setItem("isMinimized", sidebar.classList.contains("active") ? false : true)
+            })
 
-        $(function(){
-            toastr.options = {
-                "positionClass": "toast-bottom-right",
-                "timeOut": "3000", // Duração do Toast em milissegundos
-                "closeButton": true, // Botão para fechar o Toast
-                "progressBar": true
-            };
+            $(function () {
+                toastr.options = {
+                    "positionClass": "toast-bottom-right",
+                    "timeOut": "3000", // Duração do Toast em milissegundos
+                    "closeButton": true, // Botão para fechar o Toast
+                    "progressBar": true
+                };
 
-            var toast = '@TempData["Mensagem"]';
+                var toast = '@TempData["Mensagem"]';
 
-            if (toast != null) {
-                var tipoMensagem = '@TempData["TipoMensagem"]';
-                var mensagem = '@TempData["Mensagem"]';
+                if (toast != null) {
+                    var tipoMensagem = '@TempData["TipoMensagem"]';
+                    var mensagem = '@TempData["Mensagem"]';
 
-                if (tipoMensagem === "success") {
-                    toastr.success(mensagem);
+                    if (tipoMensagem === "success") {
+                        toastr.success(mensagem);
+                    }
+                    else if (tipoMensagem === "error") {
+                        toastr.error(mensagem);
+                    }
                 }
-                else if (tipoMensagem === "error") {
-                    toastr.error(mensagem);
-                }
-            }
-        } )
+            })
+        });
     </script>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/lib/select2/js/select2.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-
     <script src="~/lib/toastr/build/toastr.min.js"></script>
 
     @await RenderSectionAsync("Scripts", required: false)

@@ -1,9 +1,6 @@
 ﻿using CodeData_Connection.Areas.Identity.Data;
-using CodeData_Connection.Models.Database.Entidade;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
 
 namespace CodeData_Connection.Controllers
 {

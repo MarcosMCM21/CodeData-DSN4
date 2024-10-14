@@ -1,0 +1,29 @@
+﻿@model CodeData_Connection.Controllers.DetalhesClienteViewModel
+
+@{
+    ViewData["Title"] = "Cliente";
+}
+
+<h1>DADOS DO CLIENTE</h1>
+
+<p><strong>NOME:</strong> @Model.Cliente.Nome</p>
+<p><strong>CNPJ:</strong> @Model.Cliente.CNPJ</p>
+
+@if (Model.Endereco != null)
+{
+    <h2>ENDEREÇO</h2>
+
+    <p><strong>CEP:</strong> @Model.Endereco.CEP</p>
+    <p><strong>RUA:</strong> @Model.Endereco.Rua</p>
+    <p><strong>NÚMERO:</strong> @Model.Endereco.Numero</p>
+    <p><strong>CIDADE:</strong> @Model.Endereco.Cidade</p>
+    <p><strong>ESTADO:</strong> @Model.Endereco.Estado</p>
+    <p><strong>COMPLEMENTO:</strong> @Model.Endereco.Complemento</p>
+}
+
+@if (Model.Solicitacoes != null)
+{
+    <h2>SOLICITAÇÕES</h2>
+
+    @await Html.PartialAsync("~/Views/Components/_TabelaSolicitacao.cshtml", Model.Solicitacoes)
+}

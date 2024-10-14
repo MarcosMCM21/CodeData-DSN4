@@ -6,11 +6,11 @@ using Microsoft.EntityFrameworkCore;
 namespace CodeData_Connection.Controllers
 {
     [Authorize(Roles = "Administrador")]
-    public class ConfigController : Controller
+    public class ConfiguracaoController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public ConfigController(ApplicationDbContext context)
+        public ConfiguracaoController(ApplicationDbContext context)
         {
             _context = context;
         }

@@ -55,7 +55,6 @@
             <a asp-controller="Home" asp-action="Index">
                 <img src="~/img/logo-codedata.svg" alt="">
             </a>
-
         </div>
 
         <ul>
@@ -66,16 +65,16 @@
                 </a>
                 @* <span class="tooltip">ESTOQUE</span> *@
             </li>
-            <li>
-                <a asp-controller="Solicitacao" asp-action="Locacao">
+            <li id="itemLocacao">
+                <a asp-controller="Solicitacao" asp-action="Index" asp-route-tipoSolicitacao="true">
                     <div class="background-link"></div>
                     <img src="~/img/icon-locacao.svg" alt="">
                     <span class="nav-item">LOCAÇÃO</span>
                 </a>
                 @* <span class="tooltip">LOCAÇÃO</span> *@
             </li>
-            <li>
-                <a asp-controller="Solicitacao" asp-action="Homologacao">
+            <li id="itemHomologacao">
+                <a asp-controller="Solicitacao" asp-action="Index" asp-route-tipoSolicitacao="false">
                     <img src="~/img/icon-homologacao.svg" alt="">
                     <span class="nav-item">HOMOLOGAÇÃO</span>
                 </a>
@@ -116,12 +115,6 @@
     @* Exibe o menu superior da página *@
     @await Html.PartialAsync("_Navbar")
 
-    @* "Tela" de loaging *@
-    <div id="loading-screen" style="display: none;">
-        <div class="loader"></div>
-        <p style="color: white">Carregando...</p>
-    </div>
-
     <div class="main-content">
         @* Renderiza as páginas da aplicação *@
         <main role="main">
@@ -130,40 +123,37 @@
     </div>
 
     <script>
-        window.addEventListener("load", function() {
-            let btn = document.getElementById('vertical-menu-btn') // ID está no "_Navbar" que é chamado no PartialAsync
-            let links = document.querySelectorAll('a')
+        window.addEventListener("DOMContentLoaded", ()=> {
             let items = document.querySelectorAll('li')
-            let itemSelected = sessionStorage.getItem("itemSelected")
 
-            // Remove o estilo que indica que o botão está selecionado
-            items.forEach(i => i.classList.remove('selected'))
+            let controller = "@ViewContext.RouteData.Values["controller"].ToString()"
+            let action = "@ViewContext.RouteData.Values["action"].ToString()"
+            let previousURL = document.referrer;
 
             // Pega o caminho da página atual "/Controller/Action"
             let pathName = window.location.pathname
 
+            let urlParams = new URLSearchParams(window.location.search)
+            let tipoSolicitacao = urlParams.get('tipoSolicitacao')
+
             items.forEach(i => {
                 //Verifica se não está na página Home
                 if (pathName != "/") {
-                    // Verifica qual dos botões de navegação abre essa página e aplica o estilo para indicar que está selecionado
-                    if (i.innerHTML.includes(pathName)) {
-                        i.classList.add("selected");
-                    } else {
-                        let controller = "@ViewContext.RouteData.Values["controller"].ToString()"
-                        let action = "@ViewContext.RouteData.Values["action"].ToString()"
-
-                        if (controller.includes("Solicitacao")) {
-                            if (i.innerHTML.includes(action)) {
-                                i.classList.add("selected");
-                            }
-                        } else {
-                            if (i.innerHTML.includes(controller)) {
-                                i.classList.add("selected");
-                            }
+                    if (controller == "Solicitacao" && i.innerHTML.includes(controller)) {
+                        if (i.innerHTML.includes(`tipoSolicitacao=${tipoSolicitacao}`)) {
+                            i.classList.add("selected")
                         }
+                    } else {
+                         if (i.innerHTML.includes(controller)) {
+                                i.classList.add("selected");
+                         }
                     }
                 }
             })
+        })
+
+        window.addEventListener("load", function() {
+            let btn = document.getElementById('vertical-menu-btn') // ID está no "_Navbar" que é chamado no PartialAsync
 
             // Maximiza e minimiza o menu lateral
             btn.addEventListener('click', () => {

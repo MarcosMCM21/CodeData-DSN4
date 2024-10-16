@@ -13,7 +13,12 @@ namespace CodeData_Connection.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
+        {
+            return View();
+        }
+
+        public async Task<IActionResult> ObterDadosDocumento()
         {
             // 1. Obter os documentos do banco de dados
             var documentos = await _context.Documentos
@@ -25,7 +30,7 @@ namespace CodeData_Connection.Controllers
                 return NotFound("Nenhum equipamento encontrado!");
             }
 
-            return View(documentos);
+            return PartialView("_DadosDocumento", documentos);
         }
 
         public async Task<IActionResult> Detalhes(int id)

@@ -3,7 +3,6 @@ using CodeData_Connection.Models;
 using CodeData_Connection.Models.Database.Entidade;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using NuGet.Protocol;
 using System.Security.Claims;
 
 namespace CodeData_Connection.Controllers
@@ -17,53 +16,31 @@ namespace CodeData_Connection.Controllers
             _context = context;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(bool tipoSolicitacao)
         {
+            ViewBag.TipoSolicitacao = tipoSolicitacao;
+
             return View();
         }
 
-        public IActionResult Homologacao()
+        public async Task<IActionResult> ObterDadosSolicitacoes(bool tipoSolicitacao)
         {
-            ViewData["Title"] = "Homologações";
-
-            // 1. Obter as homologações do banco de dados
-            var homologacoes = ObterDadosBasicosSolicitacoes(false); // Usar o método assíncrono
-
-            if (homologacoes == null)
-            {
-                return NotFound("Nenhuma homologação encontrada!");
-            }
-
-            // 2. Criar uma instância de DadosPatrimonio e popular suas propriedades
-            var dadosHomologacao = new DadosSolicitacaoViewModel
-            {
-                DadosSolicitacao = homologacoes.Result,
-                ListaEnderecos = ObterEnderecosSolicitacoes(false)
-            };
-
-            return View(dadosHomologacao);
-        }
-
-        public IActionResult Locacao()
-        {
-            ViewData["Title"] = "Locações";
-
             // 1. Obter as locações do banco de dados
-            var locacoes = ObterDadosBasicosSolicitacoes(true); // Usar o método assíncrono
+            var solicitacoes = await ObterDadosBasicosSolicitacoes(tipoSolicitacao); // Usar o método assíncrono
 
-            if (locacoes == null)
+            if (solicitacoes == null)
             {
                 return NotFound("Nenhuma homologação encontrada!");
             }
 
             // 2. Criar uma instância de DadosPatrimonio e popular suas propriedades
-            var dadosHomologacao = new DadosSolicitacaoViewModel
+            var dadosSolicitacoes = new DadosSolicitacaoViewModel
             {
-                DadosSolicitacao = locacoes.Result,
+                DadosSolicitacao = solicitacoes,
                 ListaEnderecos = ObterEnderecosSolicitacoes(false)
             };
 
-            return View(dadosHomologacao);
+            return PartialView("_DadosSolicitacoes", dadosSolicitacoes);
         }
 
         public IActionResult Detalhes(int id)

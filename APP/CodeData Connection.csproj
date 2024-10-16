@@ -46,4 +46,11 @@
     <None Include="wwwroot\css\login.css" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="Views\Patrimonio\_DadosPatrimonio.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>

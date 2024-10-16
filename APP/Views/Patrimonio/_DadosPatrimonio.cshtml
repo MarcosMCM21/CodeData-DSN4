@@ -1,0 +1,6 @@
+﻿@model CodeData_Connection.Controllers.DadosPatrimonioViewModel
+
+@await Html.PartialAsync("Tabela", Model.DadosEquipamento)
+
+<h1>LOCALIZAÇÃO DOS PATRIMÔNIOS</h1>
+@await Html.PartialAsync("~/Views/Components/_GoogleMapsMultiple.cshtml", Model.ListaEnderecos)

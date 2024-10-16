@@ -20,11 +20,16 @@ namespace CodeData_Connection.Controllers
             return View();
         }
 
-        public async Task<IActionResult> Usuarios()
+        public IActionResult Usuarios()
+        {
+            return View();
+        }
+
+        public async Task<IActionResult> ObterDadosUsuario()
         {
             var usuarios = await _context.ApplicationUser.ToListAsync();
 
-            return View(usuarios);
+            return PartialView("_DadosUsuario", usuarios);
         }
     }
 }

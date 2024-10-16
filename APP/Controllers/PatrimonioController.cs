@@ -15,10 +15,30 @@ namespace CodeData_Connection.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            ViewBag.ExibirTelaDeCarregamento = true;
+            //// 1. Obter os equipamentos do banco de dados
+            //var equipamentos = await _context.Equipamentos.ToListAsync();
 
+            //if (equipamentos == null || !equipamentos.Any())
+            //{
+            //    return NotFound("Nenhum equipamento encontrado!");
+            //}
+
+            //// 2. Criar uma instância de DadosPatrimonio e popular suas propriedades
+            //var dadosPatrimonio = new DadosPatrimonioViewModel
+            //{
+            //    DadosEquipamento = equipamentos.Select(e => ObterDadosBasicosEquipamento(e)).ToList(),
+            //    ListaEnderecos = ObterEnderecosEquipamentos()
+            //};
+
+            //return View(dadosPatrimonio);
+            return View();
+        }
+
+        // Crie uma nova Action para buscar os dados do banco de dados
+        public async Task<IActionResult> ObterDadosPatrimonio()
+        {
             // 1. Obter os equipamentos do banco de dados
             var equipamentos = await _context.Equipamentos.ToListAsync();
 
@@ -34,7 +54,7 @@ namespace CodeData_Connection.Controllers
                 ListaEnderecos = ObterEnderecosEquipamentos()
             };
 
-            return View(dadosPatrimonio);
+            return PartialView("_DadosPatrimonio", dadosPatrimonio); // Retorna uma Partial View com os dados
         }
 
         public async Task<IActionResult> Detalhes(int? id)

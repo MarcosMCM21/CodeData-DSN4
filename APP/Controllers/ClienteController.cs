@@ -15,11 +15,16 @@ namespace CodeData_Connection.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
+        {
+            return View();
+        }
+
+        public async Task<IActionResult> ObterDadosCliente()
         {
             var clientes = await _context.Clientes.ToListAsync();
-            
-            return View(clientes);
+
+            return PartialView("_DadosCliente", clientes);
         }
 
         public IActionResult Detalhes(int id)

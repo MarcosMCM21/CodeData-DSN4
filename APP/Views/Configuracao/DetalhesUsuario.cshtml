@@ -1,0 +1,24 @@
+﻿@model CodeData_Connection.Controllers.DetalhesUsuarioViewModel
+
+@{
+    ViewData["Title"] = "Usuário";
+}
+
+<h1>DADOS DO USUÁRIO</h1>
+
+<p><strong>PRIMEIRO NOME:</strong> @Model.Usuario.FirstName</p>
+<p><strong>SOBRENOME:</strong> @Model.Usuario.LastName</p>
+<p><strong>USERNAME:</strong> @Model.Usuario.UserName</p>
+<p><strong>EMAIL:</strong> @Model.Usuario.Email</p>
+
+@if (Model.Gerente != null)
+{
+    <p><strong>GERENTE:</strong> @Model.Gerente.FirstName @Model.Gerente.LastName</p>
+
+}
+
+@if (Model.Solicitacoes != null)
+{
+    <h2>SOLICITAÇÕES</h2>
+    @await Html.PartialAsync("~/Views/Components/_TabelaSolicitacao.cshtml", Model.Solicitacoes)
+}

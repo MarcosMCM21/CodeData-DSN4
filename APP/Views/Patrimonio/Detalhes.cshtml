@@ -22,6 +22,8 @@
     <p><strong>NÚMERO:</strong> @Model.Documento.Numero</p>
     <p><strong>NOME:</strong> @Model.Documento.Nome</p>
     <p><strong>TIPO:</strong> @Model.Documento.Tipo</p>
+
+    <a asp-controller="Documento" asp-action="Detalhes" asp-route-id="@Model.Documento.Id">Visualizar Detalhes</a>
 }
 
 @if (Model.DadosSolicitacao != null)

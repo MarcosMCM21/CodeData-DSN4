@@ -15,7 +15,7 @@ namespace CodeData_Connection.Models.Database.Entidade
         public string Nome { get; set; }
 
         [Column(TypeName = "MEDIUMBLOB")]
-        public byte[] Anexo { get; set; }
+        public string Anexo { get; set; }
 
         [MaxLength(20)]
         public string Tipo { get; set; }

@@ -59,6 +59,13 @@
 
         <ul>
             <li>
+                <a asp-controller="Home" asp-action="Index">
+                    <img src="~/img/icon-home.svg" alt="">
+                    <span class="nav-item">TELA INICIAL</span>
+                </a>
+                @* <span class="tooltip">TELA INICIAL</span> *@
+            </li>
+            <li>
                 <a asp-controller="Patrimonio" asp-action="Index">
                     <img src="~/img/icon-patrimonio.svg" alt="">
                     <span class="nav-item">PATRIMÔNIO</span>
@@ -137,18 +144,20 @@
             let tipoSolicitacao = urlParams.get('tipoSolicitacao')
 
             items.forEach(i => {
-                //Verifica se não está na página Home
-                if (pathName != "/") {
-                    if (controller == "Solicitacao" && i.innerHTML.includes(controller)) {
-                        if (i.innerHTML.includes(`tipoSolicitacao=${tipoSolicitacao}`)) {
-                            i.classList.add("selected")
-                        }
-                    } else {
-                         if (i.innerHTML.includes(controller)) {
-                                i.classList.add("selected");
-                         }
+
+                if (controller == "Solicitacao" && i.innerHTML.includes(controller)) {
+                    if (i.innerHTML.includes(`tipoSolicitacao=${tipoSolicitacao}`)) {
+                        i.classList.add("selected")
+                    }
+                } else if (i.innerHTML.includes(controller)) {
+                    i.classList.add("selected")
+                
+                } else if (controller == "Home") {
+                    if (i.innerHTML.includes('"/"')) {
+                        i.classList.add("selected")
                     }
                 }
+
             })
         })
 

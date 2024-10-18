@@ -74,21 +74,6 @@ a {
     width: 250px;
 }
 
-#btn-menu {
-    margin: 1rem;
-}
-
-.sidebar #btn-menu {
-    cursor: pointer;
-    rotate: x 180deg;
-}
-
-.sidebar.active #btn-menu {
-    position: relative;
-    left: 100px;
-    rotate: y 180deg;
-}
-
 .sidebar .logo {
     display: flex;
     align-items: center;

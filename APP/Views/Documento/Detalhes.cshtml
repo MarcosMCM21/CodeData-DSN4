@@ -10,3 +10,8 @@
 <p><strong>NOME:</strong> @Model.Nome</p>
 <p><strong>TIPO:</strong> @Model.Tipo</p>
 <p><strong>DATA CADASTRO:</strong> @Model.DataCadastro</p>
+
+@if (Model.Anexo != null)
+{
+    <iframe src="data:application/pdf;base64,@Model.Anexo" style="width: 80%; height: 1200px;"></iframe>
+}

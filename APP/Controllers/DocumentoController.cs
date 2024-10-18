@@ -1,4 +1,5 @@
 ﻿using CodeData_Connection.Areas.Identity.Data;
+using CodeData_Connection.Models.Database.Entidade;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -36,16 +37,16 @@ namespace CodeData_Connection.Controllers
         public async Task<IActionResult> Detalhes(int id)
         {
             // 1. Obter os documentos do banco de dados
-            var documentos = await _context.Documentos
+            var documento = await _context.Documentos
                 .Where(d => d.Id == id)
                 .FirstOrDefaultAsync();
 
-            if (documentos == null)
+            if (documento == null)
             {
                 return NotFound("Nenhum equipamento encontrado!");
             }
 
-            return View(documentos);
+            return View(documento);
         }
     }
 

@@ -28,9 +28,12 @@ namespace CodeData_Connection.Controllers
             // 1. Obter as locações do banco de dados
             var solicitacoes = await ObterDadosBasicosSolicitacoes(tipoSolicitacao); // Usar o método assíncrono
 
-            if (solicitacoes == null)
+            Console.WriteLine("!!!!");
+            Console.WriteLine();
+
+            if (solicitacoes.Any() == false)
             {
-                return NotFound("Nenhuma homologação encontrada!");
+                return NotFound("Nenhuma solicitação encontrada!");
             }
 
             // 2. Criar uma instância de DadosPatrimonio e popular suas propriedades
@@ -46,14 +49,14 @@ namespace CodeData_Connection.Controllers
         public IActionResult Detalhes(int id)
         {
             // 1. Buscar a solicitação pelo ID, incluindo os dados relacionados (se necessário)
-            var dadosEquipamento = ObterDetalhesSolicitacao(id);
+            var dadosSolicitacao = ObterDetalhesSolicitacao(id);
 
-            if (dadosEquipamento == null)
+            if (dadosSolicitacao == null)
             {
                 return NotFound("Solicitação não encontrada.");
             }
 
-            return View(dadosEquipamento);
+            return View(dadosSolicitacao);
         }
 
         public async Task<List<DadosSolicitacao>> ObterDadosBasicosSolicitacoes(bool tipoSolicitacao)
@@ -138,7 +141,6 @@ namespace CodeData_Connection.Controllers
 
             return detalhesSolicitacao; // Retorna o ViewModel preenchido
         }
-
 
         // Método para obter os endereço da solicitação
         public Endereco ObterEnderecoSolicitacao(int solicitacaoId)

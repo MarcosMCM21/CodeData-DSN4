@@ -23,7 +23,10 @@
     </div>
 
     <div class="d-flex">
-        <h2>@ViewData["Title"].ToString().ToUpper()</h2>
+        @if(ViewData["Title"] != null)
+        {
+            <h2>@ViewData["Title"].ToString().ToUpper()</h2>
+        }
     </div>
 
     <div class="d-flex">
@@ -116,9 +119,9 @@
             </button>
             <div class="dropdown-menu dropdown-menu-end">
                 <!-- item-->
-                <a class="dropdown-item" href="#"><i class="bx bx-user font-size-16 align-middle me-1"></i> <span key="t-profile">Perfil</span></a>
-                <a class="dropdown-item d-block" href="#"><i class="bx bx-wrench font-size-16 align-middle me-1"></i> <span key="t-settings">Configurações</span></a>
-                <a class="dropdown-item" href="#"><i class="bx bx-lock-open font-size-16 align-middle me-1"></i> <span key="t-lock-screen">Lock screen</span></a>
+                <a asp-controller="Usuario" asp-action="Perfil" class="dropdown-item"><i class="bx bx-user font-size-16 align-middle me-1"></i> <span key="t-profile">Perfil</span></a>
+                <a asp-controller="Usuario" asp-action="Configuracoes" class="dropdown-item d-block"><i class="bx bx-wrench font-size-16 align-middle me-1"></i> <span key="t-settings">Configurações</span></a>
+                <a asp-controller="Account" asp-action="LockScreen" class="dropdown-item"><i class="bx bx-lock-open font-size-16 align-middle me-1"></i> <span key="t-lock-screen">Lock screen</span></a>
                 <div class="dropdown-item checkbox-wrapper-14">
                     <i class="bx bx-moon font-size-16 align-middle me-1"></i> <span key="dark-mode">Tema Escuro</span>
                     @* <label class="switch switch-sm">
@@ -135,27 +138,29 @@
     </div>
 
     <script>
-        let darkTheme = document.getElementById('dark-theme')
+        window.addEventListener("DOMContentLoaded", () => {
+            let darkTheme = document.getElementById('dark-theme')
 
-         darkTheme.checked = sessionStorage.getItem("isDarkTheme")?true:false
+            darkTheme.checked = sessionStorage.getItem("isDarkTheme") ? true : false
 
-        darkTheme.addEventListener('click', () => {
-            let body = document.querySelector("body");
-            let isDark = darkTheme.checked
-            
-            if (isDark == false) {
-                body.classList.remove('theme-dark')
-                body.classList.add('theme-light')
+            darkTheme.addEventListener('click', () => {
+                let body = document.querySelector("body");
+                let isDark = darkTheme.checked
 
-                sessionStorage.setItem("isDarkTheme", false);
+                if (isDark == false) {
+                    body.classList.remove('theme-dark')
+                    body.classList.add('theme-light')
 
-            } else {
-                body.classList.remove('theme-light')
-                body.classList.add('theme-dark')
+                    sessionStorage.setItem("isDarkTheme", false);
 
-                sessionStorage.setItem("isDarkTheme", true);
-            }
+                } else {
+                    body.classList.remove('theme-light')
+                    body.classList.add('theme-dark')
 
+                    sessionStorage.setItem("isDarkTheme", true);
+                }
+
+            })
         })
 
         function openFullscreen() {

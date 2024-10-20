@@ -9,14 +9,12 @@
 
 <div class="container-table-1">
     <header>
-        @{
-            if (Model.First().Solicitacao.Tipo == false)
-            {
-                <h1>LISTA DE HOMOLOGAÇÕES</h1>
-            } else
-            {
-                <h1>LISTA DE LOCAÇÕES</h1>
-            }
+        @if (Model.First().Solicitacao.Tipo == false)
+        {
+            <h1>LISTA DE HOMOLOGAÇÕES</h1>
+        } else
+        {
+            <h1>LISTA DE LOCAÇÕES</h1>
         }
         
         <div class="actions">
@@ -26,6 +24,34 @@
             @* <button class="btn dark-blue">Importar Equipamentos</button> *@
         </div>
     </header>
+
+    <div>
+        <p>Período Data Inicial</p>
+        <input type="date" id="min-date-initial" placeholder="dd-mm-yyyy">
+        <input type="date" id="max-date-initial" placeholder="dd-mm-yyyy">
+
+        <p>Período Data Final</p>
+        <input type="date" id="min-date-end" placeholder="dd-mm-yyyy">
+        <input type="date" id="max-date-end" placeholder="dd-mm-yyyy">
+
+        <select id="client-filter">
+            <option value="">Todos os Clientes</option>
+            @foreach(var cliente in ViewBag.Clientes) {
+                <option value="@cliente">@cliente</option>
+            }
+            
+        </select>
+
+        <select id="seller-filter">
+            <option value="">Todos os Vendedores</option>
+            @foreach (var vendedor in ViewBag.Vendedores)
+            {
+                <option value="@vendedor">@vendedor</option>
+            }
+        </select>
+
+        <button id="filter-button">Filtrar</button>
+    </div>
 
     <div class="container-table">
 
@@ -88,7 +114,25 @@
 
         columns: [
             { data: null, searchable: false, render: DataTable.render.select() },
-            {}, {}, {}, {}, {}, {}, {}
+            {}, {},
+            {
+                render: function (data, type, row) {
+                    // Verifica se os dados existem e aplica o split para remover o horário
+                    if (data) {
+                        return data.split(' ')[0]; // Retorna apenas a data
+                    }
+                    return data; // Caso não haja dados, retorna como está
+                }
+            },
+            {
+                render: function (data, type, row) {
+                    // Verifica se os dados existem e aplica o split para remover o horário
+                    if (data) {
+                        return data.split(' ')[0]; // Retorna apenas a data
+                    }
+                    return data; // Caso não haja dados, retorna como está
+                }
+            }, {}, {}, {}
         ],
 
         columnDefs: [
@@ -189,6 +233,47 @@
         }
     });
 
+    $.fn.dataTable.ext.search.push(
+        function (settings, data, dataIndex) {
+            var minStart = $('#min-date-initial').val();
+            var maxStart = $('#max-date-initial').val();
+            var minEnd = $('#min-date-end').val();
+            var maxEnd = $('#max-date-end').val();
+            var client = $('#client-filter').val();
+            var seller = $('#seller-filter').val();
+
+            var TableStarDate = data[3]; // índice da coluna "Data Inicial"
+            var TableEndDate = data[4]; // índice da coluna "Data Final"
+            var tableClient = data[5]; // índice da coluna "Cliente"
+            var tableSeller = data[6]; // índice da coluna "Vendedor"
+
+            // Normaliza as strings antes da comparação
+            minStart = minStart ? normalizeDate(minStart) : null;
+            maxStart = maxStart ? normalizeDate(maxStart) : null;
+            minEnd = minEnd ? normalizeDate(minEnd) : null;
+            maxEnd = maxEnd ? normalizeDate(maxEnd) : null;
+            client = normalizeString(client);
+            seller = normalizeString(seller);
+            tableClient = normalizeString(tableClient);
+            tableSeller = normalizeString(tableSeller);
+
+            if (
+                (minStart === null || minStart === '' || TableStarDate >= minStart) &&
+                (maxStart === null || maxStart === '' || TableStarDate <= maxStart) &&
+                (minEnd === null || minEnd === '' || TableEndDate >= minEnd) &&
+                (maxEnd === null || maxEnd === '' || TableEndDate <= max) &&
+                (client === '' || tableClient === client) &&
+                (seller === '' || tableSeller === seller)) return true;
+
+            return false;
+        }
+    );
+
+    $('#filter-button').click(function () {
+        console.log($('#min-date-initial').val())
+        table.draw();
+    });
+
     window.addEventListener('load', () => {
         let btnPdf = document.getElementById('pdf')
         let btnXls = document.getElementById('xls')
@@ -201,4 +286,20 @@
             document.getElementsByClassName('buttons-excel')[0].click()
         })
     })
+
+    // Função para remover acentos e caracteres especiais
+    function normalizeString(str) {
+        str = str.toLowerCase(); // Converte a string para minúsculas
+        str = str.normalize('NFD').replace(/[\u0300-\u036f]/g, ""); // Remove acentos
+        return str;
+    }
+
+    // Função para remover o horário da data
+    function normalizeDate(str) {
+        str = str.replaceAll('-', '/')
+        split = str.split('/')
+        str = `${split[2]}/${split[1]}/${split[0]}`
+        return str;
+    }
+
 </script>

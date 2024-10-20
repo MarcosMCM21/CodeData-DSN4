@@ -1,0 +1,17 @@
+﻿@model CodeData_Connection.Controllers.LockScreenViewModel
+
+<div class="lock-screen">
+    <h2>Bloqueio de Tela</h2>
+    <p>Sua sessão foi bloqueada por inatividade. Insira sua senha para continuar.</p>
+
+    <form asp-action="UnlockScreen" method="post">
+        <div class="form-group">
+            <input asp-for="Password" class="form-control" type="password" placeholder="Digite sua senha" />
+            <span asp-validation-for="Password" class="text-danger"></span>
+        </div>
+
+        <input type="hidden" name="returnUrl" value="@ViewData["ReturnUrl"]" />
+
+        <button type="submit" class="btn btn-primary">Desbloquear</button>
+    </form>
+</div>

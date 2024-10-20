@@ -1,0 +1,74 @@
+﻿@{
+    ViewData["Title"] = "Configurações do Perfil";
+}
+
+@model CodeData_Connection.Areas.Identity.User.ApplicationUser
+
+<div class="container mt-5">
+    <h2>Configurações</h2>
+
+    <div class="row">
+        <div class="col">
+            <!-- Alteração de Senha -->
+            <div class="card mb-3">
+                <div class="card-header">
+                    Alteração de Senha
+                </div>
+                <div class="card-body">
+                    <form asp-action="ChangePassword" method="post">
+                        <div class="mb-3">
+                            <label for="currentPassword" class="form-label">Senha Atual</label>
+                            <input type="password" class="form-control" id="currentPassword" name="CurrentPassword" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="newPassword" class="form-label">Nova Senha</label>
+                            <input type="password" class="form-control" id="newPassword" name="NewPassword" required>
+                            <small class="form-text text-muted">A senha deve conter pelo menos 8 caracteres, números e símbolos especiais.</small>
+                            <div class="progress mt-2">
+                                <div class="progress-bar" role="progressbar" id="passwordStrength" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="confirmPassword" class="form-label">Confirme a Nova Senha</label>
+                            <input type="password" class="form-control" id="confirmPassword" name="ConfirmPassword" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Alterar Senha</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Preferências de Notificações -->
+            <div class="card mb-3">
+                <div class="card-header">Preferências de Notificações</div>
+                <div class="card-body">
+                    <form asp-action="UpdateNotificationPreferences" method="post">
+                        <div class="form-check form-switch mb-3">
+                            <input class="form-check-input" type="checkbox" id="emailNotifications" name="EmailNotifications" checked @* @(Model.EmailNotifications ? "checked" : "") *@>
+                            <label class="form-check-label" for="emailNotifications">Notificações por Email</label>
+                        </div>
+                        <div class="form-check form-switch mb-3">
+                            <input class="form-check-input" type="checkbox" id="pushNotifications" name="PushNotifications" checked @* @(Model.PushNotifications ? "checked" : "") *@>
+                            <label class="form-check-label" for="pushNotifications">Notificações Push</label>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Salvar Preferências</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Preferências de Tema -->
+            <div class="card mb-3">
+                <div class="card-header">Preferências de Tema</div>
+                <div class="card-body">
+                    <form asp-action="UpdateThemeAndLanguage" method="post">
+                        <div class="form-check form-switch mb-3">
+                            <input class="form-check-input" type="checkbox" id="darkMode" name="DarkMode" @* @(Model.DarkMode ? "checked" : "") *@>
+                            <label class="form-check-label" for="darkMode">Tema Escuro</label>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

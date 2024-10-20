@@ -1,12 +1,14 @@
 ﻿using CodeData_Connection.Areas.Identity.Data;
 using CodeData_Connection.Models;
 using CodeData_Connection.Models.Database.Entidade;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
 namespace CodeData_Connection.Controllers
 {
+    [Authorize]
     public class SolicitacaoController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -64,7 +66,10 @@ namespace CodeData_Connection.Controllers
             var usuarioId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             // 1. Obter as solicitações com base na regra do usuário (com Include)
-            List<Solicitacao> solicitacoes = new();
+            List<Solicitacao> solicitacoes = [];
+            List<string> clientes = [];
+            List<string> vendedores = [];
+
             if (User.IsInRole("Usuario"))
             {
                 solicitacoes = await _context.Solicitacoes
@@ -94,13 +99,29 @@ namespace CodeData_Connection.Controllers
                     .ToListAsync();
             }
 
-            // 2. Mapear as solicitações para o ViewModel
-            return solicitacoes.Select(s => new DadosSolicitacao
+            List<DadosSolicitacao> dadosSolicitacoes = [];
+
+            foreach (var solicitacao in solicitacoes)
             {
-                Solicitacao = s,
-                Cliente = s.Cliente.Nome,
-                Vendedor = s.User != null? $"{s.User.FirstName} {s.User.LastName }" : ""
-            }).ToList();
+                var vendedor = solicitacao.User != null ? $"{solicitacao.User.FirstName} {solicitacao.User.LastName}" : "";
+
+                dadosSolicitacoes.Add(new DadosSolicitacao
+                {
+                    Solicitacao = solicitacao,
+                    Cliente = solicitacao.Cliente.Nome,
+                    Vendedor = vendedor
+                });
+
+                if (!vendedores.Contains(vendedor)) clientes.Add(solicitacao.Cliente.Nome);
+
+                if (!vendedores.Contains(vendedor)) vendedores.Add(vendedor);
+            }
+
+            ViewBag.Clientes = clientes;
+            ViewBag.Vendedores = vendedores;
+
+            // 2. Mapear as solicitações para o ViewModel
+            return dadosSolicitacoes;
         }
 
         public DetalhesSolicitacaoViewModel ObterDetalhesSolicitacao(int solicitacaoId)

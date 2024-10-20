@@ -5,6 +5,7 @@ using CodeData_Connection.Areas.Identity.User;
 using CodeData.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using CodeData_Connection.Services;
+using CodeData_Connection.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("ApplicationDbContextConnection") ?? throw new InvalidOperationException("Connection string 'ApplicationDbContextConnection' not found.");
@@ -29,12 +30,21 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
     options.SlidingExpiration = true;
 
-    // ReturnUrlParameter requires 
+    //ReturnUrlParameter requires 
     //using Microsoft.AspNetCore.Authentication.Cookies;
     options.ReturnUrlParameter = CookieAuthenticationDefaults.ReturnUrlParameter;
 });
 
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30); // Tempo de expiração da sessão
+    options.Cookie.HttpOnly = true; // Mais segurança
+    options.Cookie.IsEssential = true;
+});
+
 builder.Services.AddTransient<SendGridEmailSender>();
+
+builder.Services.AddTransient<LockScreenMiddleware>();
 
 builder.Services.AddRazorPages();
 
@@ -53,6 +63,8 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+app.UseSession();
+
 app.UseHttpsRedirection();
 
 app.UseStaticFiles();
@@ -68,5 +80,7 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.MapRazorPages();
+
+app.UseLockScreenMiddleware(); // Adicionar o middleware de LockScreen
 
 app.Run();

@@ -1,10 +1,12 @@
 ﻿using CodeData_Connection.Areas.Identity.Data;
 using CodeData_Connection.Models.Database.Entidade;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace CodeData_Connection.Controllers
 {
+    [Authorize]
     public class DocumentoController : Controller
     {
         private readonly ApplicationDbContext _context;

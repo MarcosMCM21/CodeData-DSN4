@@ -6,9 +6,9 @@
 @inject UserManager<ApplicationUser> UserManager
 
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-    <meta charset="utf-8" />
+    <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - CodeData Connection</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
@@ -194,6 +194,26 @@
                 }
             })
         });
+        
+        let timeout;
+        let lockTime = 300000; // 5 minutos de inatividade
+        
+        // Função para redirecionar para a tela de lock, enviando a URL atual
+        function redirectToLockScreen() {
+            const currentUrl = window.location.pathname;
+            window.location.href = `/Account/LockScreen?returnUrl=${encodeURIComponent(currentUrl)}`;
+        }
+
+        // Função para resetar o timer de inatividade
+        function resetTimer() {
+            clearTimeout(timeout);
+            timeout = setTimeout(redirectToLockScreen, lockTime);
+        }
+
+        // Event listeners para detectar atividade
+        window.onload = resetTimer;
+        document.onmousemove = resetTimer;
+        document.onkeypress = resetTimer;
     </script>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

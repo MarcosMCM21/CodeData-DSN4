@@ -3,9 +3,11 @@ using CodeData_Connection.Models.Database.Entidade;
 using CodeData_Connection.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CodeData_Connection.Controllers
 {
+    [Authorize]
     public class ClienteController : Controller
     {
         private readonly ApplicationDbContext _context;

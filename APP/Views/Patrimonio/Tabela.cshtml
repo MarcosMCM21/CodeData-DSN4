@@ -20,6 +20,41 @@
         </div>
     </header>
 
+    <div>
+        <select id="modelo-filter">
+            <option value="">Todos os Modelos</option>
+            @foreach (var modelo in ViewBag.Modelos)
+            {
+                <option value="@modelo">@modelo</option>
+            }
+        </select>
+
+        <select id="marca-filter">
+            <option value="">Todas as Marcas</option>
+            @foreach (var marca in ViewBag.Marcas)
+            {
+                <option value="@marca">@marca</option>
+            }
+        </select>
+
+        <input type="text" id="pn-filter" placeholder="PN">
+
+        <select id="condicao-filter">
+            <option value="">Todas as Condições</option>
+            <option value="ATIVO">ATIVO</option>
+            <option value="INATIVO">INATIVO</option>
+        </select>
+
+        <select id="status-filter">
+            <option value="">Todos os Status</option>
+            <option value="LOCAÇÃO">LOCAÇÃO</option>
+            <option value="HOMOLOGAÇÃO">HOMOLOGAÇÃO</option>
+            <option value="ESTOQUE">ESTOQUE</option>
+        </select>
+
+        <button id="filter-button">Filtrar</button>
+    </div>
+
     <div class="container-table">
 
         <table id="userTable">
@@ -171,6 +206,49 @@
         }
     });
 
+    $.fn.dataTable.ext.search.push(
+        function (settings, data, dataIndex) {
+            var modelo = $('#modelo-filter').val();
+            var marca = $('#marca-filter').val();
+            var pn = $('#pn-filter').val();
+            var condicao = $('#condicao-filter').val();
+            var status = $('#status-filter').val();
+
+            var tableModelo = data[2]; // índice da coluna "Modelo"
+            var tableMarca = data[4];  // índice da coluna "Marca"
+            var tablePn = data[6];     // índice da coluna "PN"
+            var tableCondicao = data[7]; // índice da coluna "Condição"
+            var tableStatus = data[8];   // índice da coluna "Status"
+
+            // Normaliza as strings antes da comparação
+            modelo = normalizeString(modelo);
+            marca = normalizeString(marca);
+            pn = normalizeString(pn);
+            condicao = normalizeString(condicao);
+            status = normalizeString(status);
+            tableModelo = normalizeString(tableModelo);
+            tableMarca = normalizeString(tableMarca);
+            tablePn = normalizeString(tablePn);
+            tableCondicao = normalizeString(tableCondicao);
+            tableStatus = normalizeString(tableStatus);
+
+            if (
+                (modelo === '' || tableModelo.includes(modelo)) &&
+                (marca === '' || tableMarca.includes(marca)) &&
+                (pn === '' || tablePn.includes(pn)) &&
+                (condicao === '' || tableCondicao === condicao) &&
+                (status === '' || tableStatus === status)
+            ) {
+                return true;
+            }
+            return false;
+        }
+    );
+
+    $('#filter-button').click(function () {
+        table.draw();
+    });
+
     window.addEventListener('load', () => {
         let btnPdf = document.getElementById('pdf')
         let btnXls = document.getElementById('xls')
@@ -183,4 +261,19 @@
             document.getElementsByClassName('buttons-excel')[0].click()
         })
     })
+
+    // Função para remover acentos e caracteres especiais
+    function normalizeString(str) {
+        str = str.toLowerCase(); // Converte a string para minúsculas
+        str = str.normalize('NFD').replace(/[\u0300-\u036f]/g, ""); // Remove acentos
+        return str;
+    }
+
+    // Função para remover o horário da data
+    function normalizeDate(str) {
+        str = str.replaceAll('-', '/')
+        split = str.split('/')
+        str = `${split[2]}/${split[1]}/${split[0]}`
+        return str;
+    }
 </script>

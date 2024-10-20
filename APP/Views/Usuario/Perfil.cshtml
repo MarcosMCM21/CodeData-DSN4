@@ -1,0 +1,87 @@
+﻿@{
+    ViewData["Title"] = "Perfil";
+}
+
+@model CodeData_Connection.Areas.Identity.User.ApplicationUser
+
+<link rel="stylesheet" href="~/CodeData Connection.styles.css" asp-append-version="true" />
+
+<div class="container mt-5">
+    <div class="row">
+        <!-- Seção de Informações Pessoais -->
+        <div class="col">
+            <div class="card mb-3">
+                <div class="card-header">
+                    Informações Pessoais
+                    <button class="btn btn-outline-primary btn-sm float-end" data-bs-toggle="modal" data-bs-target="#editProfileModal">Editar Perfil</button>
+                </div>
+                <div class="card-body">
+                    <p><strong>Primeiro Nome: </strong> @Model.FirstName</p>
+                    <p><strong>Sobrenome: </strong> @Model.LastName</p>
+                    <p><strong>Username: </strong> @Model.UserName</p>
+                    <p>
+                        <strong>Email: </strong> @Model.Email
+                        @if (!Model.EmailConfirmed)
+                        {
+                            <span class="badge bg-warning">Não Verificado</span>
+                            <a href="@Url.Action("ResendEmailVerification")" class="text-decoration-none">Reenviar Verificação</a>
+                        }
+                        else
+                        {
+                            <span class="badge bg-success">Verificado</span>
+                        }
+                    </p>
+                    <p><strong>Data de Criação da Conta: </strong> @Model.DataCadastro.ToString("dd/MM/yyyy")</p>
+                    @* <p><strong>Última vez logado: </strong> @Model.LastLogin.ToString("dd/MM/yyyy HH:mm")</p> *@
+                    <p>
+                        <strong>Status da Conta: </strong>
+                        @if (Model.LockoutEnabled)
+                        {
+                            <span class="badge bg-success">Ativa</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-danger">Suspensa</span>
+                        }
+                    </p>
+                </div>
+            </div>
+
+            <!-- Seção de Configurações de Conta -->
+            <div class="card mb-3">
+                <div class="card-header">
+                    Configurações de Conta
+                </div>
+                <div class="card-body">
+                    <a asp-action="Configuracoes" class="btn btn-outline-secondary">Configurações de Conta</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Edição de Perfil -->
+<div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editProfileModalLabel">Editar Perfil</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form asp-action="EditProfile" method="post">
+                    <div class="mb-3">
+                        <label for="fullName" class="form-label">Nome Completo</label>
+                        <input type="text" class="form-control" id="fullName" name="FullName" value="@Model.FirstName">
+                    </div>
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Username</label>
+                        <input type="text" class="form-control" id="username" name="Username" value="@Model.LastName">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+

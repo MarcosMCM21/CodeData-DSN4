@@ -115,6 +115,10 @@ namespace CodeData_Connection.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("Usuário conectado.");
+
+                    // Salvar na sessão que o usuário está bloqueado
+                    HttpContext.Session.SetString("IsLocked", "false");
+
                     return LocalRedirect(returnUrl);
                 }
                 if (result.RequiresTwoFactor)

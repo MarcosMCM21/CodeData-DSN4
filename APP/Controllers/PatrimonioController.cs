@@ -3,9 +3,13 @@ using CodeData_Connection.Models.Database.Entidade;
 using CodeData_Connection.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using NuGet.Protocol;
+using MySqlX.XDevAPI;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CodeData_Connection.Controllers
 {
+    [Authorize]
     public class PatrimonioController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -17,22 +21,6 @@ namespace CodeData_Connection.Controllers
 
         public IActionResult Index()
         {
-            //// 1. Obter os equipamentos do banco de dados
-            //var equipamentos = await _context.Equipamentos.ToListAsync();
-
-            //if (equipamentos == null || !equipamentos.Any())
-            //{
-            //    return NotFound("Nenhum equipamento encontrado!");
-            //}
-
-            //// 2. Criar uma instância de DadosPatrimonio e popular suas propriedades
-            //var dadosPatrimonio = new DadosPatrimonioViewModel
-            //{
-            //    DadosEquipamento = equipamentos.Select(e => ObterDadosBasicosEquipamento(e)).ToList(),
-            //    ListaEnderecos = ObterEnderecosEquipamentos()
-            //};
-
-            //return View(dadosPatrimonio);
             return View();
         }
 
@@ -47,12 +35,28 @@ namespace CodeData_Connection.Controllers
                 return NotFound("Nenhum equipamento encontrado!");
             }
 
-            // 2. Criar uma instância de DadosPatrimonio e popular suas propriedades
-            var dadosPatrimonio = new DadosPatrimonioViewModel
+            List<DetalhesEquipamentoViewModel> dadosEquipamentos = new();
+            List<string> modelos = [];
+            List<string> marcas = [];
+
+            DadosPatrimonioViewModel dadosPatrimonio = new();
+
+            foreach (var equipamento in equipamentos)
             {
-                DadosEquipamento = equipamentos.Select(e => ObterDadosBasicosEquipamento(e)).ToList(),
-                ListaEnderecos = ObterEnderecosEquipamentos()
-            };
+                dadosEquipamentos.Add(ObterDadosBasicosEquipamento(equipamento));
+
+                if (!marcas.Contains(equipamento.Marca)) marcas.Add(equipamento.Marca);
+
+                if (!modelos.Contains(equipamento.Modelo)) modelos.Add(equipamento.Modelo);
+            }
+
+            ViewBag.Marcas = marcas;
+            ViewBag.Modelos = modelos;
+
+            dadosPatrimonio.DadosEquipamento = dadosEquipamentos;
+            dadosPatrimonio.ListaEnderecos = ObterEnderecosEquipamentos();
+
+            Console.WriteLine(dadosEquipamentos);
 
             return PartialView("_DadosPatrimonio", dadosPatrimonio); // Retorna uma Partial View com os dados
         }

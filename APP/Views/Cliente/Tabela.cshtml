@@ -20,6 +20,33 @@
 
     <div class="container-table">
 
+        <div class="container-fluid mt-3">
+            <div class="row">
+                <!-- Exibir resultados -->
+                <div class="col-md-6 d-flex align-items-center">
+                    <label for="resultsPerPage" class="me-2">Exibir</label>
+                    <select id="resultsPerPage" class="form-select me-2" style="width: auto;">
+                        <option value="10">10</option>
+                        <option value="20">20</option>
+                        <option value="50">50</option>
+                        <option value="-1">Mostrar Todos</option>
+                    </select>
+                    <span>resultados por página</span>
+                </div>
+
+                <!-- Barra de pesquisa e botão de filtro -->
+                <div class="col-md-6 d-flex justify-content-end align-items-center">
+                    <div class="input-group-prepend"><span class="input-group-text">Pesquisar</span></div>
+
+                    <input id="search-input" type="text" class="form-control w-50" placeholder="Buscar Registros">
+
+                    <div class="input-group-append"><button id="search-button" class="btn btn-primary" type="button"><i class="fa-solid fa-magnifying-glass" style="color: white"></i></button></div>
+
+                    <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#filterModal"><i class="fa-solid fa-filter" style="color: white"></i></button>
+                </div>
+            </div>
+        </div>
+
         <table id="userTable">
             <thead>
                 <tr>
@@ -155,16 +182,23 @@
         }
     });
 
-    window.addEventListener('load', () => {
-        let btnPdf = document.getElementById('pdf')
-        let btnXls = document.getElementById('xls')
+    $('#resultsPerPage').on('change', function () {
+        table.page.len(this.value).draw();
+    });
 
-        btnPdf.addEventListener('click', () => {
-            document.getElementsByClassName('buttons-pdf')[0].click()
-        })
+    $('#search-input').on('keyup', function () {
+        table.search(this.value).draw();
+    });
 
-        btnXls.addEventListener('click', () => {
-            document.getElementsByClassName('buttons-excel')[0].click()
-        })
+    let btnPdf = document.getElementById('pdf')
+    let btnXls = document.getElementById('xls')
+
+    btnPdf.addEventListener('click', () => {
+        document.getElementsByClassName('buttons-pdf')[0].click()
     })
+
+    btnXls.addEventListener('click', () => {
+        document.getElementsByClassName('buttons-excel')[0].click()
+    })
+    
 </script>

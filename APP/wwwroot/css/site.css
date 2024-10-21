@@ -177,8 +177,6 @@ a {
     display: none;
 }
 
-
-
 .main-content {
     position: relative;
     top: 70px;
@@ -192,8 +190,8 @@ a {
     height: 100%;
 }
 
-.dt-buttons {
-    display: none
+.dt-buttons, .dt-length, .dt-search {
+    display: none !important
 }
 
 #loading-screen {

@@ -37,7 +37,7 @@ namespace CodeData_Connection.Controllers
 
             if (usuarios == null)
             {
-                return NotFound("Usuários não encontrado.");
+                return NotFound();
             }
 
             foreach (var usuario in usuarios)
@@ -57,7 +57,7 @@ namespace CodeData_Connection.Controllers
 
             if (dadosUsuario == null)
             {
-                return NotFound("Cliente não encontrado.");
+                return NotFound();
             }
 
             return View(dadosUsuario);

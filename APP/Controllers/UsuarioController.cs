@@ -28,7 +28,7 @@ namespace CodeData_Connection.Controllers
 
             if (usuario == null)
             {
-                return NotFound("Problemas ao encontrar as informações do usuário!");
+                return NotFound();
             }
 
             return View(usuario);
@@ -42,7 +42,7 @@ namespace CodeData_Connection.Controllers
 
             if (usuario == null)
             {
-                return NotFound("Problemas ao encontrar as informações do usuário!");
+                return NotFound();
             }
 
             return View(usuario);

@@ -30,7 +30,7 @@ namespace CodeData_Connection.Controllers
 
             if (documentos == null || !documentos.Any())
             {
-                return NotFound("Nenhum equipamento encontrado!");
+                return NotFound();
             }
 
             return PartialView("_DadosDocumento", documentos);
@@ -45,7 +45,7 @@ namespace CodeData_Connection.Controllers
 
             if (documento == null)
             {
-                return NotFound("Nenhum equipamento encontrado!");
+                return NotFound();
             }
 
             return View(documento);

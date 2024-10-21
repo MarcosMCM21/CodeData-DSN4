@@ -36,7 +36,7 @@ namespace CodeData_Connection.Controllers
 
             if (dadosCliente == null)
             {
-                return NotFound("Cliente não encontrado.");
+                return NotFound();
             }
 
             return View(dadosCliente);

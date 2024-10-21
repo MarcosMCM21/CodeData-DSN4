@@ -1,9 +1,57 @@
 ﻿﻿@{
-    ViewData["Title"] = "Configurações";
+    ViewData["Title"] = "Configurações do Sistema";
 }
 
-<a asp-action="Usuarios">
-    <img src="~/img/icon-usuarios.svg" alt="">
-    <span class="nav-item">USUÁRIOS</span>
-</a>
-<span class="tooltip">USUÁRIOS</span>
+<div class="container mt-5">
+    <div class="row">
+        <div class="col">
+
+            <!-- Seção de Configurações do Usuário -->
+            <div class="card mb-3">
+                <div class="card-header"><h5>Configurações dos Usuários</h5></div>
+                <div class="card-body">
+                    <a asp-action="Usuarios" class="btn btn-outline-secondary">Visualizar</a>
+                </div>
+            </div>
+
+            <div class="card mb-3">
+                <div class="card-header"><h5>Backup de Dados</h5></div>
+                <div class="card-body">
+                    <form asp-action="UpdateBackup" method="post">
+                        <div class="form-group">
+                            <label for="frequencia">Frequência:</label>
+                            <select class="form-control" id="frequencia" name="Frequencia">
+                                <option value="diario">Diário</option>
+                                <option value="semanal">Semanal</option>
+                                <option value="mensal">Mensal</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="tipoBackup">Tipo de Backup:</label>
+                            <select class="form-control" id="tipoBackup" name="TipoBackup">
+                                <option value="completo">Completo</option>
+                                <option value="incremental">Incremental</option>
+                            </select>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+
+            <div class="card mb-3">
+                <div class="card-header"><h5>Aviso de Estoque Baixo</h5></div>
+                <div class="card-body">
+                    <form asp-action="UpdateNiveisAlerta" method="post">
+                        <div class="form-group">
+                            <label for="alertaPadrao">Nível de Alerta Padrão:</label>
+                            <input type="number" class="form-control" id="alertaPadrao" name="AlertaPadrao" value="30">
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Salvar</button>
+
+        </div>
+    </div>
+</div>

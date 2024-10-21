@@ -3,8 +3,6 @@ using CodeData_Connection.Models.Database.Entidade;
 using CodeData_Connection.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using NuGet.Protocol;
-using MySqlX.XDevAPI;
 using Microsoft.AspNetCore.Authorization;
 
 namespace CodeData_Connection.Controllers
@@ -27,59 +25,42 @@ namespace CodeData_Connection.Controllers
         // Crie uma nova Action para buscar os dados do banco de dados
         public async Task<IActionResult> ObterDadosPatrimonio()
         {
-            // 1. Obter os equipamentos do banco de dados
-            var equipamentos = await _context.Equipamentos.ToListAsync();
+            // Obtém os equipamentos sem tracking para evitar overhead do Entity Framework
+            var equipamentos = await _context.Equipamentos
+                .AsNoTracking()
+                .Select(e => new { e.Id, e.Marca, e.Modelo })
+                .ToListAsync();
 
-            if (equipamentos == null || !equipamentos.Any())
-            {
-                return NotFound("Nenhum equipamento encontrado!");
-            }
-
-            List<DetalhesEquipamentoViewModel> dadosEquipamentos = new();
-            List<string> modelos = [];
-            List<string> marcas = [];
-
-            DadosPatrimonioViewModel dadosPatrimonio = new();
-
-            foreach (var equipamento in equipamentos)
-            {
-                dadosEquipamentos.Add(ObterDadosBasicosEquipamento(equipamento));
-
-                if (!marcas.Contains(equipamento.Marca)) marcas.Add(equipamento.Marca);
-
-                if (!modelos.Contains(equipamento.Modelo)) modelos.Add(equipamento.Modelo);
-            }
-
-            ViewBag.Marcas = marcas;
-            ViewBag.Modelos = modelos;
-
-            dadosPatrimonio.DadosEquipamento = dadosEquipamentos;
-            dadosPatrimonio.ListaEnderecos = ObterEnderecosEquipamentos();
-
-            Console.WriteLine(dadosEquipamentos);
-
-            return PartialView("_DadosPatrimonio", dadosPatrimonio); // Retorna uma Partial View com os dados
-        }
-
-        public async Task<IActionResult> Detalhes(int? id)
-        {
-            if (id == null)
+            // Se não houver equipamentos, retorna 404
+            if (!equipamentos.Any())
             {
                 return NotFound();
             }
 
-            // 1. Buscar o equipamento pelo ID, incluindo os dados relacionados (se necessário)
-            var equipamento = await _context.Equipamentos
-                // .Include(e => e.PropriedadeRelacionada) // Inclua propriedades relacionadas se necessário
-                .FirstOrDefaultAsync(e => e.Id == id);
+            // Popula marcas e modelos sem duplicação
+            var marcas = equipamentos.Select(e => e.Marca).Distinct().ToList();
+            var modelos = equipamentos.Select(e => e.Modelo).Distinct().ToList();
 
-            if (equipamento == null)
+            ViewBag.Marcas = marcas;
+            ViewBag.Modelos = modelos;
+
+            var dadosPatrimonio = new DadosPatrimonioViewModel
             {
-                return NotFound("Equipamento não encontrado!");
-            }
+                DadosEquipamento = equipamentos.Select(e => ObterDadosBasicosEquipamento(e.Id)).ToList(),
+                ListaEnderecos = ObterEnderecosEquipamentos()
+            };
 
-            // 2. Obter os dados detalhados do equipamento
-            var dadosEquipamento = ObterDetalhesEquipamento(equipamento);
+            return PartialView("_DadosPatrimonio", dadosPatrimonio);
+        }
+
+        public IActionResult Detalhes(int id)
+        {
+            var dadosEquipamento = ObterDetalhesEquipamento(id);
+
+            if (dadosEquipamento == null)
+            {
+                return NotFound();
+            }
 
             return View(dadosEquipamento);
         }
@@ -96,15 +77,15 @@ namespace CodeData_Connection.Controllers
 
             if (equipamento == null)
             {
-                return NotFound("Equipamento não encontrado!");
+                return NotFound();
             }
 
             // 2. Criar um ViewModel para a view de edição (recomendado)
             var viewModel = new EditarEquipamentoViewModel
             {
                 Equipamento = equipamento,
-                Documentos = await _context.Documentos.Select(d => new EstoqueDocumento { Id = d.Id, Nome = d.Nome }).ToListAsync(),
-                Estoques = await _context.Estoques.Select(e => new EstoqueDocumento { Id = e.Id, Nome = e.Nome }).ToListAsync()
+                Documentos = await _context.Documentos.Select(d => new EstoqueDocumento { Id = d.Id, Nome = d.Nome }).Distinct().ToListAsync(),
+                Estoques = await _context.Estoques.Select(e => new EstoqueDocumento { Id = e.Id, Nome = e.Nome }).Distinct().ToListAsync()
             };
 
             return View(viewModel);
@@ -172,8 +153,15 @@ namespace CodeData_Connection.Controllers
         }
 
         // Método para obter os dados básicos do equipamento, incluindo o status
-        public DetalhesEquipamentoViewModel ObterDadosBasicosEquipamento(Equipamento equipamento)
+        public DetalhesEquipamentoViewModel? ObterDadosBasicosEquipamento(int id)
         {
+            var equipamento = _context.Equipamentos.Find(id);
+
+            if (equipamento == null)
+            {
+                return null;
+            }
+
             var dadosEquipamento = new DetalhesEquipamentoViewModel { Equipamento = equipamento, Status = "ESTOQUE" };
 
             try
@@ -207,14 +195,14 @@ namespace CodeData_Connection.Controllers
         }
 
         // Método para obter os detalhes adicionais do equipamento, como endereço, estoque e documento
-        public DetalhesEquipamentoViewModel ObterDetalhesEquipamento(Equipamento equipamento)
+        public DetalhesEquipamentoViewModel ObterDetalhesEquipamento(int id)
         {
-            var dadosEquipamento = ObterDadosBasicosEquipamento(equipamento); // Reutiliza o método básico
+            var dadosEquipamento = ObterDadosBasicosEquipamento(id); // Reutiliza o método básico
 
             try
             {
                 var movimentacao = _context.MovimentacoesEquipamentos
-                    .FirstOrDefault(me => me.EquipamentoId == equipamento.Id);
+                    .FirstOrDefault(me => me.EquipamentoId == id);
 
                 if (movimentacao != null)
                 {
@@ -222,7 +210,7 @@ namespace CodeData_Connection.Controllers
                 }
                 else
                 {
-                    var estoque = _context.Estoques.FirstOrDefault(s => s.Id == equipamento.EstoqueId);
+                    var estoque = _context.Estoques.FirstOrDefault(s => s.Id == dadosEquipamento.Equipamento.EstoqueId);
                     if (estoque != null)
                     {
                         dadosEquipamento.Estoque = estoque;
@@ -230,7 +218,7 @@ namespace CodeData_Connection.Controllers
                     }
                 }
 
-                dadosEquipamento.Documento = _context.Documentos.FirstOrDefault(d => d.Id == equipamento.DocumentoId);
+                dadosEquipamento.Documento = _context.Documentos.FirstOrDefault(d => d.Id == dadosEquipamento.Equipamento.DocumentoId);
             }
             catch (Exception ex)
             {
@@ -260,14 +248,10 @@ namespace CodeData_Connection.Controllers
         public List<Endereco> ObterEnderecosEquipamentos()
         {
             // Utiliza uma consulta LINQ para obter os endereços dos equipamentos de forma eficiente
-            var enderecos = _context.Equipamentos
-                .Select(equipamento => _context.MovimentacoesEquipamentos
-                    .Where(me => me.EquipamentoId == equipamento.Id)
-                    .Select(me => me.EnderecoId)
-                    .FirstOrDefault())
-                .Where(enderecoId => enderecoId != null)
-                .Select(enderecoId => _context.Enderecos.FirstOrDefault(e => e.Id == enderecoId))
-                .ToList();
+            var enderecos = _context.MovimentacoesEquipamentos.AsNoTracking()
+            .Where(me => me.EnderecoId != null)
+            .Select(me => _context.Enderecos.AsNoTracking().FirstOrDefault(e => e.Id == me.EnderecoId))
+            .ToList();
 
             return enderecos;
         }

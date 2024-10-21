@@ -35,7 +35,7 @@ namespace CodeData_Connection.Controllers
 
             if (solicitacoes.Any() == false)
             {
-                return NotFound("Nenhuma solicitação encontrada!");
+                return NotFound();
             }
 
             // 2. Criar uma instância de DadosPatrimonio e popular suas propriedades
@@ -55,7 +55,7 @@ namespace CodeData_Connection.Controllers
 
             if (dadosSolicitacao == null)
             {
-                return NotFound("Solicitação não encontrada.");
+                return NotFound();
             }
 
             return View(dadosSolicitacao);

@@ -76,20 +76,27 @@
                                 <div class="simplebar-offset" style="right: 0px; bottom: 0px;">
                                     <div class="simplebar-content-wrapper" style="height: auto; overflow: hidden;">
                                         <div class="simplebar-content" style="padding: 0px;">
-                                        
-                                        @foreach (Notificacao notificacao in notificacoes)
+
+                                        @{
+                                            int maxNotificacoes = Math.Min(notificacoes.Count, 3); // Define o máximo de notificações a serem exibidas
+                                        }
+
+                                        @for (int i = 0; i < maxNotificacoes; i++) // Use '<' em vez de '<='
                                         {
-                                            <a href="javascript: void(0);" class="text-reset notification-item">
-                                                <div class="d-flex">
-                                                    <div class="flex-grow-1">
-                                                        <h6 class="mb-1" key="t-your-order">@notificacao.Titulo</h6>
-                                                        <div class="font-size-12 text-muted">
-                                                            <p class="mb-1" key="t-grammer">@notificacao.Mensagem</p>
-                                                            <p class="mb-0"><i class="mdi mdi-clock-outline"></i> <span key="t-min-ago">@notificacao.DataHora</span></p>
+                                            if (notificacoes[i] != null) // Verifica se a notificação não é nula
+                                            {
+                                                <a href="javascript: void(0);" class="text-reset notification-item">
+                                                    <div class="d-flex">
+                                                        <div class="flex-grow-1">
+                                                            <h6 class="mb-1" key="t-your-order">@notificacoes[i].Titulo</h6>
+                                                            <div class="font-size-12 text-muted">
+                                                                <p class="mb-1" key="t-grammer">@notificacoes[i].Mensagem</p>
+                                                                <p class="mb-0"><i class="mdi mdi-clock-outline"></i> <span key="t-min-ago">@notificacoes[i].DataHora</span></p>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            </a>
+                                                </a>
+                                            }
                                         }
                 </div>
             </div>
@@ -121,7 +128,7 @@
                 <!-- item-->
                 <a asp-controller="Usuario" asp-action="Perfil" class="dropdown-item"><i class="bx bx-user font-size-16 align-middle me-1"></i> <span key="t-profile">Perfil</span></a>
                 <a asp-controller="Usuario" asp-action="Configuracoes" class="dropdown-item d-block"><i class="bx bx-wrench font-size-16 align-middle me-1"></i> <span key="t-settings">Configurações</span></a>
-                <a asp-controller="Account" asp-action="LockScreen" class="dropdown-item"><i class="bx bx-lock-open font-size-16 align-middle me-1"></i> <span key="t-lock-screen">Lock screen</span></a>
+                <a asp-controller="Account" asp-action="LockScreen" class="dropdown-item"><i class="bx bx-lock-open font-size-16 align-middle me-1"></i> <span key="t-lock-screen">Broquear Tela</span></a>
                 <div class="dropdown-item checkbox-wrapper-14">
                     <i class="bx bx-moon font-size-16 align-middle me-1"></i> <span key="dark-mode">Tema Escuro</span>
                     @* <label class="switch switch-sm">

@@ -58,21 +58,23 @@
         </div>
 
         <ul>
-            <li>
+            <li data-toggle="tooltip" data-placement="right" title="TELA INICIAL">
                 <a asp-controller="Home" asp-action="Index">
                     <img src="~/img/icon-home.svg" alt="">
                     <span class="nav-item">TELA INICIAL</span>
                 </a>
                 @* <span class="tooltip">TELA INICIAL</span> *@
             </li>
-            <li>
+
+            <li data-toggle="tooltip" data-placement="right" title="PATRIMÔNIO">
                 <a asp-controller="Patrimonio" asp-action="Index">
                     <img src="~/img/icon-patrimonio.svg" alt="">
                     <span class="nav-item">PATRIMÔNIO</span>
                 </a>
                 @* <span class="tooltip">ESTOQUE</span> *@
             </li>
-            <li id="itemLocacao">
+
+            <li data-toggle="tooltip" data-placement="right" title="LOCAÇÃO">
                 <a asp-controller="Solicitacao" asp-action="Index" asp-route-tipoSolicitacao="true">
                     <div class="background-link"></div>
                     <img src="~/img/icon-locacao.svg" alt="">
@@ -80,7 +82,8 @@
                 </a>
                 @* <span class="tooltip">LOCAÇÃO</span> *@
             </li>
-            <li id="itemHomologacao">
+
+            <li data-toggle="tooltip" data-placement="right" title="HOMOLOGAÇÃO">
                 <a asp-controller="Solicitacao" asp-action="Index" asp-route-tipoSolicitacao="false">
                     <img src="~/img/icon-homologacao.svg" alt="">
                     <span class="nav-item">HOMOLOGAÇÃO</span>
@@ -88,7 +91,7 @@
                 @* <span class="tooltip">HOMOLOGAÇÃO</span> *@
             </li>
 
-            <li>
+            <li data-toggle="tooltip" data-placement="right" title="CLIENTES">
                 <a asp-controller="Cliente" asp-action="Index">
                     <img src="~/img/icon-clientes.svg" alt="">
                     <span class="nav-item">CLIENTES</span>
@@ -96,9 +99,17 @@
                 @* <span class="tooltip">CLIENTES</span> *@
             </li>
 
-            @if(await UserManager.IsInRoleAsync(await UserManager.GetUserAsync(User).ConfigureAwait(false), Role.Administrador.ToString()))
+            @if (User.IsInRole("Administrador"))
             {
-                <li>
+                <li data-toggle="tooltip" data-placement="right" title="DASHBOARD"> 
+                    <a href="#" class="dropdown-dashboard-toggle">
+                        <img src="~/img/icon-dashboard.svg" alt=""> 
+                        <span class="nav-item">DASHBOARD</span>
+                    </a>
+                     @* <span class="tooltip">DASHBOARD</span> *@
+                </li>
+
+                <li data-toggle="tooltip" data-placement="right" title="DOCUMENTOS">
                     <a asp-controller="Documento" asp-action="Index">
                         <img src="~/img/icon-doc.svg" alt="">
                         <span class="nav-item">DOCUMENTOS</span>
@@ -106,7 +117,7 @@
                     @* <span class="tooltip">DOCUMENTOS</span> *@
                 </li>
 
-                <li>
+                <li data-toggle="tooltip" data-placement="right" title="CONFIGURAÇÕES">
                     <a asp-controller="Configuracao" asp-action="Index">
                         <img src="~/img/icon-config.svg" alt="">
                         <span class="nav-item">CONFIGURAÇÕES</span>
@@ -131,6 +142,8 @@
 
     <script>
         window.addEventListener("DOMContentLoaded", ()=> {
+            resetTimer()
+
             let items = document.querySelectorAll('li')
 
             let controller = "@ViewContext.RouteData.Values["controller"].ToString()"
@@ -214,6 +227,15 @@
         window.onload = resetTimer;
         document.onmousemove = resetTimer;
         document.onkeypress = resetTimer;
+        document.onmousedown = resetTimer;
+        document.ontouchstart = resetTimer;
+        document.onscroll = resetTimer;
+        window.onresize = resetTimer;
+
+        // Limpar timeout ao sair da página
+        window.onbeforeunload = function() {
+            clearTimeout(timeout);
+        };
     </script>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

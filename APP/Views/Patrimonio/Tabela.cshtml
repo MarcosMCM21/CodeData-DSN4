@@ -20,39 +20,71 @@
         </div>
     </header>
 
-    <div>
-        <select id="modelo-filter">
-            <option value="">Todos os Modelos</option>
-            @foreach (var modelo in ViewBag.Modelos)
-            {
-                <option value="@modelo">@modelo</option>
-            }
-        </select>
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#filterModal">
+        Filtro
+    </button>
 
-        <select id="marca-filter">
-            <option value="">Todas as Marcas</option>
-            @foreach (var marca in ViewBag.Marcas)
-            {
-                <option value="@marca">@marca</option>
-            }
-        </select>
+    <!-- Modal -->
+    <div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="filterModalLabel">Filtrar</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="modelo-filter">Modelo</label>
+                        <select id="modelo-filter" class="form-select">
+                            <option value="">Todos os Modelos</option>
+                            @foreach (var modelo in ViewBag.Modelos)
+                            {
+                                <option value="@modelo">@modelo</option>
+                            }
+                        </select>
+                    </div>
 
-        <input type="text" id="pn-filter" placeholder="PN">
+                    <div class="mb-3">
+                        <label for="marca-filter">Marca</label>
+                        <select id="marca-filter" class="form-select">
+                            <option value="">Todas as Marcas</option>
+                            @foreach (var marca in ViewBag.Marcas)
+                            {
+                                <option value="@marca">@marca</option>
+                            }
+                        </select>
+                    </div>
 
-        <select id="condicao-filter">
-            <option value="">Todas as Condições</option>
-            <option value="ATIVO">ATIVO</option>
-            <option value="INATIVO">INATIVO</option>
-        </select>
+                    <div class="mb-3">
+                        <label for="pn-filter">PN</label>
+                        <input type="text" id="pn-filter" class="form-control" placeholder="PN">
+                    </div>
 
-        <select id="status-filter">
-            <option value="">Todos os Status</option>
-            <option value="LOCAÇÃO">LOCAÇÃO</option>
-            <option value="HOMOLOGAÇÃO">HOMOLOGAÇÃO</option>
-            <option value="ESTOQUE">ESTOQUE</option>
-        </select>
+                    <div class="mb-3">
+                        <label for="condicao-filter">Condição</label>
+                        <select id="condicao-filter" class="form-select">
+                            <option value="">Todas as Condições</option>
+                            <option value="ATIVO">ATIVO</option>
+                            <option value="INATIVO">INATIVO</option>
+                        </select>
+                    </div>
 
-        <button id="filter-button">Filtrar</button>
+                    <div class="mb-3">
+                        <label for="status-filter">Status</label>
+                        <select id="status-filter" class="form-select">
+                            <option value="">Todos os Status</option>
+                            <option value="LOCAÇÃO">LOCAÇÃO</option>
+                            <option value="HOMOLOGAÇÃO">HOMOLOGAÇÃO</option>
+                            <option value="ESTOQUE">ESTOQUE</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                    <button type="button" id="filter-button" class="btn btn-primary" data-bs-dismiss="modal">Filtrar</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="container-table">

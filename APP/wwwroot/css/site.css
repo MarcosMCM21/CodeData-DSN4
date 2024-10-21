@@ -100,7 +100,14 @@ a {
     justify-content: center;
     width: 100%;
     height: 100%;
-    padding-left: 0
+    padding-left: 0;
+}
+
+.sidebar ul li:last-child {
+    position: absolute;
+    bottom: 1rem; /* Empurra o último elemento para a parte inferior */
+    padding-left: inherit;
+    width: inherit
 }
 
 .sidebar ul li a {
@@ -169,6 +176,8 @@ a {
 .sidebar.active ul li .tooltip {
     display: none;
 }
+
+
 
 .main-content {
     position: relative;

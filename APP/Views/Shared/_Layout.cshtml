@@ -66,6 +66,17 @@
                 @* <span class="tooltip">TELA INICIAL</span> *@
             </li>
 
+            @if (User.IsInRole("Administrador"))
+            {
+                <li data-toggle="tooltip" data-placement="right" title="DASHBOARD">
+                    <a asp-controller="Dashboard" asp-action="Index">
+                        <img src="~/img/icon-dashboard.svg" alt="">
+                        <span class="nav-item">DASHBOARD</span>
+                    </a>
+                    @* <span class="tooltip">DASHBOARD</span> *@
+                </li>
+            }
+
             <li data-toggle="tooltip" data-placement="right" title="PATRIMÔNIO">
                 <a asp-controller="Patrimonio" asp-action="Index">
                     <img src="~/img/icon-patrimonio.svg" alt="">
@@ -101,14 +112,6 @@
 
             @if (User.IsInRole("Administrador"))
             {
-                <li data-toggle="tooltip" data-placement="right" title="DASHBOARD"> 
-                    <a href="#" class="dropdown-dashboard-toggle">
-                        <img src="~/img/icon-dashboard.svg" alt=""> 
-                        <span class="nav-item">DASHBOARD</span>
-                    </a>
-                     @* <span class="tooltip">DASHBOARD</span> *@
-                </li>
-
                 <li data-toggle="tooltip" data-placement="right" title="DOCUMENTOS">
                     <a asp-controller="Documento" asp-action="Index">
                         <img src="~/img/icon-doc.svg" alt="">
@@ -125,6 +128,14 @@
                     @* <span class="tooltip">CONFIGURAÇÕES</span> *@
                 </li>
             }
+
+            <li data-toggle="tooltip" data-placement="right" title="COPIADORAS">
+                <a asp-controller="Impressora" asp-action="Index">
+                    <img src="~/img/icon-printer.svg" alt="">
+                    <span class="nav-item">COPIADORAS</span>
+                </a>
+                @* <span class="tooltip">IMPRESSORAS</span> *@
+            </li>
 
         </ul>
 

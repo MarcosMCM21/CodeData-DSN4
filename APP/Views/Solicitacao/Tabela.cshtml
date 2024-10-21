@@ -25,33 +25,65 @@
         </div>
     </header>
 
-    <div>
-        <p>Período Data Inicial</p>
-        <input type="date" id="min-date-initial" placeholder="dd-mm-yyyy">
-        <input type="date" id="max-date-initial" placeholder="dd-mm-yyyy">
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#filterModal">
+        Filtro
+    </button>
 
-        <p>Período Data Final</p>
-        <input type="date" id="min-date-end" placeholder="dd-mm-yyyy">
-        <input type="date" id="max-date-end" placeholder="dd-mm-yyyy">
+    <!-- Modal -->
+    <div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="filterModalLabel">Filtrar</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <p>Período de Início da Solicitação</p>
+                        <label for="min-date-initial">Data Inicial</label>
+                        <input type="date" id="min-date-initial" class="form-control" placeholder="dd-mm-yyyy">
+                        <label for="max-date-initial">Data Final</label>
+                        <input type="date" id="max-date-initial" class="form-control mt-2" placeholder="dd-mm-yyyy">
+                    </div>
 
-        <select id="client-filter">
-            <option value="">Todos os Clientes</option>
-            @foreach(var cliente in ViewBag.Clientes) {
-                <option value="@cliente">@cliente</option>
-            }
-            
-        </select>
+                    <div class="mb-3">
+                        <p>Período de Término da Solicitação</p>
+                        <label for="min-date-end">Data Inicial</label>
+                        <input type="date" id="min-date-end" class="form-control" placeholder="dd-mm-yyyy">
+                        <label for="max-date-end">Data Final</label>
+                        <input type="date" id="max-date-end" class="form-control mt-2" placeholder="dd-mm-yyyy">
+                    </div>
 
-        <select id="seller-filter">
-            <option value="">Todos os Vendedores</option>
-            @foreach (var vendedor in ViewBag.Vendedores)
-            {
-                <option value="@vendedor">@vendedor</option>
-            }
-        </select>
+                    <div class="mb-3">
+                        <label for="client-filter">Cliente</label>
+                        <select id="client-filter" class="form-select">
+                            <option value="">Todos os Clientes</option>
+                            @foreach (var cliente in ViewBag.Clientes)
+                            {
+                                <option value="@cliente">@cliente</option>
+                            }
+                        </select>
+                    </div>
 
-        <button id="filter-button">Filtrar</button>
+                    <div class="mb-3">
+                        <label for="seller-filter">Vendedor</label>
+                        <select id="seller-filter" class="form-select">
+                            <option value="">Todos os Vendedores</option>
+                            @foreach (var vendedor in ViewBag.Vendedores)
+                            {
+                                <option value="@vendedor">@vendedor</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                    <button type="button" id="filter-button" class="btn btn-primary" data-bs-dismiss="modal">Filtrar</button>
+                </div>
+            </div>
+        </div>
     </div>
+
 
     <div class="container-table">
 
@@ -76,8 +108,8 @@
                         <td></td>
                         <td>@solicitacao.Solicitacao.Numero</td>
                         <td>@solicitacao.Solicitacao.Descricao</td>
-                        <td>@solicitacao.Solicitacao.DataInicio</td>
-                        <td>@solicitacao.Solicitacao.DataFinal</td>
+                        <td>@solicitacao.Solicitacao.DataInicio.ToString("dd/MM/yyyy")</td>
+                        <td>@solicitacao.Solicitacao.DataFinal.ToString("dd/MM/yyyy")</td>
                         <td>@solicitacao.Cliente</td>
                         <td>@solicitacao.Vendedor</td>
                         <td>
@@ -114,25 +146,7 @@
 
         columns: [
             { data: null, searchable: false, render: DataTable.render.select() },
-            {}, {},
-            {
-                render: function (data, type, row) {
-                    // Verifica se os dados existem e aplica o split para remover o horário
-                    if (data) {
-                        return data.split(' ')[0]; // Retorna apenas a data
-                    }
-                    return data; // Caso não haja dados, retorna como está
-                }
-            },
-            {
-                render: function (data, type, row) {
-                    // Verifica se os dados existem e aplica o split para remover o horário
-                    if (data) {
-                        return data.split(' ')[0]; // Retorna apenas a data
-                    }
-                    return data; // Caso não haja dados, retorna como está
-                }
-            }, {}, {}, {}
+            {}, {}, {}, {}, {}, {}, {}
         ],
 
         columnDefs: [
@@ -247,7 +261,7 @@
             var tableClient = data[5]; // índice da coluna "Cliente"
             var tableSeller = data[6]; // índice da coluna "Vendedor"
 
-            // Normaliza as strings antes da comparação
+            // Normaliza as strings e datas antes da comparação
             minStart = minStart ? normalizeDate(minStart) : null;
             maxStart = maxStart ? normalizeDate(maxStart) : null;
             minEnd = minEnd ? normalizeDate(minEnd) : null;
@@ -256,6 +270,14 @@
             seller = normalizeString(seller);
             tableClient = normalizeString(tableClient);
             tableSeller = normalizeString(tableSeller);
+
+            // Converte as strings para data
+            minStart = minStart ? parseDate(minStart) : null;
+            maxStart = maxStart ? parseDate(maxStart) : null;
+            minEnd = minEnd ? parseDate(minEnd) : null;
+            maxEnd = maxEnd ? parseDate(maxEnd) : null;
+            TableStarDate = parseDate(TableStarDate)
+            TableEndDate = parseDate(TableEndDate)
 
             if (
                 (minStart === null || minStart === '' || TableStarDate >= minStart) &&
@@ -270,7 +292,6 @@
     );
 
     $('#filter-button').click(function () {
-        console.log($('#min-date-initial').val())
         table.draw();
     });
 
@@ -294,7 +315,7 @@
         return str;
     }
 
-    // Função para remover o horário da data
+    // Função para trocar o símbolo de separação e a ordem para dd/mm/yyyy da data
     function normalizeDate(str) {
         str = str.replaceAll('-', '/')
         split = str.split('/')
@@ -302,4 +323,9 @@
         return str;
     }
 
+    // Função para converter a string "dd/mm/aaaa" para um objeto Date
+    function parseDate(dateString) {
+        const [day, month, year] = dateString.split("/");
+        return new Date(year, month - 1, day); // mês em JavaScript é indexado de 0 a 11
+    }
 </script>

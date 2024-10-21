@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel.DataAnnotations;
 
 namespace CodeData_Connection.Controllers
@@ -51,16 +52,8 @@ namespace CodeData_Connection.Controllers
                 // Salvar na sessão que o usuário está bloqueado
                 HttpContext.Session.SetString("IsLocked", "false");
 
-                Console.WriteLine("1!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-                Console.WriteLine(returnUrl);
-                Console.WriteLine("1!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-
                 if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
                 {
-                    Console.WriteLine("2!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-                    Console.WriteLine(returnUrl);
-                    Console.WriteLine("2!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-
                     return LocalRedirect(returnUrl); // Redireciona para a URL original
                 } 
                 else

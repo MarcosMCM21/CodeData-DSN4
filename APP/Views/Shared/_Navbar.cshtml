@@ -38,7 +38,8 @@
         </div>
 
         @{
-            var notificacoes = _context.Notificacoes.Where(n => n.UserId == UserManager.GetUserAsync(User).Result.Id).ToList();
+            var user = await UserManager.GetUserAsync(User);
+            var notificacoes = _context.Notificacoes.Where(n => n.UserId == user.Id).ToList();
         }
 
         <div class="dropdown d-inline-block">
@@ -72,44 +73,46 @@
                             <div class="simplebar-height-auto-observer"></div>
                         </div>
 
-                            <div class="simplebar-mask">
-                                <div class="simplebar-offset" style="right: 0px; bottom: 0px;">
-                                    <div class="simplebar-content-wrapper" style="height: auto; overflow: hidden;">
-                                        <div class="simplebar-content" style="padding: 0px;">
+                        <div class="simplebar-mask">
+                            <div class="simplebar-offset" style="right: 0px; bottom: 0px;">
+                                <div class="simplebar-content-wrapper" style="height: auto; overflow: hidden;">
+                                    <div class="simplebar-content" style="padding: 0px;">
 
-                                        @{
-                                            int maxNotificacoes = Math.Min(notificacoes.Count, 3); // Define o máximo de notificações a serem exibidas
-                                        }
+                                    @{
+                                        int maxNotificacoes = Math.Min(notificacoes.Count, 3); // Define o máximo de notificações a serem exibidas
+                                    }
 
-                                        @for (int i = 0; i < maxNotificacoes; i++) // Use '<' em vez de '<='
+                                    @for (int i = 0; i < maxNotificacoes; i++) // Use '<' em vez de '<='
+                                    {
+                                        if (notificacoes[i] != null) // Verifica se a notificação não é nula
                                         {
-                                            if (notificacoes[i] != null) // Verifica se a notificação não é nula
-                                            {
-                                                <a href="javascript: void(0);" class="text-reset notification-item">
-                                                    <div class="d-flex">
-                                                        <div class="flex-grow-1">
-                                                            <h6 class="mb-1" key="t-your-order">@notificacoes[i].Titulo</h6>
-                                                            <div class="font-size-12 text-muted">
-                                                                <p class="mb-1" key="t-grammer">@notificacoes[i].Mensagem</p>
-                                                                <p class="mb-0"><i class="mdi mdi-clock-outline"></i> <span key="t-min-ago">@notificacoes[i].DataHora</span></p>
-                                                            </div>
+                                            <a href="javascript: void(0);" class="text-reset notification-item">
+                                                <div class="d-flex">
+                                                    <div class="flex-grow-1">
+                                                        <h6 class="mb-1" key="t-your-order">@notificacoes[i].Titulo</h6>
+                                                        <div class="font-size-12 text-muted">
+                                                            <p class="mb-1" key="t-grammer">@notificacoes[i].Mensagem</p>
+                                                            <p class="mb-0"><i class="mdi mdi-clock-outline"></i> <span key="t-min-ago">@notificacoes[i].DataHora</span></p>
                                                         </div>
                                                     </div>
-                                                </a>
-                                            }
+                                                </div>
+                                            </a>
                                         }
-                </div>
-            </div>
-        </div>
-    </div>
+                                    }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
         
-    <div class="simplebar-placeholder" style="width: 0px; height: 0px;"></div>
+                        <div class="simplebar-placeholder" style="width: 0px; height: 0px;"></div>
 
-</div>
+                    </div>
     
-<div class="simplebar-track simplebar-horizontal" style="visibility: hidden;"><div class="simplebar-scrollbar" style="transform: translate3d(0px, 0px, 0px); display: none;"></div></div>
+                    <div class="simplebar-track simplebar-horizontal" style="visibility: hidden;"><div class="simplebar-scrollbar" style="transform: translate3d(0px, 0px, 0px); display: none;"></div></div>
     
-<div class="simplebar-track simplebar-vertical" style="visibility: hidden;"><div class="simplebar-scrollbar" style="transform: translate3d(0px, 0px, 0px); display: none; height: 136px;"></div></div></div>
+                    <div class="simplebar-track simplebar-vertical" style="visibility: hidden;"><div class="simplebar-scrollbar" style="transform: translate3d(0px, 0px, 0px); display: none; height: 136px;"></div></div>
+                </div>
+
                 <div class="p-2 border-top d-grid">
                     <a class="btn btn-sm btn-link font-size-14 text-center" href="javascript:void(0)">
                         <i class="mdi mdi-arrow-right-circle me-1"></i> <span key="t-view-more">Mostrar Mais</span> 
@@ -121,14 +124,14 @@
         <div class="dropdown d-inline-block">
             <button type="button" class="btn header-item waves-effect" id="page-header-user-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 @* <img class="rounded-circle header-profile-user" src="~/img/users/avatar-2.png" alt="Header Avatar"> *@
-                <span class="d-xl-inline-block ms-1" key="t-henry">@UserManager.GetUserAsync(User).Result.FirstName @UserManager.GetUserAsync(User).Result.LastName</span>
+                <span class="d-xl-inline-block ms-1" key="t-henry">@user.FirstName @user.LastName</span>
                 <i class="mdi mdi-chevron-down d-none d-xl-inline-block"></i>
             </button>
             <div class="dropdown-menu dropdown-menu-end">
                 <!-- item-->
                 <a asp-controller="Usuario" asp-action="Perfil" class="dropdown-item"><i class="bx bx-user font-size-16 align-middle me-1"></i> <span key="t-profile">Perfil</span></a>
                 <a asp-controller="Usuario" asp-action="Configuracoes" class="dropdown-item d-block"><i class="bx bx-wrench font-size-16 align-middle me-1"></i> <span key="t-settings">Configurações</span></a>
-                <a asp-controller="Account" asp-action="LockScreen" class="dropdown-item"><i class="bx bx-lock-open font-size-16 align-middle me-1"></i> <span key="t-lock-screen">Broquear Tela</span></a>
+                <a href="#" onclick="redirectToLockScreen()" class="dropdown-item"><i class="bx bx-lock-open font-size-16 align-middle me-1"></i> <span key="t-lock-screen">Broquear Tela</span></a>
                 <div class="dropdown-item checkbox-wrapper-14">
                     <i class="bx bx-moon font-size-16 align-middle me-1"></i> <span key="dark-mode">Tema Escuro</span>
                     @* <label class="switch switch-sm">
@@ -177,6 +180,12 @@
             } else {
                 document.exitFullscreen();
             }
+        }
+
+        // Função para redirecionar para a tela de lock, enviando a URL atual
+        function redirectToLockScreen() {
+            const currentUrl = window.location.pathname;
+            window.location.href = `/Account/LockScreen?returnUrl=${encodeURIComponent(currentUrl)}`;
         }
     </script>
 </div>

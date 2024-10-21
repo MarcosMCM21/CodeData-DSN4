@@ -37,8 +37,8 @@
                         <td></td>
                         <td>@solicitacao.Solicitacao.Numero</td>
                         <td>@solicitacao.Solicitacao.Descricao</td>
-                        <td>@solicitacao.Solicitacao.DataInicio</td>
-                        <td>@solicitacao.Solicitacao.DataFinal</td>
+                        <td>@solicitacao.Solicitacao.DataInicio.ToString("dd/MM/yyyy")</td>
+                        <td>@solicitacao.Solicitacao.DataFinal.ToString("dd/MM/yyyy")</td>
                         <td>@solicitacao.Vendedor</td>
                         <td><a type="button" class="btn btn-primary" asp-controller="Solicitacao" asp-action="Detalhes" asp-route-id="@solicitacao.Solicitacao.Id">Detalhes</a></td>
                     </tr>

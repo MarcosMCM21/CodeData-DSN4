@@ -38,8 +38,24 @@
     <p><strong>CIDADE:</strong> @Model.Endereco.Cidade</p>
     <p><strong>ESTADO:</strong> @Model.Endereco.Estado</p>
     <p><strong>COMPLEMENTO:</strong> @Model.Endereco.Complemento</p>
+
+    <h2>MAPA</h2>
+
+    @await Html.PartialAsync("~/Views/Components/_GoogleMaps.cshtml", Model.Endereco.Localizacao)
 }
 
-<h2>MAPA</h2>
+@section Scripts {
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            let tipoSolicitacao = "@Model.DadosSolicitacao.Solicitacao.Tipo"
 
-@await Html.PartialAsync("~/Views/Components/_GoogleMaps.cshtml", Model.Endereco.Localizacao)
+            let items = document.querySelectorAll('li')
+
+            items.forEach(i => {
+                if (i.innerHTML.includes(`tipoSolicitacao=${tipoSolicitacao.toLowerCase()}`)) {
+                    i.classList.add("selected")
+                }
+            })
+        })
+    </script>
+}

@@ -6,6 +6,7 @@ using CodeData_Connection.Areas.Identity.User;
 using CodeData_Connection.Areas.Identity.Enums;
 using Microsoft.AspNetCore.Identity;
 using CodeData_Connection.Models;
+using CodeData_Connection.Models.Database.Entidade;
 
 namespace CodeData_Connection.Controllers
 {
@@ -40,12 +41,18 @@ namespace CodeData_Connection.Controllers
                 return NotFound();
             }
 
+            List<string> niveisAcesso = [];
+
             foreach (var usuario in usuarios)
             {
                 var roleUser = await _context.UserRoles.Where(r => r.UserId == usuario.Id).FirstOrDefaultAsync();
                 var role = await _context.Roles.Where(r => r.Id == roleUser.RoleId).FirstOrDefaultAsync();
                 dadosUsuarios.Add(new DadosUsuario { Usuario = usuario, NivelAcesso = role.Name });
+
+                if (!niveisAcesso.Contains(role.Name)) niveisAcesso.Add(role.Name);
             }
+
+            ViewBag.NiveisAcesso = niveisAcesso;
 
             return PartialView("_DadosUsuario", dadosUsuarios);
         }

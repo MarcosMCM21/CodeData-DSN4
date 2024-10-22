@@ -17,6 +17,34 @@
         </div>
     </header>
 
+    <!-- Modal -->
+    <div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="filterModalLabel">Filtrar</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="tipo-filter">Tipo do Documento</label>
+                        <select id="tipo-filter" class="form-select">
+                            <option value="">Todos os Tipos</option>
+                            @foreach(var tipo in ViewBag.Tipos)
+                            {
+                                <option value="@tipo">@tipo</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                    <button type="button" id="filter-button" class="btn btn-primary" data-bs-dismiss="modal">Filtrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="container-table">
 
         <div class="container-fluid mt-3">
@@ -35,12 +63,8 @@
 
                 <!-- Barra de pesquisa e botão de filtro -->
                 <div class="col-md-6 d-flex justify-content-end align-items-center">
-                    <div class="input-group-prepend"><span class="input-group-text">Pesquisar</span></div>
-
-                    <input id="search-input" type="text" class="form-control w-50" placeholder="Buscar Registros">
-
+                    <input id="search-input" type="text" class="form-control w-50" placeholder="Pesquisar">
                     <div class="input-group-append"><button id="search-button" class="btn btn-primary" type="button"><i class="fa-solid fa-magnifying-glass" style="color: white"></i></button></div>
-
                     <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#filterModal"><i class="fa-solid fa-filter" style="color: white"></i></button>
                 </div>
             </div>
@@ -66,9 +90,9 @@
                         <td>@documento.Nome</td>
                         <td>@documento.Tipo</td>
                         <td>
-                            <a type="button" class="btn btn-primary" asp-action="Detalhes" asp-route-id="@documento.Id">Detalhes</a>
-                            <a type="button" class="btn btn-warning" asp-action="Editar" asp-route-id="@documento.Id">Editar</a>
-                            <a type="button" class="btn btn-danger" asp-action="" asp-route-id="@documento.Id">Deletar</a>
+                            <a type="button" class="btn btn-primary" asp-action="Detalhes" asp-route-id="@documento.Id data-toggle="tooltip" data-placement="right" title="DETALHES"><i class="fa-regular fa-eye" style="color: white"></i></a>
+                            <a type="button" class="btn btn-warning" href="#" data-toggle="tooltip" data-placement="right" title="EDITAR"><i class="fa-regular fa-pen-to-square"></i></a>
+                            <a type="button" class="btn btn-danger" href="#" data-toggle="tooltip" data-placement="right" title="DELETAR"><i class="fa-regular fa-trash-can" style="color: white"></i></a>
                         </td>
                     </tr>
                 }
@@ -189,6 +213,26 @@
         table.search(this.value).draw();
     });
 
+    $.fn.dataTable.ext.search.push(
+        function (settings, data, dataIndex) {
+            var tipo = $('#tipo-filter').val();
+
+            var TableTipo = data[3]; // índice da coluna "Tipo"
+
+            // Normaliza as strings e datas antes da comparação
+            tipo = normalizeString(tipo);
+            TableTipo = normalizeString(TableTipo);
+
+            if (tipo === '' || TableTipo === tipo) return true;
+
+            return false;
+        }
+    );
+
+    $('#filter-button').click(function () {
+        table.draw();
+    });
+
     let btnPdf = document.getElementById('pdf')
     let btnXls = document.getElementById('xls')
 
@@ -199,5 +243,12 @@
     btnXls.addEventListener('click', () => {
         document.getElementsByClassName('buttons-excel')[0].click()
     })
+
+    // Função para remover acentos e caracteres especiais
+    function normalizeString(str) {
+        str = str.toLowerCase(); // Converte a string para minúsculas
+        str = str.normalize('NFD').replace(/[\u0300-\u036f]/g, ""); // Remove acentos
+        return str;
+    }
     
 </script>

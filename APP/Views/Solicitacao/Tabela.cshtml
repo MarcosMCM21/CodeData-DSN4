@@ -98,12 +98,8 @@
 
                 <!-- Barra de pesquisa e botão de filtro -->
                 <div class="col-md-6 d-flex justify-content-end align-items-center">
-                    <div class="input-group-prepend"><span class="input-group-text">Pesquisar</span></div>
-
-                    <input id="search-input" type="text" class="form-control w-50" placeholder="Buscar Registros">
-
+                    <input id="search-input" type="text" class="form-control w-50" placeholder="Pesquisar">
                     <div class="input-group-append"><button id="search-button" class="btn btn-primary" type="button"><i class="fa-solid fa-magnifying-glass" style="color: white"></i></button></div>
-
                     <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#filterModal"><i class="fa-solid fa-filter" style="color: white"></i></button>
                 </div>
             </div>
@@ -135,9 +131,9 @@
                         <td>@solicitacao.Cliente</td>
                         <td>@solicitacao.Vendedor</td>
                         <td>
-                            <a type="button" class="btn btn-primary" asp-action="Detalhes" asp-route-id="@solicitacao.Solicitacao.Id">Detalhes</a>
-                            <a type="button" class="btn btn-warning" asp-action="Editar" asp-route-id="@solicitacao.Solicitacao.Id">Editar</a>
-                            <a type="button" class="btn btn-danger" asp-action="" asp-route-id="@solicitacao.Solicitacao.Id">Deletar</a>
+                            <a type="button" class="btn btn-primary" asp-action="Detalhes" asp-route-id="@solicitacao.Solicitacao.Id" data-toggle="tooltip" data-placement="right" title="DETALHES"><i class="fa-regular fa-eye" style="color: white"></i></a>
+                            <a type="button" class="btn btn-warning" href="#" data-toggle="tooltip" data-placement="right" title="EDITAR"><i class="fa-regular fa-pen-to-square"></i></a>
+                            <a type="button" class="btn btn-danger" href="#" data-toggle="tooltip" data-placement="right" title="DELETAR"><i class="fa-regular fa-trash-can" style="color: white"></i></a>
                         </td>
                     </tr>
                 }

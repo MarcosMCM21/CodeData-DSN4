@@ -30,9 +30,6 @@ namespace CodeData_Connection.Controllers
             // 1. Obter as locações do banco de dados
             var solicitacoes = await ObterDadosBasicosSolicitacoes(tipoSolicitacao); // Usar o método assíncrono
 
-            Console.WriteLine("!!!!");
-            Console.WriteLine();
-
             if (solicitacoes.Any() == false)
             {
                 return NotFound();

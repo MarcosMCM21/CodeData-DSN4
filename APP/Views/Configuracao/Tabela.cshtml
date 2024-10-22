@@ -18,6 +18,34 @@
         </div>
     </header>
 
+    <!-- Modal -->
+    <div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="filterModalLabel">Filtrar</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="nivel-filter">Níveis de Acesso</label>
+                        <select id="nivel-filter" class="form-select">
+                            <option value="">Todos os Níveis</option>
+                            @foreach (var nivel in ViewBag.NiveisAcesso)
+                            {
+                                <option value="@nivel">@nivel</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                    <button type="button" id="filter-button" class="btn btn-primary" data-bs-dismiss="modal">Filtrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="container-table">
 
         <div class="container-fluid mt-3">
@@ -36,12 +64,8 @@
 
                 <!-- Barra de pesquisa e botão de filtro -->
                 <div class="col-md-6 d-flex justify-content-end align-items-center">
-                    <div class="input-group-prepend"><span class="input-group-text">Pesquisar</span></div>
-
-                    <input id="search-input" type="text" class="form-control w-50" placeholder="Buscar Registros">
-
+                    <input id="search-input" type="text" class="form-control w-50" placeholder="Pesquisar">
                     <div class="input-group-append"><button id="search-button" class="btn btn-primary" type="button"><i class="fa-solid fa-magnifying-glass" style="color: white"></i></button></div>
-
                     <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#filterModal"><i class="fa-solid fa-filter" style="color: white"></i></button>
                 </div>
             </div>
@@ -71,7 +95,9 @@
                         <td>@usuario.Usuario.Email</td>
                         <td>@usuario.NivelAcesso</td>
                         <td>
-                            <a type="button" class="btn btn-primary" asp-action="DetalhesUsuario" asp-route-id="@usuario.Usuario.Id">Detalhes</a>
+                            <a type="button" class="btn btn-primary" asp-action="DetalhesUsuario" asp-route-id="@usuario.Usuario.Id" data-toggle="tooltip" data-placement="right" title="DETALHES"><i class="fa-regular fa-eye" style="color: white"></i></a>
+                            <a type="button" class="btn btn-warning" href="#" data-toggle="tooltip" data-placement="right" title="EDITAR"><i class="fa-regular fa-pen-to-square"></i></a>
+                            <a type="button" class="btn btn-danger" href="#" data-toggle="tooltip" data-placement="right" title="DELETAR"><i class="fa-regular fa-trash-can" style="color: white"></i></a>
                         </td>
                     </tr>
                 }
@@ -192,6 +218,26 @@
         table.search(this.value).draw();
     });
 
+    $.fn.dataTable.ext.search.push(
+        function (settings, data, dataIndex) {
+            var nivel = $('#nivel-filter').val();
+            
+            var TableNivelAcesso = data[5]; // índice da coluna "Nivel de Acesso"
+
+            // Normaliza as strings e datas antes da comparação
+            nivel = normalizeString(nivel);
+            TableNivelAcesso = normalizeString(TableNivelAcesso);
+
+            if (nivel === '' || TableNivelAcesso === nivel) return true;
+
+            return false;
+        }
+    );
+
+    $('#filter-button').click(function () {
+        table.draw();
+    });
+
     let btnPdf = document.getElementById('pdf')
     let btnXls = document.getElementById('xls')
 
@@ -202,5 +248,12 @@
     btnXls.addEventListener('click', () => {
         document.getElementsByClassName('buttons-excel')[0].click()
     })
+
+    // Função para remover acentos e caracteres especiais
+    function normalizeString(str) {
+        str = str.toLowerCase(); // Converte a string para minúsculas
+        str = str.normalize('NFD').replace(/[\u0300-\u036f]/g, ""); // Remove acentos
+        return str;
+    }
     
 </script>

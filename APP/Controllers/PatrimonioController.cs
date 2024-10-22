@@ -38,11 +38,8 @@ namespace CodeData_Connection.Controllers
             }
 
             // Popula marcas e modelos sem duplicação
-            var marcas = equipamentos.Select(e => e.Marca).Distinct().ToList();
-            var modelos = equipamentos.Select(e => e.Modelo).Distinct().ToList();
-
-            ViewBag.Marcas = marcas;
-            ViewBag.Modelos = modelos;
+            ViewBag.Marcas = equipamentos.Select(e => e.Marca).Distinct().ToList();
+            ViewBag.Modelos = equipamentos.Select(e => e.Modelo).Distinct().ToList();
 
             var dadosPatrimonio = new DadosPatrimonioViewModel
             {

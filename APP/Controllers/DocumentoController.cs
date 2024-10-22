@@ -33,6 +33,8 @@ namespace CodeData_Connection.Controllers
                 return NotFound();
             }
 
+            ViewBag.Tipos = documentos.Select(d => d.Tipo).Distinct().ToList();
+
             return PartialView("_DadosDocumento", documentos);
         }
 

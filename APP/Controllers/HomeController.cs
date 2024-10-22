@@ -20,6 +20,11 @@ namespace CodeData_Connection.Controllers
             return View();
         }
 
+        public IActionResult Copiadoras()
+        {
+            return View();
+        }
+
         public IActionResult Privacy()
         {
             return View();

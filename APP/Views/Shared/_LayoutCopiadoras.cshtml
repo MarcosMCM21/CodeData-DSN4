@@ -54,14 +54,14 @@
         </script>
 
         <div class="logo">
-            <a asp-controller="Impressora" asp-action="Index">
+            <a asp-controller="Home" asp-action="Copiadoras">
                 <img src="~/img/logo-codedata.svg" alt="">
             </a>
         </div>
 
         <ul>
             <li data-toggle="tooltip" data-placement="right" title="TELA INICIAL">
-                <a href="#">
+                <a asp-controller="Home" asp-action="Copiadoras">
                     <img src="~/img/icon-home.svg" alt="">
                     <span class="nav-item">TELA INICIAL</span>
                 </a>
@@ -141,17 +141,12 @@
             items.forEach(i => {
 
                 if (controller == "Solicitacao" && i.innerHTML.includes(controller)) {
-                    if (i.innerHTML.includes(`tipoSolicitacao=${tipoSolicitacao}`)) {
-                        i.classList.add("selected")
-                    }
-                } else if (i.innerHTML.includes(controller)) {
-                    i.classList.add("selected")
-                
-                } else if (controller == "Home") {
-                    if (i.innerHTML.includes('"/"')) {
-                        i.classList.add("selected")
-                    }
+                    if (i.innerHTML.includes(`tipoSolicitacao=${tipoSolicitacao}`)) i.classList.add("selected")
                 }
+
+                else if (controller == "Home" && i.innerHTML.includes("Copiadoras")) i.classList.add("selected")
+
+                else if (i.innerHTML.includes(controller)) i.classList.add("selected")
 
             })
         })

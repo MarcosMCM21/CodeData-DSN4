@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
+using RazorLight;
 
 namespace CodeData_Connection.Areas.Identity.Pages.Account
 {
@@ -72,10 +73,21 @@ namespace CodeData_Connection.Areas.Identity.Pages.Account
                     values: new { area = "Identity", code },
                     protocol: Request.Scheme);
 
-                await _emailSender.SendEmailAsync(
-                    Input.Email,
-                    "Reset Password",
-                    $"Please reset your password by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                var engine = new RazorLightEngineBuilder()
+                    .UseFileSystemProject(Path.Combine(Directory.GetCurrentDirectory(), "Views")) // Configure o caminho para suas Views
+                    .UseMemoryCachingProvider()
+                    .Build();
+
+                var emailBody = await engine.CompileRenderAsync("EmailTemplates/ResetPassword", new
+                {
+                    NomeDaEmpresa = "CodeData",
+                    NomeDoUsuario = $"{user.FirstName} {user.LastName}",
+                    LinkParaRedefinicaoDeSenha = HtmlEncoder.Default.Encode(callbackUrl),
+                    TempoDeExpiracaoDoLink = "24 horas",
+                    EnderecoDeEmailDeSuporte = "suporte@codedata.com"
+                });
+
+                await _emailSender.SendEmailAsync(Input.Email, "Redefinição de Senha", emailBody);
 
                 return RedirectToPage("./ForgotPasswordConfirmation");
             }

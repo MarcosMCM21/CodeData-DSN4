@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
+using RazorLight;
 
 namespace CodeData_Connection.Areas.Identity.Pages.Account
 {
@@ -134,8 +135,20 @@ namespace CodeData_Connection.Areas.Identity.Pages.Account
                         values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
                         protocol: Request.Scheme);
 
-                    await _emailSender.SendEmailAsync(Input.Email, "Confirme seu e-mail",
-                        $"Por favor, confirme sua conta com o link a seguir <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clique aqui</a>.");
+                    var engine = new RazorLightEngineBuilder()
+                    .UseFileSystemProject(Path.Combine(Directory.GetCurrentDirectory(), "Views")) // Configure o caminho para suas Views
+                    .UseMemoryCachingProvider()
+                    .Build();
+
+                    var emailBody = await engine.CompileRenderAsync("EmailTemplates/ConfirmEmail", new
+                    {
+                        NomeDoSistema = "Controle de Patrimônio, Locação e Homologação",
+                        NomeDoUsuario = $"{user.FirstName} {user.LastName}",
+                        LinkParaAtivarConta = callbackUrl,
+                        TempoDeExpiracaoDoLink = "24 horas"
+                    });
+
+                    await _emailSender.SendEmailAsync(Input.Email, "Confirme seu e-mail", emailBody);
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {

@@ -1,0 +1,32 @@
+﻿@model dynamic
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+        @* <img src="cid:logo" alt="Logo da Empresa" style="max-width: 200px; margin-bottom: 20px;"> *@
+
+        <h1>Confirme seu Cadastro</h1>
+
+        <p>Olá @Model.NomeDoUsuario,</p>
+
+        <p>Seu cadastro no sistema @Model.NomeDoSistema foi realizado com sucesso.</p>
+
+        <p>Para ativar sua conta e acessar o sistema, clique no botão abaixo:</p>
+
+        <a href="@Model.LinkParaAtivarConta" style="display: inline-block; padding: 10px 20px; background-color: #007bff; color: #fff; text-decoration: none; border-radius: 5px;">Ativar minha conta</a>
+
+        <p>Este link expirará em @Model.TempoDeExpiracaoDoLink.</p>
+
+        <p>Caso não tenha se cadastrado no sistema @Model.NomeDoSistema, por favor, ignore este email.</p>
+
+        <p>Em caso de dúvidas, entre em contato com o suporte técnico.</p>
+
+        <p style="margin-top: 30px;">Atenciosamente,</p>
+        <p>Equipe de TI</p>
+    </div>
+</body>
+</html>

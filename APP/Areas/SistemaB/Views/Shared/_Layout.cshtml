@@ -1,9 +1,14 @@
 ﻿﻿@using Microsoft.AspNetCore.Identity
 @using CodeData_Connection.Areas.Identity.Data
 @using CodeData_Connection.Areas.Identity.Enums
+@using CodeData_Connection.Services
 
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
+
+@{
+    CurrentLayout.Layout = "/Areas/SistemaB/Views/Shared/_Layout.cshtml"; // Layout específico do SistemaB
+}
 
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -54,14 +59,14 @@
         </script>
 
         <div class="logo">
-            <a asp-controller="Home" asp-action="Copiadoras">
+            <a asp-area="SistemaB" asp-controller="Home" asp-action="Index">
                 <img src="~/img/logo-codedata.svg" alt="">
             </a>
         </div>
 
         <ul>
             <li data-toggle="tooltip" data-placement="right" title="TELA INICIAL">
-                <a asp-controller="Home" asp-action="Copiadoras">
+                <a asp-area="SistemaB" asp-controller="Home" asp-action="Index">
                     <img src="~/img/icon-home.svg" alt="">
                     <span class="nav-item">TELA INICIAL</span>
                 </a>
@@ -71,13 +76,21 @@
             @if (User.IsInRole("Administrador"))
             {
                 <li data-toggle="tooltip" data-placement="right" title="DASHBOARD">
-                    <a href="#">
+                    <a asp-area="SistemaB" asp-controller="Dashboard" asp-action="Index">
                         <img src="~/img/icon-dashboard.svg" alt="">
                         <span class="nav-item">DASHBOARD</span>
                     </a>
                     @* <span class="tooltip">DASHBOARD</span> *@
                 </li>
             }
+
+            <li data-toggle="tooltip" data-placement="right" title="PATRIMÔNIO">
+                <a asp-area="SistemaB" asp-controller="Patrimonio" asp-action="Index">
+                    <img src="~/img/icon-patrimonio.svg" alt="">
+                    <span class="nav-item">PATRIMÔNIO</span>
+                </a>
+                @* <span class="tooltip">ESTOQUE</span> *@
+            </li>
 
             <li data-toggle="tooltip" data-placement="right" title="LOCAÇÃO">
                 <a href="#">
@@ -88,11 +101,26 @@
                 @* <span class="tooltip">LOCAÇÃO</span> *@
             </li>
 
+            <li data-toggle="tooltip" data-placement="right" title="CLIENTES">
+                <a asp-area="SistemaB" asp-controller="Cliente" asp-action="Index">
+                    <img src="~/img/icon-clientes.svg" alt="">
+                    <span class="nav-item">CLIENTES</span>
+                </a>
+                @* <span class="tooltip">CLIENTES</span> *@
+            </li>
+
             @if (User.IsInRole("Administrador"))
             {
+                <li data-toggle="tooltip" data-placement="right" title="DOCUMENTOS">
+                    <a asp-area="SistemaB" asp-controller="Documento" asp-action="Index">
+                        <img src="~/img/icon-doc.svg" alt="">
+                        <span class="nav-item">DOCUMENTOS</span>
+                    </a>
+                    @* <span class="tooltip">DOCUMENTOS</span> *@
+                </li>
 
                 <li data-toggle="tooltip" data-placement="right" title="CONFIGURAÇÕES">
-                    <a href="#">
+                    <a asp-area="" asp-controller="Configuracao" asp-action="Index">
                         <img src="~/img/icon-config.svg" alt="">
                         <span class="nav-item">CONFIGURAÇÕES</span>
                     </a>
@@ -113,7 +141,7 @@
     </div>
 
     @* Exibe o menu superior da página *@
-    @await Html.PartialAsync("_Navbar")
+    @await Html.PartialAsync("~/Views/Shared/_Navbar.cshtml")
 
     <div class="main-content">
         @* Renderiza as páginas da aplicação *@
@@ -130,21 +158,12 @@
 
             let controller = "@ViewContext.RouteData.Values["controller"].ToString()"
             let action = "@ViewContext.RouteData.Values["action"].ToString()"
-            let previousURL = document.referrer;
-
-            // Pega o caminho da página atual "/Controller/Action"
-            let pathName = window.location.pathname
-
-            let urlParams = new URLSearchParams(window.location.search)
-            let tipoSolicitacao = urlParams.get('tipoSolicitacao')
 
             items.forEach(i => {
 
-                if (controller == "Solicitacao" && i.innerHTML.includes(controller)) {
-                    if (i.innerHTML.includes(`tipoSolicitacao=${tipoSolicitacao}`)) i.classList.add("selected")
+                if (controller == "Home") {
+                    if (i.innerHTML.includes('href="/SistemaB">')) i.classList.add("selected")
                 }
-
-                else if (controller == "Home" && i.innerHTML.includes("Copiadoras")) i.classList.add("selected")
 
                 else if (i.innerHTML.includes(controller)) i.classList.add("selected")
 

@@ -1,9 +1,14 @@
 ﻿﻿@using Microsoft.AspNetCore.Identity
 @using CodeData_Connection.Areas.Identity.Data
 @using CodeData_Connection.Areas.Identity.Enums
+@using CodeData_Connection.Services
 
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
+
+@{
+    CurrentLayout.Layout = "/Areas/SistemaA/Views/Shared/_Layout.cshtml"; // Layout específico do SistemaA
+}
 
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -123,7 +128,7 @@
                 </li>
 
                 <li data-toggle="tooltip" data-placement="right" title="CONFIGURAÇÕES">
-                    <a asp-controller="Configuracao" asp-action="Index">
+                    <a asp-area="" asp-controller="Configuracao" asp-action="Index">
                         <img src="~/img/icon-config.svg" alt="">
                         <span class="nav-item">CONFIGURAÇÕES</span>
                     </a>
@@ -144,7 +149,7 @@
     </div>
 
     @* Exibe o menu superior da página *@
-    @await Html.PartialAsync("_Navbar")
+    @await Html.PartialAsync("~/Views/Shared/_Navbar.cshtml")
 
     <div class="main-content">
         @* Renderiza as páginas da aplicação *@
@@ -161,10 +166,6 @@
 
             let controller = "@ViewContext.RouteData.Values["controller"].ToString()"
             let action = "@ViewContext.RouteData.Values["action"].ToString()"
-            let previousURL = document.referrer;
-
-            // Pega o caminho da página atual "/Controller/Action"
-            let pathName = window.location.pathname
 
             let urlParams = new URLSearchParams(window.location.search)
             let tipoSolicitacao = urlParams.get('tipoSolicitacao')

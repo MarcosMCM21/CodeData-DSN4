@@ -1,9 +1,25 @@
 ﻿@page
 @model RegisterConfirmationModel
+
 @{
-    Layout = "/Views/Shared/_Message.cshtml";
+    Layout = "_LayoutIdentity";
     ViewData["Title"] = "Confirmar Cadastro";
 }
 
-<h1>@ViewData["Title"]</h1>
-<p>Por favor, verifique seu email para confirmar sua conta.</p>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col text-center">
+            <!-- Título Principal com Destaque -->
+            <h1 class="display-5">@ViewData["Title"]</h1>
+
+            <!-- Alerta com Feedback Visual -->
+            <div class="alert alert-info text-center" role="alert">Por favor, verifique seu email para confirmar sua conta.</div>
+
+            <!-- Call to Action: Link para Reenviar Email -->
+            <p class="text-center text-muted">Não recebeu o email? <a href="#" class="font-weight-bold"><i class="fas fa-envelope"></i> Reenviar Email de Confirmação</a>.</p>
+
+            <!-- Botão para Login -->
+            <div class="text-center mt-4"><a asp-page="./Login" class="btn btn-primary btn-lg">Ir para Login</a></div>
+        </div>
+    </div>
+</div>

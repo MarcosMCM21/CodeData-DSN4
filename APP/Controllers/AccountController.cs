@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel.DataAnnotations;
 
 namespace CodeData_Connection.Controllers
@@ -27,6 +26,7 @@ namespace CodeData_Connection.Controllers
             HttpContext.Session.SetString("IsLocked", "true");
 
             ViewData["ReturnUrl"] = returnUrl;
+
             return View();
         }
 

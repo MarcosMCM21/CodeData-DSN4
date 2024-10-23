@@ -13,7 +13,7 @@
     <script>
         $(document).ready(function () {
             $.ajax({
-                url: '@Url.Action("ObterDadosDocumento", "Documento")',
+                url: '/SistemaB/Documento/ObterDadosDocumento',
                 type: 'GET',
                 success: function (data) {
                     $('#loading-screen').hide();

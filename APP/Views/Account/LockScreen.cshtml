@@ -1,26 +1,25 @@
 ﻿@model CodeData_Connection.Controllers.LockScreenViewModel
 
+@{
+    Layout = "~/Areas/Identity/Pages/Account/_LayoutIdentity.cshtml";
+}
+
 <div class="container mt-5">
-    <div class="row">
-        <div class="col">
-            <h2>Sua sessão foi bloqueada por inatividade. Insira sua senha para continuar.</h2>
+    <div class="row justify-content-center">
+        <div class="col text-center">
+            <h1 class="Display-5">Sua sessão foi bloqueada por inatividade. Insira sua senha para continuar.</h1>
 
-            <!-- Desbroquear a tela -->
-            <div class="card mb-3">
-                <div class="card-header"><h5>Bloqueio de Tela</h5></div>
-                <div class="card-body">
-                    <form asp-action="UnlockScreen" method="post">
-                        <div class="form-group">
-                            <input asp-for="Password" class="form-control" type="password" placeholder="Digite sua senha" autocomplete="new-password"/>
-                            <span asp-validation-for="Password" class="text-danger"></span>
-                        </div>
+                <form asp-action="UnlockScreen" method="post" class="mt-4">
+                    <div class="form-floating mb-3">
+                        <input asp-for="Password" class="form-control" type="password" autocomplete="new-password"/>
+                        <label asp-for="Password">Digite sua Senha</label>
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
 
-                        <input type="hidden" name="returnUrl" value="@ViewData["ReturnUrl"]" />
+                    <input type="hidden" name="returnUrl" value="@ViewData["ReturnUrl"]" />
 
-                        <button type="submit" class="btn btn-primary">Desbloquear</button>
-                    </form>
-                </div>
-            </div>
+                    <button type="submit" class="btn btn-primary mt-3">Desbloquear</button>
+                </form>
 
         </div>
     </div>

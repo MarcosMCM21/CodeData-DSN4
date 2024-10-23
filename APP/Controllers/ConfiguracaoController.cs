@@ -2,11 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using CodeData_Connection.Areas.Identity.Enums;
-using Microsoft.AspNetCore.Identity;
 using CodeData_Connection.Models;
-using CodeData_Connection.Models.Database.Entidade;
-
 namespace CodeData_Connection.Controllers
 {
     [Authorize(Roles = "Administrador")]
@@ -26,6 +22,7 @@ namespace CodeData_Connection.Controllers
 
         public IActionResult Usuarios()
         {
+
             return View();
         }
 

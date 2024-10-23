@@ -5,7 +5,6 @@ using CodeData.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using CodeData_Connection.Services;
 using CodeData_Connection.Middleware;
-using Microsoft.AspNetCore.Builder;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("ApplicationDbContextConnection") ?? throw new InvalidOperationException("Connection string 'ApplicationDbContextConnection' not found.");
@@ -37,8 +36,8 @@ builder.Services.ConfigureApplicationCookie(options =>
 
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromMinutes(30); // Tempo de expiração da sessão
-    options.Cookie.HttpOnly = true; // Mais segurança
+    options.IdleTimeout = TimeSpan.FromMinutes(30); // Tempo de expiraï¿½ï¿½o da sessï¿½o
+    options.Cookie.HttpOnly = true; // Mais seguranï¿½a
     options.Cookie.IsEssential = true;
 });
 
@@ -58,9 +57,9 @@ app.Services.CreateScope().ServiceProvider.GetRequiredService<ApplicationDbConte
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Home/Error");
+    _ = app.UseExceptionHandler("/Home/Error");
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
+    _ = app.UseHsts();
 }
 
 app.UseStatusCodePagesWithReExecute("/Error/{0}");
@@ -77,17 +76,25 @@ app.UseAuthentication();
 
 app.UseAuthorization();
 
-app.MapControllerRoute(
+app.UseEndpoints(endpoints =>
+{
+    _ = endpoints.MapAreaControllerRoute(
+        name: "sistemaA_default",
+        areaName: "SistemaA",
+        pattern: "{controller=Home}/{action=Index}/{id?}");
+
+    _ = endpoints.MapAreaControllerRoute(
+        name: "sistemaB_default",
+        areaName: "SistemaB",
+        pattern: "SistemaB/{controller=Home}/{action=Index}/{id?}");
+
+    _ = endpoints.MapControllerRoute(
         name: "default",
-        pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+        pattern: "{controller=Home}/{action=Index}/{id?}");
 
-//app.MapAreaControllerRoute(
-//    name: "sistemaB_default",
-//    areaName: "SistemaB",
-//    pattern: "SistemaB/{controller=Home}/{action=Index}/{id?}");
+    _ = endpoints.MapRazorPages();
+});
 
-app.MapRazorPages();
-
-app.UseLockScreenMiddleware(); // Adicionar o middleware de LockScreen
+app.UseLockScreenMiddleware(); // Redireciona para a tela de LockScreen
 
 app.Run();

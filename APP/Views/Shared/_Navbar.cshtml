@@ -2,7 +2,6 @@
 @using CodeData_Connection.Areas.Identity.Data
 @using CodeData_Connection.Models.Database
 @using CodeData_Connection.Models.Database.Entidade
-@using CodeData_Connection.Areas.Identity.Data
 
 @inject UserManager<ApplicationUser> UserManager
 @inject ApplicationDbContext _context
@@ -127,8 +126,8 @@
             </button>
             <div class="dropdown-menu dropdown-menu-end">
                 <!-- item-->
-                <a asp-controller="Usuario" asp-action="Perfil" class="dropdown-item"><i class="bx bx-user font-size-16 align-middle me-1"></i> <span key="t-profile">Perfil</span></a>
-                <a asp-controller="Usuario" asp-action="Configuracoes" class="dropdown-item d-block"><i class="bx bx-wrench font-size-16 align-middle me-1"></i> <span key="t-settings">Configurações</span></a>
+                <a asp-area="" asp-controller="Usuario" asp-action="Perfil" class="dropdown-item"><i class="bx bx-user font-size-16 align-middle me-1"></i> <span key="t-profile">Perfil</span></a>
+                <a asp-area="" asp-controller="Usuario" asp-action="Configuracoes" class="dropdown-item d-block"><i class="bx bx-wrench font-size-16 align-middle me-1"></i> <span key="t-settings">Configurações</span></a>
                 <a href="#" onclick="redirectToLockScreen()" class="dropdown-item"><i class="bx bx-lock-open font-size-16 align-middle me-1"></i> <span key="t-lock-screen">Broquear Tela</span></a>
                 <div class="dropdown-item checkbox-wrapper-14">
                     <i class="bx bx-moon font-size-16 align-middle me-1"></i> <span key="dark-mode">Tema Escuro</span>

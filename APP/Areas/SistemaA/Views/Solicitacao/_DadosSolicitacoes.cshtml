@@ -1,0 +1,6 @@
+﻿@model CodeData_Connection.Areas.SistemaA.Controllers.DadosSolicitacaoViewModel
+
+@await Html.PartialAsync("Tabela", Model.DadosSolicitacao)
+
+<h1>LOCALIZAÇÃO</h1>
+@await Html.PartialAsync("~/Views/Components/_GoogleMapsMultiple.cshtml", Model.ListaEnderecos)

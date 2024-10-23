@@ -1,11 +1,11 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using CodeData_Connection.Areas.Identity.Data;
-using CodeData_Connection.Areas.Identity.User;
 using CodeData.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using CodeData_Connection.Services;
 using CodeData_Connection.Middleware;
+using Microsoft.AspNetCore.Builder;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("ApplicationDbContextConnection") ?? throw new InvalidOperationException("Connection string 'ApplicationDbContextConnection' not found.");
@@ -78,8 +78,13 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+        name: "default",
+        pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+
+//app.MapAreaControllerRoute(
+//    name: "sistemaB_default",
+//    areaName: "SistemaB",
+//    pattern: "SistemaB/{controller=Home}/{action=Index}/{id?}");
 
 app.MapRazorPages();
 

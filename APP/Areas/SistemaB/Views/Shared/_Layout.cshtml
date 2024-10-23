@@ -1,0 +1,226 @@
+﻿﻿@using Microsoft.AspNetCore.Identity
+@using CodeData_Connection.Areas.Identity.Data
+@using CodeData_Connection.Areas.Identity.Enums
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - CodeData Connection</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link href="~/lib/toastr/build/toastr.css" rel="stylesheet" />
+    <script src="https://kit.fontawesome.com/8a37f8b7a6.js" crossorigin="anonymous"></script>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/CodeData Connection.styles.css" asp-append-version="true" />
+</head>
+<body class="theme-light">
+    <script>
+        // Script para verificar se o site está no modo escuro ou claro
+        // Mudança de tema está no arquivo _Navbar.cshtml
+        let body = document.querySelector("body");
+        let themeMode = sessionStorage.getItem("isDarkTheme");
+
+        if (themeMode === "true") {
+            body.classList.remove('theme-light')
+            body.classList.add('theme-dark')
+        }
+        else if (themeMode === "false") {
+            body.classList.remove('theme-dark')
+            body.classList.add('theme-light')
+        }
+    </script>
+
+    <div class="sidebar">
+        <script>
+            // Script para verificar o estado do menu lateral para ele aparecer maximizado ou minimizado
+            let sidebar = document.querySelector('.sidebar')
+            let isMinimized = sessionStorage.getItem("isMinimized");
+
+            if (!isMinimized) {
+                sessionStorage.setItem("isMinimized", "true");
+            } else {
+                if (isMinimized === "true") {
+                    sidebar.classList.remove("active")
+                }
+                else if (isMinimized === "false") {
+                    sidebar.classList.add("active")
+                }
+            }
+        </script>
+
+        <div class="logo">
+            <a asp-controller="Home" asp-action="Copiadoras">
+                <img src="~/img/logo-codedata.svg" alt="">
+            </a>
+        </div>
+
+        <ul>
+            <li data-toggle="tooltip" data-placement="right" title="TELA INICIAL">
+                <a asp-controller="Home" asp-action="Copiadoras">
+                    <img src="~/img/icon-home.svg" alt="">
+                    <span class="nav-item">TELA INICIAL</span>
+                </a>
+                @* <span class="tooltip">TELA INICIAL</span> *@
+            </li>
+
+            @if (User.IsInRole("Administrador"))
+            {
+                <li data-toggle="tooltip" data-placement="right" title="DASHBOARD">
+                    <a href="#">
+                        <img src="~/img/icon-dashboard.svg" alt="">
+                        <span class="nav-item">DASHBOARD</span>
+                    </a>
+                    @* <span class="tooltip">DASHBOARD</span> *@
+                </li>
+            }
+
+            <li data-toggle="tooltip" data-placement="right" title="LOCAÇÃO">
+                <a href="#">
+                    <div class="background-link"></div>
+                    <img src="~/img/icon-locacao.svg" alt="">
+                    <span class="nav-item">LOCAÇÃO</span>
+                </a>
+                @* <span class="tooltip">LOCAÇÃO</span> *@
+            </li>
+
+            @if (User.IsInRole("Administrador"))
+            {
+
+                <li data-toggle="tooltip" data-placement="right" title="CONFIGURAÇÕES">
+                    <a href="#">
+                        <img src="~/img/icon-config.svg" alt="">
+                        <span class="nav-item">CONFIGURAÇÕES</span>
+                    </a>
+                    @* <span class="tooltip">CONFIGURAÇÕES</span> *@
+                </li>
+            }
+
+            <li data-toggle="tooltip" data-placement="right" title="COLETORES DE DADO">
+                <a asp-area="SistemaA" asp-controller="Home" asp-action="Index">
+                    <img src="~/img/icon-qrcode.svg" alt="">
+                    <span class="nav-item">COLETORES DE DADO</span>
+                </a>
+                @* <span class="tooltip">IMPRESSORAS</span> *@
+            </li>
+
+        </ul>
+
+    </div>
+
+    @* Exibe o menu superior da página *@
+    @await Html.PartialAsync("_Navbar")
+
+    <div class="main-content">
+        @* Renderiza as páginas da aplicação *@
+        <main role="main">
+            @RenderBody()
+        </main>
+    </div>
+
+    <script>
+        window.addEventListener("DOMContentLoaded", ()=> {
+            resetTimer()
+
+            let items = document.querySelectorAll('li')
+
+            let controller = "@ViewContext.RouteData.Values["controller"].ToString()"
+            let action = "@ViewContext.RouteData.Values["action"].ToString()"
+            let previousURL = document.referrer;
+
+            // Pega o caminho da página atual "/Controller/Action"
+            let pathName = window.location.pathname
+
+            let urlParams = new URLSearchParams(window.location.search)
+            let tipoSolicitacao = urlParams.get('tipoSolicitacao')
+
+            items.forEach(i => {
+
+                if (controller == "Solicitacao" && i.innerHTML.includes(controller)) {
+                    if (i.innerHTML.includes(`tipoSolicitacao=${tipoSolicitacao}`)) i.classList.add("selected")
+                }
+
+                else if (controller == "Home" && i.innerHTML.includes("Copiadoras")) i.classList.add("selected")
+
+                else if (i.innerHTML.includes(controller)) i.classList.add("selected")
+
+            })
+        })
+
+        window.addEventListener("load", function() {
+            let btn = document.getElementById('vertical-menu-btn') // ID está no "_Navbar" que é chamado no PartialAsync
+
+            // Maximiza e minimiza o menu lateral
+            btn.addEventListener('click', () => {
+                sidebar.classList.toggle("active")
+                // Salva na sessionStorage o estado do menu durante as trocas de página
+                sessionStorage.setItem("isMinimized", sidebar.classList.contains("active") ? false : true)
+            })
+
+            $(function () {
+                toastr.options = {
+                    "positionClass": "toast-bottom-right",
+                    "timeOut": "3000", // Duração do Toast em milissegundos
+                    "closeButton": true, // Botão para fechar o Toast
+                    "progressBar": true
+                };
+
+                var toast = '@TempData["Mensagem"]';
+
+                if (toast != null) {
+                    var tipoMensagem = '@TempData["TipoMensagem"]';
+                    var mensagem = '@TempData["Mensagem"]';
+
+                    if (tipoMensagem === "success") {
+                        toastr.success(mensagem);
+                    }
+                    else if (tipoMensagem === "error") {
+                        toastr.error(mensagem);
+                    }
+                }
+            })
+        });
+        
+        let timeout;
+        let lockTime = 300000; // 5 minutos de inatividade
+        
+        // Função para redirecionar para a tela de lock, enviando a URL atual
+        function redirectToLockScreen() {
+            const currentUrl = window.location.pathname;
+            window.location.href = `/Account/LockScreen?returnUrl=${encodeURIComponent(currentUrl)}`;
+        }
+
+        // Função para resetar o timer de inatividade
+        function resetTimer() {
+            clearTimeout(timeout);
+            timeout = setTimeout(redirectToLockScreen, lockTime);
+        }
+
+        // Event listeners para detectar atividade
+        window.onload = resetTimer;
+        document.onmousemove = resetTimer;
+        document.onkeypress = resetTimer;
+        document.onmousedown = resetTimer;
+        document.ontouchstart = resetTimer;
+        document.onscroll = resetTimer;
+        window.onresize = resetTimer;
+
+        // Limpar timeout ao sair da página
+        window.onbeforeunload = function() {
+            clearTimeout(timeout);
+        };
+    </script>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/lib/toastr/build/toastr.min.js"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+
+</body>
+</html>

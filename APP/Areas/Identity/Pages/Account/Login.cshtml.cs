@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using CodeData_Connection.Areas.Identity.User;
+using CodeData_Connection.Areas.Identity.Data;
 
 namespace CodeData_Connection.Areas.Identity.Pages.Account
 {

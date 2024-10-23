@@ -1,0 +1,28 @@
+﻿﻿@{
+    ViewData["Title"] = "Documento";
+}
+
+<div id="loading-screen">
+    <div class="loader"></div>
+    <p style="color: white">Carregando...</p>
+</div>
+
+<div id="dadosDocumento"></div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $.ajax({
+                url: '@Url.Action("ObterDadosDocumento", "Documento")',
+                type: 'GET',
+                success: function (data) {
+                    $('#loading-screen').hide();
+                    $('#dadosDocumento').html(data);
+                },
+                error: function () {
+                    $('#loading-screen').html('<p>Erro ao carregar os dados.</p>');
+                }
+            });
+        });
+    </script>
+}

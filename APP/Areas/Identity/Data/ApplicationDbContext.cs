@@ -1,5 +1,4 @@
-﻿using CodeData_Connection.Areas.Identity.User;
-using CodeData_Connection.Models.Database.Entidade;
+﻿using CodeData_Connection.Models.Database.Entidade;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 

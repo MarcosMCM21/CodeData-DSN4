@@ -1,4 +1,4 @@
-﻿using CodeData_Connection.Areas.Identity.User;
+﻿using CodeData_Connection.Areas.Identity.Data;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 

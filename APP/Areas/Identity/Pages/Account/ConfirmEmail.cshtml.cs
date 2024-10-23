@@ -6,7 +6,7 @@ using System;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using CodeData_Connection.Areas.Identity.User;
+using CodeData_Connection.Areas.Identity.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;

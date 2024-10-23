@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using CodeData_Connection.Areas.Identity.User;
 using CodeData_Connection.Areas.Identity.Enums;
 using Microsoft.AspNetCore.Identity;
 using CodeData_Connection.Models;

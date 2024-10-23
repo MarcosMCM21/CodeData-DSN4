@@ -31,13 +31,17 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Options.DataAnnotations" Version="8.0.0" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.5" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.6" />
     <PackageReference Include="MySql.EntityFrameworkCore" Version="8.0.5" />
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="8.0.2" />
     <PackageReference Include="SendGrid" Version="9.29.3" />
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Areas\SistemaA\Data\" />
+    <Folder Include="Areas\SistemaA\Models\" />
+    <Folder Include="Areas\SistemaB\Data\" />
+    <Folder Include="Areas\SistemaB\Models\" />
     <Folder Include="Migrations\" />
     <Folder Include="wwwroot\img\" />
   </ItemGroup>
@@ -47,7 +51,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Update="Views\Patrimonio\_DadosPatrimonio.cshtml">
+    <Content Update="Areas\SistemaA\Views\Patrimonio\_DadosPatrimonio.cshtml">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>

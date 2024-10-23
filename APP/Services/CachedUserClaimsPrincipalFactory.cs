@@ -1,4 +1,4 @@
-﻿using CodeData_Connection.Areas.Identity.User;
+﻿using CodeData_Connection.Areas.Identity.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;

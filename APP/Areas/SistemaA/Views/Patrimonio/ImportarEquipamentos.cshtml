@@ -1,0 +1,13 @@
+﻿@{
+    ViewData["Title"] = "Upload de Arquivo PDF";
+}
+
+<h2>Upload de Arquivo PDF</h2>
+
+<form asp-action="ImportarEquipamentos" method="post" enctype="multipart/form-data">
+    <div class="form-group">
+        <label for="pdfFile">Selecione o arquivo PDF:</label>
+        <input type="file" name="pdfFile" id="pdfFile" class="form-control" />
+    </div>
+    <button type="submit" class="btn btn-primary">Enviar</button>
+</form>

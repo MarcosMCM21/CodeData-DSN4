@@ -4,6 +4,12 @@ using CodeData_Connection.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
+using System.Text.RegularExpressions;
+using NuGet.Protocol;
+using iText.Kernel.Pdf.Canvas.Parser;
+using iText.Kernel.Pdf;
+using iText.Kernel.Pdf.Canvas.Parser.Listener;
+using MySqlX.XDevAPI;
 
 namespace CodeData_Connection.Areas.SistemaA.Controllers
 {
@@ -21,34 +27,6 @@ namespace CodeData_Connection.Areas.SistemaA.Controllers
         public IActionResult Index()
         {
             return View();
-        }
-
-        // Crie uma nova Action para buscar os dados do banco de dados
-        public async Task<IActionResult> ObterDadosPatrimonio()
-        {
-            // Obtém os equipamentos sem tracking para evitar overhead do Entity Framework
-            var equipamentos = await _context.Equipamentos
-                .AsNoTracking()
-                .Select(e => new { e.Id, e.Marca, e.Modelo })
-                .ToListAsync();
-
-            // Se não houver equipamentos, retorna 404
-            if (!equipamentos.Any())
-            {
-                return NotFound();
-            }
-
-            // Popula marcas e modelos sem duplicação
-            ViewBag.Marcas = equipamentos.Select(e => e.Marca).Distinct().ToList();
-            ViewBag.Modelos = equipamentos.Select(e => e.Modelo).Distinct().ToList();
-
-            var dadosPatrimonio = new DadosPatrimonioViewModel
-            {
-                DadosEquipamento = equipamentos.Select(e => ObterDadosBasicosEquipamento(e.Id)).ToList(),
-                ListaEnderecos = ObterEnderecosEquipamentos()
-            };
-
-            return PartialView("_DadosPatrimonio", dadosPatrimonio);
         }
 
         public IActionResult Detalhes(int id)
@@ -87,6 +65,39 @@ namespace CodeData_Connection.Areas.SistemaA.Controllers
             };
 
             return View(viewModel);
+        }
+
+        public IActionResult ImportarEquipamentos() 
+        {
+            return View();
+        }
+
+        // Crie uma nova Action para buscar os dados do banco de dados
+        public async Task<IActionResult> ObterDadosPatrimonio()
+        {
+            // Obtém os equipamentos sem tracking para evitar overhead do Entity Framework
+            var equipamentos = await _context.Equipamentos
+                .AsNoTracking()
+                .Select(e => new { e.Id, e.Marca, e.Modelo })
+                .ToListAsync();
+
+            // Se não houver equipamentos, retorna 404
+            if (!equipamentos.Any())
+            {
+                return NotFound();
+            }
+
+            // Popula marcas e modelos sem duplicação
+            ViewBag.Marcas = equipamentos.Select(e => e.Marca).Distinct().ToList();
+            ViewBag.Modelos = equipamentos.Select(e => e.Modelo).Distinct().ToList();
+
+            var dadosPatrimonio = new DadosPatrimonioViewModel
+            {
+                DadosEquipamento = equipamentos.Select(e => ObterDadosBasicosEquipamento(e.Id)).ToList(),
+                ListaEnderecos = ObterEnderecosEquipamentos()
+            };
+
+            return PartialView("_DadosPatrimonio", dadosPatrimonio);
         }
 
         [HttpPost]
@@ -253,6 +264,113 @@ namespace CodeData_Connection.Areas.SistemaA.Controllers
 
             return enderecos;
         }
+
+        // Action para lidar com o upload
+        [HttpPost]
+        public async Task<IActionResult> ImportarEquipamentos(IFormFile pdfFile)
+        {
+            if (pdfFile != null && pdfFile.Length > 0)
+            {
+                // Defina o caminho onde o arquivo será salvo temporariamente
+                var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads", pdfFile.FileName);
+
+                // Salvando o arquivo no diretório especificado
+
+                try
+                {
+                    using (var stream = new FileStream(path, FileMode.Create))
+                    {
+                        await pdfFile.CopyToAsync(stream);
+                    }
+                } catch { }
+
+                // Você pode processar o arquivo PDF aqui, como analisar com iTextSharp ou outra lógica
+                var dadosPDF = ExtrairDadosNotaFiscal(path);
+
+                Console.WriteLine(dadosPDF.ToJson());
+
+                return RedirectToAction("ImportarEquipamentos");
+            }
+
+            return BadRequest("Nenhum arquivo foi enviado.");
+        }
+
+        public static List<Produto> ExtrairDadosNotaFiscal(string caminhoArquivoPdf)
+        {
+            List<Produto> produtos = new List<Produto>();
+            var patternProduto = @"(?<=DADOS DO PRODUTO/SERVIÇOS)(.*?)(?=DADOS ADICIONAIS)";
+            var patternDadosProduto = @"^(\d{7})";
+            var patternSeriais = @"PEDIDO\sCLIENTE\s-\s(.+?)\n\s+CODIGO\s\d+\s-\sSERIE\s(.+?)\n\s+CODIGO\s\d+\s-\sSERIE\s(.+)"; //Simple
+
+            // Usando PdfReader e PdfDocument do iText 7+
+            using (var reader = new PdfReader(caminhoArquivoPdf))
+            using (var pdfDoc = new PdfDocument(reader))
+            {
+                Console.WriteLine("Documento aberto com sucesso");
+                for (int i = 1; i <= pdfDoc.GetNumberOfPages(); i++)
+                {
+                    LocationTextExtractionStrategy strategy1 = new LocationTextExtractionStrategy();
+                    SimpleTextExtractionStrategy strategy2 = new SimpleTextExtractionStrategy();
+                    PdfCanvasProcessor parser1 = new PdfCanvasProcessor(strategy1);
+                    PdfCanvasProcessor parser2 = new PdfCanvasProcessor(strategy2);
+
+                    var page = pdfDoc.GetPage(i);
+
+                    Console.WriteLine("\n\nLocationTextExtractionStrategy");
+                    parser1.ProcessPageContent(page);
+                    string content1 = strategy1.GetResultantText();
+                    Console.WriteLine(content1 + "\n\n");
+
+                    Console.WriteLine("\n\nSimpleTextExtractionStrategy");
+                    parser2.ProcessPageContent(page);
+                    string content2 = strategy2.GetResultantText();
+                    Console.WriteLine(content2 + "\n\n");
+
+                    var contentProduto = Regex.Match(content2, patternProduto, RegexOptions.Singleline).Value;
+                    Console.WriteLine("\n\nPatternProduto");
+                    Console.WriteLine(contentProduto + "\n\n");
+
+                    if (!string.IsNullOrEmpty(contentProduto))
+                    {
+                        // Aplicar o regex para capturar os dados dos produtos dentro do intervalo
+                        foreach (Match match in Regex.Matches(contentProduto, patternDadosProduto))
+                        {
+                            Console.WriteLine("\n\nPatternProduto");
+
+                            for (int groupIndex = 1; groupIndex < match.Groups.Count; groupIndex++)
+                            {
+                                Console.WriteLine($"Group {groupIndex}: {match.Groups[groupIndex].Value}");
+                            }
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Nenhum dado encontrado entre as seções DADOS DO PRODUTO/SERVIÇOS e DADOS ADICIONAIS.");
+                    }
+
+                    // Extrair os números de série
+                    foreach (Match match in Regex.Matches(content1, patternSeriais))
+                    {
+                        Console.WriteLine("\nnPatternSerials");
+                        Console.WriteLine(match);
+
+                        string codigoProduto = match.Groups[1].Value;
+                        Console.WriteLine("CÓD. PRODUTO: " + codigoProduto);
+
+                        string[] seriais = match.Groups[2].Value.Split(',');
+                        Console.WriteLine("SERIAIS NUMBER: " + codigoProduto);
+
+                        var produto = produtos.Find(p => p.Codigo == codigoProduto);
+                        if (produto != null)
+                        {
+                            produto.Seriais.AddRange(seriais);
+                        }
+                    }
+                }
+            }
+
+            return produtos;
+        }
     }
 
     // ViewModel para a view do Index
@@ -279,5 +397,13 @@ namespace CodeData_Connection.Areas.SistemaA.Controllers
         public Equipamento Equipamento { get; set; }
         public List<EstoqueDocumento> Documentos { get; set; }
         public List<EstoqueDocumento> Estoques { get; set; }
+    }
+
+    public class Produto
+    {
+        public string Codigo { get; set; }
+        public string Descricao { get; set; }
+        public int Quantidade { get; set; }
+        public List<string> Seriais { get; set; } = new List<string>();
     }
 }

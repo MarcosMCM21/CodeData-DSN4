@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CodeData_Connection.Models;
+using NuGet.Protocol;
 namespace CodeData_Connection.Controllers
 {
     [Authorize(Roles = "Administrador")]
@@ -104,6 +105,48 @@ namespace CodeData_Connection.Controllers
             };
 
             return detalhesUsuario; // Retorna o ViewModel preenchido
+        }
+
+        [HttpPost]
+        public IActionResult BroquearUsuario(string id)
+        {
+            Console.WriteLine("Usuário irá ser broqueado");
+            var usuario = _context.Users.FirstOrDefault(u => u.Id == id);
+
+            Console.WriteLine(usuario.ToJson()); 
+            if (usuario == null)
+            {
+                Console.WriteLine("Deu ruim");
+                return NotFound();
+            }
+
+            usuario.LockoutEnabled = true;
+            usuario.LockoutEnd = DateTime.Now.AddYears(100);
+
+            _context.SaveChanges();
+
+            return View("Usuarios");
+        }
+
+        [HttpPost]
+        public IActionResult DesbroquearUsuario(string id)
+        {
+            Console.WriteLine("Usuário irá ser debroqueado");
+            var usuario = _context.Users.FirstOrDefault(u => u.Id == id);
+
+            Console.WriteLine(usuario.ToJson());
+
+            if (usuario == null)
+            {
+                Console.WriteLine("Deu ruim");
+                return NotFound();
+            }
+
+            usuario.LockoutEnd = DateTime.Now;
+
+            _context.SaveChanges();
+
+            return View("Usuarios");
         }
     }
 

@@ -9,7 +9,6 @@ using NuGet.Protocol;
 using iText.Kernel.Pdf.Canvas.Parser;
 using iText.Kernel.Pdf;
 using iText.Kernel.Pdf.Canvas.Parser.Listener;
-using MySqlX.XDevAPI;
 
 namespace CodeData_Connection.Areas.SistemaA.Controllers
 {

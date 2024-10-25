@@ -97,7 +97,18 @@
                         <td>
                             <a type="button" class="btn btn-primary" asp-action="DetalhesUsuario" asp-route-id="@usuario.Usuario.Id" data-toggle="tooltip" data-placement="right" title="DETALHES"><i class="fa-regular fa-eye" style="color: white"></i></a>
                             <a type="button" class="btn btn-warning" href="#" data-toggle="tooltip" data-placement="right" title="EDITAR"><i class="fa-regular fa-pen-to-square"></i></a>
-                            <a type="button" class="btn btn-danger" href="#" data-toggle="tooltip" data-placement="right" title="DELETAR"><i class="fa-regular fa-trash-can" style="color: white"></i></a>
+
+                            @if (usuario.Usuario.LockoutEnd.HasValue && usuario.Usuario.LockoutEnd > DateTime.Now)
+                            {
+                                // Usuário bloqueado - Mostrar link para desbloquear
+                                <a type="button" class="btn btn-danger" asp-action="DesbroquearUsuario" asp-route-id="@usuario.Usuario.Id" data-toggle="tooltip" data-placement="right" title="DESBROQUEAR"><i class="fa-solid fa-lock" style="color: white"></i></a>
+                            }
+                            else
+                            {
+                                // Usuário desbloqueado - Mostrar link para bloquear
+                                <a type="button" class="btn btn-danger" asp-action="BroquearUsuario" asp-route-id="@usuario.Usuario.Id" data-toggle="tooltip" data-placement="right" title="BROQUEAR"><i class="fa-solid fa-unlock" style="color: white"></i></a>
+                            }
+
                         </td>
                     </tr>
                 }

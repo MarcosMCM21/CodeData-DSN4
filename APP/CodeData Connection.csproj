@@ -47,6 +47,7 @@
     <Folder Include="Migrations\" />
     <Folder Include="wwwroot\img\" />
     <Folder Include="wwwroot\uploads\" />
+    <Folder Include="wwwroot\uploads\" />
   </ItemGroup>
 
   <ItemGroup>

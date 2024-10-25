@@ -23,6 +23,13 @@
         "dist/jquery.slim.min.js",
         "dist/jquery.slim.min.map"
       ]
+    },
+    {
+      "library": "datatables.net@2.1.8",
+      "destination": "wwwroot/js/datatables.net",
+      "files": [
+        "js/dataTables.min.js"
+      ]
     }
   ]
 }

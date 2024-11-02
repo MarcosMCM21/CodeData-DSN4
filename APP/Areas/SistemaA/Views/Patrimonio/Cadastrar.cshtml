@@ -1,12 +1,12 @@
 ﻿@model CodeData_Connection.Areas.SistemaA.Controllers.FormsEquipamentoViewModel
 
 @{
-    ViewData["Title"] = "Editar Equipamento";
+    ViewData["Title"] = "Cadastrar Equipamento";
 }
 
 <h1>DADOS DO EQUIPAMENTO</h1>
 
-<form asp-action="Editar" method="post">
+<form asp-action="Cadastrar" method="post">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <input type="hidden" asp-for="Equipamento.Id" />
 
@@ -58,6 +58,7 @@
     <div class="form-group">
         <label asp-for="Equipamento.EstoqueId" class="control-label">Estoques</label>
         <select asp-for="Equipamento.EstoqueId" class="form-control">
+            <option value="">Selecione um estoque</option>
             @foreach (var estoque in Model.Estoques)
             {
                 <option value="@estoque.Id">@estoque.Nome</option>
@@ -69,6 +70,7 @@
     <div class="form-group">
         <label asp-for="Equipamento.DocumentoId" class="control-label">Documentos</label>
         <select asp-for="Equipamento.DocumentoId" class="form-control">
+            <option value="">Selecione um documento</option>
             @foreach (var documento in Model.Documentos)
             {
                 <option value="@documento.Id">@documento.Nome</option>
@@ -78,7 +80,7 @@
     </div>
 
     <div class="form-group">
-        <input type="submit" value="Salvar" class="btn btn-primary" />
+        <input type="submit" value="Cadastrar" class="btn btn-primary" />
     </div>
 </form>
 

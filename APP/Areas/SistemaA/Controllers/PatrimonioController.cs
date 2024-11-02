@@ -56,9 +56,22 @@ namespace CodeData_Connection.Areas.SistemaA.Controllers
             }
 
             // 2. Criar um ViewModel para a view de edição (recomendado)
-            var viewModel = new EditarEquipamentoViewModel
+            var viewModel = new FormsEquipamentoViewModel
             {
                 Equipamento = equipamento,
+                Documentos = await _context.Documentos.Select(d => new EstoqueDocumento { Id = d.Id, Nome = d.Nome }).Distinct().ToListAsync(),
+                Estoques = await _context.Estoques.Select(e => new EstoqueDocumento { Id = e.Id, Nome = e.Nome }).Distinct().ToListAsync()
+            };
+
+            return View(viewModel);
+        }
+
+        public async Task<IActionResult> Cadastrar()
+        {
+            // 2. Criar um ViewModel para a view de edição (recomendado)
+            var viewModel = new FormsEquipamentoViewModel
+            {
+                Equipamento = null,
                 Documentos = await _context.Documentos.Select(d => new EstoqueDocumento { Id = d.Id, Nome = d.Nome }).Distinct().ToListAsync(),
                 Estoques = await _context.Estoques.Select(e => new EstoqueDocumento { Id = e.Id, Nome = e.Nome }).Distinct().ToListAsync()
             };
@@ -140,7 +153,7 @@ namespace CodeData_Connection.Areas.SistemaA.Controllers
             }
 
             // 4. Se houver erros de validação, exibir a view de edição novamente com as mensagens de erro
-            var viewModel = new EditarEquipamentoViewModel
+            var viewModel = new FormsEquipamentoViewModel
             {
                 Equipamento = equipamento,
                 Documentos = await _context.Documentos.Select(d => new EstoqueDocumento { Id = d.Id, Nome = d.Nome }).ToListAsync(),
@@ -149,6 +162,55 @@ namespace CodeData_Connection.Areas.SistemaA.Controllers
 
             TempData["Mensagem"] = "Erro ao atualizar o patrimônio!";
             TempData["TipoMensagem"] = "error";
+
+            // Logar os erros de validação (opcional)
+            foreach (var erro in ModelState.Values.SelectMany(v => v.Errors))
+            {
+                Console.WriteLine(erro.ErrorMessage);
+                Console.WriteLine(erro.Exception);
+            }
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Cadastrar([Bind("Codigo, Modelo, Descricao, Marca, SerialNumber, PartNumber, Condicao, EstoqueId, DocumentoId")] Equipamento equipamento)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    // 1. Adicionar a nova entidade ao contexto
+                    _context.Add(equipamento);
+
+                    // 2. Definir a data de cadastro, caso seja necessário
+                    //equipamento.DataCadastro = DateTime.Now;
+
+                    // 3. Salvar as alterações no banco de dados
+                    await _context.SaveChangesAsync();
+
+                    TempData["Mensagem"] = "Patrimônio cadastrado com sucesso!";
+                    TempData["TipoMensagem"] = "success";
+
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (Exception ex)
+                {
+                    // Tratar exceções específicas conforme necessário
+                    Console.WriteLine($"Erro ao cadastrar: {ex.Message}");
+                    TempData["Mensagem"] = "Erro ao cadastrar o patrimônio!";
+                    TempData["TipoMensagem"] = "error";
+                }
+            }
+
+            // Se houver erros de validação, exibir a view de criação novamente com as mensagens de erro
+            var viewModel = new FormsEquipamentoViewModel
+            {
+                Equipamento = equipamento,
+                Documentos = await _context.Documentos.Select(d => new EstoqueDocumento { Id = d.Id, Nome = d.Nome }).ToListAsync(),
+                Estoques = await _context.Estoques.Select(e => new EstoqueDocumento { Id = e.Id, Nome = e.Nome }).ToListAsync()
+            };
 
             // Logar os erros de validação (opcional)
             foreach (var erro in ModelState.Values.SelectMany(v => v.Errors))
@@ -391,7 +453,7 @@ namespace CodeData_Connection.Areas.SistemaA.Controllers
     }
 
     // ViewModel para a view de edição
-    public class EditarEquipamentoViewModel
+    public class FormsEquipamentoViewModel
     {
         public Equipamento Equipamento { get; set; }
         public List<EstoqueDocumento> Documentos { get; set; }

@@ -1,0 +1,41 @@
+﻿@model CodeData_Connection.Controllers.FormsDocumentoViewModel
+
+<form asp-action="Editar" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="Id" />
+
+    <div class="form-group">
+        <label asp-for="Numero" class="control-label"></label>
+        <input asp-for="Numero" class="form-control" />
+        <span asp-validation-for="Numero" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Nome" class="control-label"></label>
+        <input asp-for="Nome" class="form-control" />
+        <span asp-validation-for="Nome" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Tipo" class="control-label"></label>
+        <input asp-for="Tipo" class="form-control" />
+        <span asp-validation-for="Tipo" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Anexo" class="control-label"></label>
+        <input asp-for="Anexo" type="file" class="form-control" accept=".doc,.docx,.pdf"></input>
+        <span asp-validation-for="Anexo" class="text-danger"></span>
+    </div>
+
+</form>
+
+<div>
+    <a asp-action="Index">Voltar para a Lista</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

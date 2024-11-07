@@ -4,10 +4,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace CodeData_Connection.Areas.SistemaA.Controllers
+namespace CodeData_Connection.Controllers
 {
     [Authorize]
-    [Area("SistemaA")]
     public class DocumentoController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -53,6 +52,15 @@ namespace CodeData_Connection.Areas.SistemaA.Controllers
 
             return View(documento);
         }
+    }
+
+    public class FormsDocumentoViewModel
+    {
+        public int Id { get; set; }
+        public string Numero { get; set; }
+        public string Nome { get; set; }
+        public string Tipo { get; set; }
+        public IFormFile Anexo {  get; set; }
     }
 
     public class DadosDocumentoViewModel

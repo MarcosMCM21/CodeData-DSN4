@@ -1,4 +1,6 @@
-﻿@model CodeData_Connection.Areas.SistemaA.Controllers.FormsEquipamentoViewModel
+﻿@using CodeData_Connection.Controllers
+
+@model CodeData_Connection.Areas.SistemaA.Controllers.FormsEquipamentoViewModel
 
 @{
     ViewData["Title"] = "Cadastrar Equipamento";
@@ -69,14 +71,19 @@
 
     <div class="form-group">
         <label asp-for="Equipamento.DocumentoId" class="control-label">Documentos</label>
-        <select asp-for="Equipamento.DocumentoId" class="form-control">
+        <select asp-for="Equipamento.DocumentoId" id="documentos" class="form-control">
             <option value="">Selecione um documento</option>
+            <option value="novo">Novo documento</option>
             @foreach (var documento in Model.Documentos)
             {
                 <option value="@documento.Id">@documento.Nome</option>
             }
         </select>
         <span asp-validation-for="Equipamento.DocumentoId" class="text-danger"></span>
+    </div>
+
+    <div id="formsDoc" style="display: none">
+        @await Html.PartialAsync("~/Views/Documento/FormsDocumento.cshtml", new FormsDocumentoViewModel())
     </div>
 
     <div class="form-group">
@@ -89,5 +96,19 @@
 </div>
 
 @section Scripts {
+    <script>
+        window.addEventListener('load', () => {
+            let doc = document.getElementById('documentos')
+            let formsDoc = document.getElementById('formsDoc')
+
+            doc.addEventListener('change', () => {
+                if (doc.value == "novo") {
+                    formsDoc.style.display = 'block'
+                } else {
+                    formsDoc.style.display = 'none'
+                }
+            })
+        })
+    </script>
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

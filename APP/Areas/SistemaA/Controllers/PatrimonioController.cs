@@ -71,7 +71,6 @@ namespace CodeData_Connection.Areas.SistemaA.Controllers
             // 2. Criar um ViewModel para a view de edição (recomendado)
             var viewModel = new FormsEquipamentoViewModel
             {
-                Equipamento = null,
                 Documentos = await _context.Documentos.Select(d => new EstoqueDocumento { Id = d.Id, Nome = d.Nome }).Distinct().ToListAsync(),
                 Estoques = await _context.Estoques.Select(e => new EstoqueDocumento { Id = e.Id, Nome = e.Nome }).Distinct().ToListAsync()
             };
@@ -455,7 +454,7 @@ namespace CodeData_Connection.Areas.SistemaA.Controllers
     // ViewModel para a view de edição
     public class FormsEquipamentoViewModel
     {
-        public Equipamento Equipamento { get; set; }
+        public Equipamento? Equipamento { get; set; }
         public List<EstoqueDocumento> Documentos { get; set; }
         public List<EstoqueDocumento> Estoques { get; set; }
     }

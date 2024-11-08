@@ -9,6 +9,8 @@ using NuGet.Protocol;
 using iText.Kernel.Pdf.Canvas.Parser;
 using iText.Kernel.Pdf;
 using iText.Kernel.Pdf.Canvas.Parser.Listener;
+using CodeData_Connection.Controllers;
+using System.Security.Cryptography;
 
 namespace CodeData_Connection.Areas.SistemaA.Controllers
 {
@@ -174,12 +176,54 @@ namespace CodeData_Connection.Areas.SistemaA.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Cadastrar([Bind("Codigo, Modelo, Descricao, Marca, SerialNumber, PartNumber, Condicao, EstoqueId, DocumentoId")] Equipamento equipamento)
+        public async Task<IActionResult> Cadastrar(FormsEquipamentoViewModel model)
         {
+            Console.WriteLine("0000000000000000000000000000000");
+
             if (ModelState.IsValid)
             {
                 try
                 {
+                    int documentoId = model.Equipamento.DocumentoId;
+
+                    Console.WriteLine("11111111111111111111111111111111");
+                    
+                    if (!model.FormDocumento.Numero.Equals("") || model.FormDocumento.Numero != null)
+                    {
+                        Console.WriteLine("22222222222222222222222222222222222");
+
+                        var documento = new Documento
+                        {
+                            Numero = model.FormDocumento.Numero,
+                            Nome = model.FormDocumento.Nome,
+                            Tipo = model.FormDocumento.Tipo,
+                            Anexo = FileConverter.ConvertIFormFileToBase64(model.FormDocumento.Anexo)
+                        };
+
+                        _context.Add(documento);
+
+                        await _context.SaveChangesAsync();
+
+                        documentoId = documento.Id;
+                    }
+
+                    Console.WriteLine("33333333333333333333333333333333");
+
+                    var equipamento = new Equipamento
+                    {
+                        Codigo = model.Equipamento.Codigo,
+                        Modelo = model.Equipamento.Modelo,
+                        Descricao = model.Equipamento.Descricao,
+                        Marca = model.Equipamento.Marca,
+                        SerialNumber = model.Equipamento.SerialNumber,
+                        PartNumber = model.Equipamento.PartNumber,
+                        Condicao = model.Equipamento.Condicao,
+                        EstoqueId = model.Equipamento.EstoqueId,
+                        DocumentoId = documentoId
+                    };
+
+                    Console.WriteLine("444444444444444444444444444444444");
+
                     // 1. Adicionar a nova entidade ao contexto
                     _context.Add(equipamento);
 
@@ -206,7 +250,7 @@ namespace CodeData_Connection.Areas.SistemaA.Controllers
             // Se houver erros de validação, exibir a view de criação novamente com as mensagens de erro
             var viewModel = new FormsEquipamentoViewModel
             {
-                Equipamento = equipamento,
+                Equipamento = model.Equipamento,
                 Documentos = await _context.Documentos.Select(d => new EstoqueDocumento { Id = d.Id, Nome = d.Nome }).ToListAsync(),
                 Estoques = await _context.Estoques.Select(e => new EstoqueDocumento { Id = e.Id, Nome = e.Nome }).ToListAsync()
             };
@@ -455,6 +499,7 @@ namespace CodeData_Connection.Areas.SistemaA.Controllers
     public class FormsEquipamentoViewModel
     {
         public Equipamento? Equipamento { get; set; }
+        public FormsDocumentoViewModel? FormDocumento { get; set; }
         public List<EstoqueDocumento> Documentos { get; set; }
         public List<EstoqueDocumento> Estoques { get; set; }
     }

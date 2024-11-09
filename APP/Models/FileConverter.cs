@@ -2,12 +2,15 @@
 {
     public class FileConverter
     {
-        public static string ConvertIFormFileToBase64(IFormFile file)
+        public static async Task<string> ConvertIFormFileToBase64(IFormFile file)
         {
             using (var memoryStream = new MemoryStream())
             {
-                file.CopyTo(memoryStream);
+                await file.CopyToAsync(memoryStream);
                 byte[] fileBytes = memoryStream.ToArray();
+
+                Console.WriteLine("IFORMFILE: " + Convert.ToBase64String(fileBytes));
+
                 return Convert.ToBase64String(fileBytes);
             }
         }

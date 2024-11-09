@@ -10,7 +10,8 @@ using iText.Kernel.Pdf.Canvas.Parser;
 using iText.Kernel.Pdf;
 using iText.Kernel.Pdf.Canvas.Parser.Listener;
 using CodeData_Connection.Controllers;
-using System.Security.Cryptography;
+using System.ComponentModel.DataAnnotations;
+using Microsoft.CodeAnalysis;
 
 namespace CodeData_Connection.Areas.SistemaA.Controllers
 {
@@ -60,24 +61,30 @@ namespace CodeData_Connection.Areas.SistemaA.Controllers
             // 2. Criar um ViewModel para a view de edição (recomendado)
             var viewModel = new FormsEquipamentoViewModel
             {
-                Equipamento = equipamento,
-                Documentos = await _context.Documentos.Select(d => new EstoqueDocumento { Id = d.Id, Nome = d.Nome }).Distinct().ToListAsync(),
-                Estoques = await _context.Estoques.Select(e => new EstoqueDocumento { Id = e.Id, Nome = e.Nome }).Distinct().ToListAsync()
+                Id = equipamento.Id,
+                Codigo = equipamento.Codigo,
+                Modelo = equipamento.Modelo,
+                Descricao = equipamento.Descricao,
+                Marca = equipamento.Marca,
+                SerialNumber = equipamento.SerialNumber,
+                PartNumber = equipamento.PartNumber,
+                Condicao = equipamento.Condicao,
+                EstoqueId = equipamento.EstoqueId,
+                DocumentoId = equipamento.DocumentoId
             };
+
+            ViewBag.Documentos = await _context.Documentos.Select(d => new EstoqueDocumento { Id = d.Id, Nome = d.Nome }).Distinct().ToListAsync();
+            ViewBag.Estoques = await _context.Estoques.Select(e => new EstoqueDocumento { Id = e.Id, Nome = e.Nome }).Distinct().ToListAsync();
 
             return View(viewModel);
         }
 
         public async Task<IActionResult> Cadastrar()
         {
-            // 2. Criar um ViewModel para a view de edição (recomendado)
-            var viewModel = new FormsEquipamentoViewModel
-            {
-                Documentos = await _context.Documentos.Select(d => new EstoqueDocumento { Id = d.Id, Nome = d.Nome }).Distinct().ToListAsync(),
-                Estoques = await _context.Estoques.Select(e => new EstoqueDocumento { Id = e.Id, Nome = e.Nome }).Distinct().ToListAsync()
-            };
+            ViewBag.Documentos = await _context.Documentos.Select(d => new EstoqueDocumento { Id = d.Id, Nome = d.Nome }).Distinct().ToListAsync();
+            ViewBag.Estoques = await _context.Estoques.Select(e => new EstoqueDocumento { Id = e.Id, Nome = e.Nome }).Distinct().ToListAsync();
 
-            return View(viewModel);
+            return View();
         }
 
         public IActionResult ImportarEquipamentos() 
@@ -156,10 +163,20 @@ namespace CodeData_Connection.Areas.SistemaA.Controllers
             // 4. Se houver erros de validação, exibir a view de edição novamente com as mensagens de erro
             var viewModel = new FormsEquipamentoViewModel
             {
-                Equipamento = equipamento,
-                Documentos = await _context.Documentos.Select(d => new EstoqueDocumento { Id = d.Id, Nome = d.Nome }).ToListAsync(),
-                Estoques = await _context.Estoques.Select(e => new EstoqueDocumento { Id = e.Id, Nome = e.Nome }).ToListAsync()
+                Id = equipamento.Id,
+                Codigo = equipamento.Codigo,
+                Modelo = equipamento.Modelo,
+                Descricao = equipamento.Descricao,
+                Marca = equipamento.Marca,
+                SerialNumber = equipamento.SerialNumber,
+                PartNumber = equipamento.PartNumber,
+                Condicao = equipamento.Condicao,
+                EstoqueId = equipamento.EstoqueId,
+                DocumentoId = equipamento.DocumentoId
             };
+
+            ViewBag.Documentos = await _context.Documentos.Select(d => new EstoqueDocumento { Id = d.Id, Nome = d.Nome }).Distinct().ToListAsync();
+            ViewBag.Estoques = await _context.Estoques.Select(e => new EstoqueDocumento { Id = e.Id, Nome = e.Nome }).Distinct().ToListAsync();
 
             TempData["Mensagem"] = "Erro ao atualizar o patrimônio!";
             TempData["TipoMensagem"] = "error";
@@ -178,26 +195,36 @@ namespace CodeData_Connection.Areas.SistemaA.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Cadastrar(FormsEquipamentoViewModel model)
         {
-            Console.WriteLine("0000000000000000000000000000000");
-
             if (ModelState.IsValid)
             {
                 try
                 {
-                    int documentoId = model.Equipamento.DocumentoId;
+                    int documentoId = model.DocumentoId;
 
                     Console.WriteLine("11111111111111111111111111111111");
-                    
-                    if (!model.FormDocumento.Numero.Equals("") || model.FormDocumento.Numero != null)
+
+                    if (model.Numero == null)
                     {
-                        Console.WriteLine("22222222222222222222222222222222222");
+                        Console.WriteLine("Documento é vazio");
+                    }
+
+                    if (model.Numero != null)
+                    {
+                        Console.WriteLine("22222222222222");
+                        var anexo = "";
+
+                        if (model.Anexo != null)
+                        {
+                            anexo = await FileConverter.ConvertIFormFileToBase64(model.Anexo);
+                            Console.WriteLine("File Converter: " + anexo);
+                        }
 
                         var documento = new Documento
                         {
-                            Numero = model.FormDocumento.Numero,
-                            Nome = model.FormDocumento.Nome,
-                            Tipo = model.FormDocumento.Tipo,
-                            Anexo = FileConverter.ConvertIFormFileToBase64(model.FormDocumento.Anexo)
+                            Numero = model.Numero,
+                            Nome = model.Nome,
+                            Tipo = model.Tipo,
+                            Anexo = anexo
                         };
 
                         _context.Add(documento);
@@ -211,14 +238,14 @@ namespace CodeData_Connection.Areas.SistemaA.Controllers
 
                     var equipamento = new Equipamento
                     {
-                        Codigo = model.Equipamento.Codigo,
-                        Modelo = model.Equipamento.Modelo,
-                        Descricao = model.Equipamento.Descricao,
-                        Marca = model.Equipamento.Marca,
-                        SerialNumber = model.Equipamento.SerialNumber,
-                        PartNumber = model.Equipamento.PartNumber,
-                        Condicao = model.Equipamento.Condicao,
-                        EstoqueId = model.Equipamento.EstoqueId,
+                        Codigo = model.Codigo,
+                        Modelo = model.Modelo,
+                        Descricao = model.Descricao,
+                        Marca = model.Marca,
+                        SerialNumber = model.SerialNumber,
+                        PartNumber = model.PartNumber,
+                        Condicao = model.Condicao,
+                        EstoqueId = model.EstoqueId,
                         DocumentoId = documentoId
                     };
 
@@ -250,14 +277,24 @@ namespace CodeData_Connection.Areas.SistemaA.Controllers
             // Se houver erros de validação, exibir a view de criação novamente com as mensagens de erro
             var viewModel = new FormsEquipamentoViewModel
             {
-                Equipamento = model.Equipamento,
-                Documentos = await _context.Documentos.Select(d => new EstoqueDocumento { Id = d.Id, Nome = d.Nome }).ToListAsync(),
-                Estoques = await _context.Estoques.Select(e => new EstoqueDocumento { Id = e.Id, Nome = e.Nome }).ToListAsync()
+                Codigo = model.Codigo,
+                Modelo = model.Modelo,
+                Descricao = model.Descricao,
+                Marca = model.Marca,
+                SerialNumber = model.SerialNumber,
+                PartNumber = model.PartNumber,
+                Condicao = model.Condicao,
+                EstoqueId = model.EstoqueId,
+                DocumentoId = model.DocumentoId
             };
+
+            ViewBag.Documentos = await _context.Documentos.Select(d => new EstoqueDocumento { Id = d.Id, Nome = d.Nome }).Distinct().ToListAsync();
+            ViewBag.Estoques = await _context.Estoques.Select(e => new EstoqueDocumento { Id = e.Id, Nome = e.Nome }).Distinct().ToListAsync();
 
             // Logar os erros de validação (opcional)
             foreach (var erro in ModelState.Values.SelectMany(v => v.Errors))
             {
+                Console.WriteLine("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
                 Console.WriteLine(erro.ErrorMessage);
                 Console.WriteLine(erro.Exception);
             }
@@ -498,10 +535,25 @@ namespace CodeData_Connection.Areas.SistemaA.Controllers
     // ViewModel para a view de edição
     public class FormsEquipamentoViewModel
     {
-        public Equipamento? Equipamento { get; set; }
-        public FormsDocumentoViewModel? FormDocumento { get; set; }
-        public List<EstoqueDocumento> Documentos { get; set; }
-        public List<EstoqueDocumento> Estoques { get; set; }
+        public int? Id { get; set; }
+        [MaxLength(45)]
+        public string Codigo { get; set; }
+        [MaxLength(70)]
+        public string Modelo { get; set; }
+        public string Descricao { get; set; }
+        [MaxLength(45)]
+        public string Marca { get; set; }
+        [MaxLength(50)]
+        public string SerialNumber { get; set; }
+        [MaxLength(50)]
+        public string PartNumber { get; set; }
+        public bool Condicao { get; set; }
+        public int EstoqueId { get; set; }
+        public int DocumentoId { get; set; }
+        public string? Numero { get; set; }
+        public string? Nome { get; set; }
+        public string? Tipo { get; set; }
+        public IFormFile? Anexo { get; set; }
     }
 
     public class Produto

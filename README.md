@@ -2,7 +2,6 @@
 Foi criado um repositório dedicado à organização de todos os trabalhos da Squad em um único local. Este repositório utiliza a técnica de subtree do Git para integrar eficientemente todos os projetos em um só lugar. Este esforço está alinhado com o trabalho de conclusão de curso (TCC) do curso técnico de Desenvolvimento de Sistemas, visando a colaboração e a eficiência no gerenciamento de código.
 
 ## Integrantes
-- André Roberto Pimentel
 - Diverlan Barbosa Castro
 - Felipe Silva dos Santos
 - Guilherme Henrique Ribeiro

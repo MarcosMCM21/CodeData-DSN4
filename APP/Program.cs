@@ -3,10 +3,14 @@ using Microsoft.EntityFrameworkCore;
 using CodeData_Connection.Areas.Identity.Data;
 using CodeData.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.IdentityModel.Tokens;
 using CodeData_Connection.Services;
 using CodeData_Connection.Middleware;
+using System.Text;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
+var configuration = builder.Configuration;
 var connectionString = builder.Configuration.GetConnectionString("ApplicationDbContextConnection") ?? throw new InvalidOperationException("Connection string 'ApplicationDbContextConnection' not found.");
 
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseMySQL(connectionString));
@@ -33,6 +37,26 @@ builder.Services.ConfigureApplicationCookie(options =>
     //using Microsoft.AspNetCore.Authentication.Cookies;
     options.ReturnUrlParameter = CookieAuthenticationDefaults.ReturnUrlParameter;
 });
+
+builder.Services.AddAuthentication()
+    .AddJwtBearer(options =>
+    {
+        options.RequireHttpsMetadata = false; // Em produção, defina como true
+        options.SaveToken = true;
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(configuration["Authentication:JWT:SecretKey"])),
+
+            ValidateIssuer = false,
+            ValidateAudience = false
+        };
+    });
+
+builder.Services.AddCors(options => options.AddPolicy("ApiCorsPolicy", builder =>
+{
+    builder.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
+}));
 
 builder.Services.AddSession(options =>
 {
@@ -64,6 +88,8 @@ if (!app.Environment.IsDevelopment())
 
 app.UseStatusCodePagesWithReExecute("/Error/{0}");
 
+app.UseCors("ApiCorsPolicy");
+
 app.UseSession();
 
 app.UseHttpsRedirection();
@@ -78,6 +104,10 @@ app.UseAuthorization();
 
 app.UseEndpoints(endpoints =>
 {
+    _ = endpoints.MapControllerRoute(
+       name: "default",
+       pattern: "{controller=Home}/{action=Index}/{id?}");
+
     _ = endpoints.MapAreaControllerRoute(
         name: "sistemaA_default",
         areaName: "SistemaA",
@@ -89,8 +119,10 @@ app.UseEndpoints(endpoints =>
         pattern: "SistemaB/{controller=Home}/{action=Index}/{id?}");
 
     _ = endpoints.MapControllerRoute(
-        name: "default",
-        pattern: "{controller=Home}/{action=Index}/{id?}");
+            name: "api",
+            pattern: "api/authentication/{action}/{id?}",
+            defaults: new { controller = "Authentication" },
+            constraints: new { controller = "Authentication" });
 
     _ = endpoints.MapRazorPages();
 });

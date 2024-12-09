@@ -103,12 +103,12 @@ a {
     padding-left: 0;
 }
 
-.sidebar ul li:last-child {
+/*.sidebar ul li:last-child {
     position: absolute;
-    bottom: 1rem; /* Empurra o �ltimo elemento para a parte inferior */
-    padding-left: inherit;
+    bottom: 1rem;*/ /* Empurra o �ltimo elemento para a parte inferior */
+    /*padding-left: inherit;
     width: inherit
-}
+}*/
 
 .sidebar ul li a {
     display: flex;

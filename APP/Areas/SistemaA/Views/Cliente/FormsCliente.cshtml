@@ -1,0 +1,126 @@
+﻿@using CodeData_Connection.Services
+@model CodeData_Connection.Areas.SistemaA.Controllers.FormsClienteViewModel
+
+@{
+    Layout = CurrentLayout.Layout;
+    ViewData["Title"] = "Cliente";
+}
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col">
+            <form asp-action="@ViewBag.Post" method="post">
+
+            <!-- Forms Cliente -->
+            <div class="card mb-3">
+                <div class="card-header">
+                    @if (ViewBag.Post == "Cadastrar") {
+                        <h5>CADASTRAR CLIENTE</h5>
+                    } else {
+                        <h5>EDITAR CLIENTE</h5>
+                    }
+                </div>
+                <div class="card-body">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" asp-for="Id" />
+
+                    <div class="form-group">
+                        <label asp-for="Nome" class="control-label"></label>
+                        <input asp-for="Nome" class="form-control" />
+                        <span asp-validation-for="Nome" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="CNPJ" class="control-label"></label>
+                        <input asp-for="CNPJ" class="form-control" />
+                        <span asp-validation-for="CNPJ" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Forms Endereço -->
+            <div class="card mb-3">
+                <div class="card-header"><h5>ENDEREÇO</h5></div>
+                <div class="card-body">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" asp-for="EnderecoId" />
+
+                    <div class="form-group">
+                        <label asp-for="CEP" class="control-label"></label>
+                        <input asp-for="CEP" class="form-control" id="cep"/>
+                        <span asp-validation-for="CEP" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Rua" class="control-label"></label>
+                        <input asp-for="Rua" class="form-control" id="rua"/>
+                        <span asp-validation-for="Rua" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Numero" class="control-label">Número</label>
+                        <input asp-for="Numero" class="form-control"/>
+                        <span asp-validation-for="Numero" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Bairro" class="control-label"></label>
+                        <input asp-for="Bairro" class="form-control" id="bairro" />
+                        <span asp-validation-for="Bairro" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Cidade" class="control-label"></label>
+                        <input asp-for="Cidade" class="form-control" id="cidade" />
+                        <span asp-validation-for="Cidade" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Estado" class="control-label"></label>
+                            <input asp-for="Estado" class="form-control" id="estado" />
+                        <span asp-validation-for="Estado" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Complemento" class="control-label"></label>
+                        <input asp-for="Complemento" class="form-control" />
+                        <span asp-validation-for="Complemento" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+                <button type="submit" class="btn btn-primary">Salvar</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        let cep = document.getElementById('cep')
+
+        cep.addEventListener('change', ()=>{
+            let cepValue = cep.value.replace("-", "")
+
+            let rua = document.getElementById('rua')
+            let bairro = document.getElementById('bairro')
+            let cidade = document.getElementById('cidade')
+            let estado = document.getElementById('estado')
+
+            fetch(`https://brasilapi.com.br/api/cep/v1/${cepValue}`)
+                .then(data => data.json())
+                .then(data => 
+                    {
+                        console.log(data)
+                        rua.value = data.street
+                        bairro.value = data.neighborhood
+                        cidade.value = data.city
+                        estado.value = data.state
+                    })
+        })
+    </script>
+}

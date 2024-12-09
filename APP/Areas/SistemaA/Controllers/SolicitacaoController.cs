@@ -4,7 +4,11 @@ using CodeData_Connection.Models.Database.Entidade;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Identity;
+using NuGet.Protocol;
 
 namespace CodeData_Connection.Areas.SistemaA.Controllers
 {
@@ -13,17 +17,53 @@ namespace CodeData_Connection.Areas.SistemaA.Controllers
     public class SolicitacaoController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public SolicitacaoController(ApplicationDbContext context)
+        public SolicitacaoController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         public IActionResult Index(bool tipoSolicitacao)
         {
             ViewBag.TipoSolicitacao = tipoSolicitacao;
-
             return View();
+        }
+
+        public async Task<IActionResult> Cadastrar(bool tipoSolicitacao)
+        {
+            ViewBag.TipoSolicitacao = tipoSolicitacao;
+            ViewBag.Post = "Cadastrar";
+
+            var vendedores = _userManager.GetUsersInRoleAsync("Usuario").Result;
+            var clientes = await _context.Clientes.ToListAsync();
+            var documentos = await _context.Documentos.ToListAsync();
+
+            var equipamentos = await _context.Equipamentos.ToListAsync();
+            List<Equipamento> equipamentosEstoque = new List<Equipamento>();
+
+            foreach (var equipamento in equipamentos)
+            {
+                var movimentacao = await _context.MovimentacoesEquipamentos.FirstOrDefaultAsync(me => me.EquipamentoId == equipamento.Id);
+
+                if (movimentacao == null) 
+                {
+                    equipamentosEstoque.Add(equipamento);
+                }
+            }
+
+            ViewBag.Vendedores = vendedores;
+            ViewBag.Clientes = clientes;
+            ViewBag.Documentos = documentos;
+            ViewBag.Equipamentos = equipamentosEstoque;
+
+            var viewModel = new FormsSolicitacaoViewModel
+            {
+                Equipamentos = equipamentosEstoque
+            };
+
+            return View("FormsSolicitacao", viewModel);
         }
 
         public async Task<IActionResult> ObterDadosSolicitacoes(bool tipoSolicitacao)
@@ -224,6 +264,60 @@ namespace CodeData_Connection.Areas.SistemaA.Controllers
                 .Where(e => equipamentosIds.Contains(e.Id)) // Filtra os documentos pelo ID
                 .ToList(); // Retorna a lista de documentos
         }
+
+        [HttpPost]
+        public IActionResult Cadastrar(FormsSolicitacaoViewModel model, string listaEquipamentos)
+        {
+            Console.WriteLine("TESDGADHFGSOHTGS");
+            Console.WriteLine(listaEquipamentos);
+            
+            return View();
+        }
+    }
+
+    public class FormsSolicitacaoViewModel
+    {
+        public int? Id { get; set; }
+        public bool Tipo { get; set; }
+
+        [MaxLength(50)]
+        public string NumeroContrato { get; set; }
+
+        [Column(TypeName = "DATETIME")]
+        public DateTime DataInicio { get; set; }
+
+        [Column(TypeName = "DATETIME")]
+        public DateTime DataFinal { get; set; }
+
+        [Column(TypeName = "TEXT")]
+        public string Descricao { get; set; }
+
+        [MaxLength(255)]
+        public string UserId { get; set; }
+        public int ClienteId { get; set; }
+        public int DocumentoId { get; set; }
+        public int? EnderecoId { get; set; }
+
+        [MaxLength(9)]
+        public string CEP { get; set; }
+
+        [MaxLength(255)]
+        public string Rua { get; set; }
+
+        public int Numero { get; set; }
+
+        [MaxLength(255)]
+        public string Bairro { get; set; }
+
+        [MaxLength(255)]
+        public string Cidade { get; set; }
+
+        [MaxLength(30)]
+        public string Estado { get; set; }
+
+        [MaxLength(500)]
+        public string Complemento { get; set; }
+        public List<Equipamento> Equipamentos { get; set; }
     }
 
     public class DadosSolicitacaoViewModel

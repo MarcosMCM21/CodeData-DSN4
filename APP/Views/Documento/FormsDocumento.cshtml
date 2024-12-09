@@ -1,34 +1,59 @@
-﻿@model CodeData_Connection.Controllers.FormsDocumentoViewModel
+﻿@using CodeData_Connection.Services
+@model CodeData_Connection.Controllers.FormsDocumentoViewModel
 
-<form asp-action="Editar" method="post">
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <input type="hidden" asp-for="Id" />
+@{
+    Layout = CurrentLayout.Layout;
+    ViewData["Title"] = "Documento";
+}
 
-    <div class="form-group">
-        <label asp-for="Numero" class="control-label"></label>
-        <input asp-for="Numero" class="form-control" />
-        <span asp-validation-for="Numero" class="text-danger"></span>
+<div class="container mt-5">
+    <div class="row">
+        <div class="col">
+            <!-- Forms Documento -->
+            <div class="card mb-3">
+                <div class="card-header">
+                    @if (ViewBag.Post == "Cadastrar") {
+                        <h5>CADASTRAR DOCUMENTO</h5>
+                    } else {
+                        <h5>EDITAR DOCUMENTO</h5>
+                    }
+                    </div>
+                <div class="card-body">
+                    <form asp-action="@ViewBag.Post" method="post" enctype="multipart/form-data">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <input type="hidden" asp-for="Id" />
+
+                        <div class="form-group">
+                            <label asp-for="Numero" class="control-label"></label>
+                            <input asp-for="Numero" class="form-control" />
+                            <span asp-validation-for="Numero" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Nome" class="control-label"></label>
+                            <input asp-for="Nome" class="form-control" />
+                            <span asp-validation-for="Nome" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Tipo" class="control-label"></label>
+                            <input asp-for="Tipo" class="form-control" />
+                            <span asp-validation-for="Tipo" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Anexo" class="control-label"></label>
+                            <input asp-for="Anexo" type="file" class="form-control" accept=".doc,.docx,.pdf"></input>
+                            <span asp-validation-for="Anexo" class="text-danger"></span>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Salvar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <div class="form-group">
-        <label asp-for="Nome" class="control-label"></label>
-        <input asp-for="Nome" class="form-control" />
-        <span asp-validation-for="Nome" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="Tipo" class="control-label"></label>
-        <input asp-for="Tipo" class="form-control" />
-        <span asp-validation-for="Tipo" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="Anexo" class="control-label"></label>
-        <input asp-for="Anexo" type="file" class="form-control" accept=".doc,.docx,.pdf"></input>
-        <span asp-validation-for="Anexo" class="text-danger"></span>
-    </div>
-
-</form>
+</div>
 
 @section Scripts {
     @{

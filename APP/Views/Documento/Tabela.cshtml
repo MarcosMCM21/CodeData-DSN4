@@ -13,7 +13,7 @@
         <div class="actions">
             <button class="btn orange" id="pdf">PDF</button>
             <button class="btn orange" id="xls">XLS</button>
-            <button class="btn orange register-btn">Adicionar Documento</button>
+            <a class="btn orange register-btn" asp-action="Cadastrar">Cadastrar Documento</a>
         </div>
     </header>
 
@@ -91,7 +91,7 @@
                         <td>@documento.Tipo</td>
                         <td>
                             <a type="button" class="btn btn-primary" asp-action="Detalhes" asp-route-id="@documento.Id" data-toggle="tooltip" data-placement="right" title="DETALHES"><i class="fa-regular fa-eye" style="color: white"></i></a>
-                            <a type="button" class="btn btn-warning" href="#" data-toggle="tooltip" data-placement="right" title="EDITAR"><i class="fa-regular fa-pen-to-square"></i></a>
+                            <a type="button" class="btn btn-warning" asp-action="Editar" asp-route-id="@documento.Id" data-toggle="tooltip" data-placement="right" title="EDITAR"><i class="fa-regular fa-pen-to-square"></i></a>
                             <a type="button" class="btn btn-danger" href="#" data-toggle="tooltip" data-placement="right" title="DELETAR"><i class="fa-regular fa-trash-can" style="color: white"></i></a>
                         </td>
                     </tr>

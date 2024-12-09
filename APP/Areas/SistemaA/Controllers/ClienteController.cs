@@ -4,6 +4,11 @@ using CodeData_Connection.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
+using MySql.Data.Types;
+using CodeData_Connection.Controllers;
+using MySqlX.XDevAPI;
 
 namespace CodeData_Connection.Areas.SistemaA.Controllers
 {
@@ -21,6 +26,46 @@ namespace CodeData_Connection.Areas.SistemaA.Controllers
         public IActionResult Index()
         {
             return View();
+        }
+
+        public IActionResult Cadastrar()
+        {
+            ViewBag.Post = "Cadastrar";
+            return View("FormsCliente");
+        }
+
+        public IActionResult Editar(int id)
+        {
+            var cliente = _context.Clientes.Where(c => c.Id == id).FirstOrDefault();
+
+            if (cliente == null) 
+            {
+                return NotFound();
+            }
+
+            var endereco = _context.Enderecos.Where(e => e.Id == cliente.EnderecoId).FirstOrDefault();
+
+            if (endereco == null)
+            {
+                return NotFound();
+            }
+
+            var clienteEndereco = new FormsClienteViewModel
+            {
+                Nome = cliente.Nome,
+                CNPJ = cliente.CNPJ,
+                EnderecoId = cliente.EnderecoId,
+                CEP = endereco.CEP,
+                Rua = endereco.Rua,
+                Numero = endereco.Numero,
+                Bairro = endereco.Bairro,
+                Cidade = endereco.Cidade,
+                Estado = endereco.Estado,
+                Complemento = endereco.Complemento
+            };
+
+            ViewBag.Post = "Editar";
+            return View("FormsCliente", clienteEndereco);
         }
 
         public async Task<IActionResult> ObterDadosCliente()
@@ -82,6 +127,203 @@ namespace CodeData_Connection.Areas.SistemaA.Controllers
 
             return detalhesCliente; // Retorna o ViewModel preenchido
         }
+
+        [HttpPost]
+        public async Task<IActionResult> Cadastrar(FormsClienteViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    Endereco endereco = new Endereco
+                    {
+                        CEP = model.CEP,
+                        Rua = model.Rua,
+                        Numero = model.Numero,
+                        Bairro = model.Bairro,
+                        Cidade = model.Cidade,
+                        Estado = model.Estado,
+                        Complemento = model.Complemento
+                    };
+
+                    _context.Add(endereco);
+                    await _context.SaveChangesAsync();
+
+                    var enderecoId = endereco.Id;
+
+                    Cliente cliente = new Cliente
+                    {
+                        Nome = model.Nome,
+                        CNPJ = model.CNPJ,
+                        EnderecoId = enderecoId
+                    };
+
+                    _context.Add(cliente);
+                    await _context.SaveChangesAsync();
+
+                    TempData["Mensagem"] = "Cliente cadastrado com sucesso!";
+                    TempData["TipoMensagem"] = "success";
+
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (Exception ex)
+                {
+                    // Tratar exceções específicas conforme necessário
+                    Console.WriteLine($"Erro ao cadastrar: {ex.Message}");
+                    TempData["Mensagem"] = "Erro ao cadastrar o cliente!";
+                    TempData["TipoMensagem"] = "error";
+                }
+            }
+
+            var viewModel = new FormsClienteViewModel
+            {
+                Nome = model.Nome,
+                CNPJ = model.CNPJ,
+                EnderecoId = model.EnderecoId,
+                CEP = model.CEP,
+                Rua = model.Rua,
+                Numero = model.Numero,
+                Bairro = model.Bairro,
+                Cidade = model.Cidade,
+                Estado = model.Estado,
+                Complemento = model.Complemento
+            };
+
+            foreach (var erro in ModelState.Values.SelectMany(v => v.Errors))
+            {
+                Console.WriteLine(erro.ErrorMessage);
+                Console.WriteLine(erro.Exception);
+            }
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Editar(int id, FormsClienteViewModel model)
+        {
+            if (id != model.Id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    Cliente cliente = new Cliente
+                    {
+                        Id = (int) model.Id,
+                        Nome = model.Nome,
+                        CNPJ = model.CNPJ
+                    };
+
+                    // 1. Marcar a entidade como modificada
+                    _context.Entry(cliente).State = EntityState.Modified;
+
+                    _context.Entry(cliente).Property(e => e.EnderecoId).IsModified = false;
+                    _context.Entry(cliente).Property(e => e.DataCadastro).IsModified = false;
+
+                    await _context.SaveChangesAsync();
+
+                    Endereco endereco = new Endereco
+                    {
+                        Id = (int) model.EnderecoId,
+                        CEP = model.CEP,
+                        Rua = model.Rua,
+                        Numero = model.Numero,
+                        Bairro = model.Bairro,
+                        Cidade = model.Cidade,
+                        Estado = model.Estado,
+                        Complemento = model.Complemento
+                    };
+
+                    _context.Add(endereco);
+
+                    _context.Entry(endereco).State = EntityState.Modified;
+
+                    _context.Entry(endereco).Property(e => e.Localizacao).IsModified = false;
+                    await _context.SaveChangesAsync();
+
+                    TempData["Mensagem"] = "Cliente atualizado com sucesso!";
+                    TempData["TipoMensagem"] = "success";
+
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!_context.Clientes.Any(c => c.Id == id) || !_context.Enderecos.Any(e => e.Id == model.EnderecoId))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw; // Re-lançar a exceção para tratamento em outro nível
+                    }
+                }
+            }
+
+            var clienteEndereco = new FormsClienteViewModel
+            {
+                Nome = model.Nome,
+                CNPJ = model.CNPJ,
+                EnderecoId = model.EnderecoId,
+                CEP = model.CEP,
+                Rua = model.Rua,
+                Numero = model.Numero,
+                Bairro = model.Bairro,
+                Cidade = model.Cidade,
+                Estado = model.Estado,
+                Complemento = model.Complemento
+            };
+
+            TempData["Mensagem"] = "Erro ao atualizar o cliente!";
+            TempData["TipoMensagem"] = "error";
+
+            // Logar os erros de validação (opcional)
+            foreach (var erro in ModelState.Values.SelectMany(v => v.Errors))
+            {
+                Console.WriteLine(erro.ErrorMessage);
+                Console.WriteLine(erro.Exception);
+            }
+
+            return View(clienteEndereco);
+        }
+    }
+
+    public class FormsClienteViewModel
+    {
+        public int? Id { get; set; }
+
+        [MaxLength(255)]
+        public string Nome { get; set; }
+
+        [MaxLength(20)]
+        public string CNPJ { get; set; }
+
+        public int? EnderecoId { get; set; }
+
+        [MaxLength(9)]
+        public string CEP { get; set; }
+
+        [MaxLength(255)]
+        public string Rua { get; set; }
+
+        public int Numero { get; set; }
+
+        [MaxLength(255)]
+        public string Bairro { get; set; }
+
+        [MaxLength(255)]
+        public string Cidade { get; set; }
+
+        [MaxLength(30)]
+        public string Estado { get; set; }
+
+        [MaxLength(500)]
+        public string Complemento { get; set; }
+
+        [Column(TypeName = "POINT")]
+        public MySqlGeometry Localizacao { get; set; }
     }
 
     public class DetalhesClienteViewModel

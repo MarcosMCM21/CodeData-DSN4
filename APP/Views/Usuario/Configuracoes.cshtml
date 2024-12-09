@@ -12,7 +12,7 @@
         <div class="col">
             <!-- Alteração de Senha -->
             <div class="card mb-3">
-                <div class="card-header"><h5>Alteração de Senha</h5></div>
+                <div class="card-header"><h5>ALTERAR SENHA</h5></div>
                 <div class="card-body">
                     <form asp-action="ChangePassword" method="post">
                         <div class="mb-3">
@@ -38,7 +38,7 @@
 
             <!-- Preferências de Notificações -->
             <div class="card mb-3">
-                <div class="card-header"><h5>Preferências de Notificações</h5></div>
+                <div class="card-header"><h5>PREFERÊNCIAS DE NOTIFICAÇÃO</h5></div>
                 <div class="card-body">
                     <form asp-action="UpdateNotificationPreferences" method="post">
                         <div class="form-check form-switch mb-3">
@@ -47,7 +47,7 @@
                         </div>
                         <div class="form-check form-switch mb-3">
                             <input class="form-check-input" type="checkbox" id="pushNotifications" name="PushNotifications" checked @* @(Model.PushNotifications ? "checked" : "") *@>
-                            <label class="form-check-label" for="pushNotifications">Notificações Push</label>
+                            <label class="form-check-label" for="pushNotifications">Notificações Instantâneas</label>
                         </div>
                     </form>
                 </div>
@@ -55,7 +55,7 @@
 
             <!-- Preferências de Tema -->
             <div class="card mb-3">
-                <div class="card-header"><h5>Preferências de Tema</h5></div>
+                <div class="card-header"><h5>PREFERÊNCIAS DE TEMA</h5></div>
                 <div class="card-body">
                     <form asp-action="UpdateThemeAndLanguage" method="post">
                         <div class="form-check form-switch mb-3">
@@ -68,14 +68,13 @@
 
             <!-- Preferências de Tempo de broqueio de tela -->
             <div class="card mb-3">
-                <div class="card-header"><h5>Configurações de Bloqueio de Tela</h5></div>
+                <div class="card-header"><h5>CONFIGURAR BROQUEIO DE TELA</h5></div>
                 <div class="card-body">
                     <form asp-action="UpdateInactivitySettings" method="post">
                         <div class="form-group">
                             <label for="inactivityTime">Tempo de inatividade antes do bloqueio (em minutos)</label>
                             <select class="form-control" id="inactivityTime" name="InactivityTime">
-                                <option value="5" selected>5 minutos</option>
-                                <option value="10">5 minutos</option>
+                                <option value="5" selected>Padrão (5 minutos)</option>
                                 <option value="10">10 minutos</option>
                                 <option value="15">15 minutos</option>
                                 <option value="20">20 minutos</option>

@@ -1,0 +1,132 @@
+﻿@model IEnumerable<CodeData_Connection.Models.Database.Entidade.Equipamento>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="~/css/table.css">
+    <link rel="stylesheet" href="~/css/datatables.css">
+</head>
+
+<div class="container-table-1">
+    <div class="container-table">
+        <div class="container-fluid mt-3">
+            <div class="row">
+                <!-- Exibir resultados -->
+                <div class="col-md-6 d-flex align-items-center">
+                    <label for="resultsPerPage" class="me-2">Exibir</label>
+                    <select id="resultsPerPage" class="form-select me-2" style="width: auto;">
+                        <option value="10">10</option>
+                        <option value="20">20</option>
+                        <option value="50">50</option>
+                        <option value="-1">Mostrar Todos</option>
+                    </select>
+                    <span>resultados por página</span>
+                </div>
+
+                <!-- Barra de pesquisa e botão de filtro -->
+                <div class="col-md-6 d-flex justify-content-end align-items-center">
+                    <div class="input-group-prepend"><span class="input-group-text">Pesquisar</span></div>
+
+                    <input id="search-input" type="text" class="form-control w-50" placeholder="Buscar Registros">
+
+                    <div class="input-group-append"><button id="search-button" class="btn btn-primary" type="button"><i class="fa-solid fa-magnifying-glass" style="color: white"></i></button></div>
+
+                    <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#filterModal"><i class="fa-solid fa-filter" style="color: white"></i></button>
+                </div>
+            </div>
+        </div>
+
+        <table id="tableEquipamento">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th class="visually-hidden">ID</th>
+                    <th>Patrimônio</th>
+                    <th>Modelo</th>
+                    <th>Descrição</th>
+                    <th>Marca</th>
+                    <th>SN</th>
+                    <th>PN</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach(var equipamento in Model) 
+                {
+                    <tr>
+                        <td></td>
+                        <td class="visually-hidden">@equipamento.Id</td>
+                        <td>@equipamento.Codigo</td>
+                        <td>@equipamento.Modelo</td>
+                        <td>@equipamento.Descricao</td>
+                        <td>@equipamento.Marca</td>
+                        <td>@equipamento.SerialNumber</td>
+                        <td>@equipamento.PartNumber</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://cdn.datatables.net/2.1.5/js/dataTables.js"></script>
+<script src="https://cdn.datatables.net/select/2.0.5/js/dataTables.select.js"></script>
+<script src="https://cdn.datatables.net/select/2.0.5/js/select.dataTables.js"></script>
+<script src="~/js/datatables.js"></script>
+
+<script>
+    let tableEquipamento = new DataTable('#tableEquipamento', {
+        language: {
+            url: '//cdn.datatables.net/plug-ins/2.1.7/i18n/pt-BR.json',
+        },
+
+        lengthMenu: [10, 25, 50, { label: 'Todos', value: -1 }],
+
+        search: {
+            return: false
+        },
+
+        columns: [
+            { data: null, searchable: false, render: DataTable.render.select() },
+            {}, {}, {}, {}, {}, {}, {}
+        ],
+
+        columnDefs: [
+            { orderable: false, targets: [0] },
+            { className: 'dt-head-left dt-body-left', targets: [2] },
+            { className: 'dt-center', targets: '_all' }
+        ],
+
+        select: {
+            style: 'multi',
+            selector: 'td:first-child'
+        },
+
+        layout: {
+            topStart: {
+                'pageLength': true
+            }
+        }
+    });
+
+    $('#resultsPerPage').on('change', function () {
+        tableEquipamento.page.len(this.value).draw();
+    });
+
+    $('#search-input').on('keyup', function () {
+        tableEquipamento.search(this.value).draw();
+    });
+
+    let btnPdf = document.getElementById('pdfEquipamento')
+    let btnXls = document.getElementById('xlsEquipamento')
+
+    btnPdf.addEventListener('click', () => {
+        document.querySelector('.buttons-pdf[aria-controls="tableEquipamento"]').click()
+    })
+
+    btnXls.addEventListener('click', () => {
+        document.querySelector('.buttons-excel[aria-controls="tableEquipamento"]').click()
+    })
+    
+</script>

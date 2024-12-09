@@ -73,16 +73,16 @@
                 @* <span class="tooltip">TELA INICIAL</span> *@
             </li>
 
-            @if (User.IsInRole("Administrador"))
+            @* @if (User.IsInRole("Administrador"))
             {
                 <li data-toggle="tooltip" data-placement="right" title="DASHBOARD">
                     <a asp-controller="Dashboard" asp-action="Index">
                         <img src="~/img/icon-dashboard.svg" alt="">
                         <span class="nav-item">DASHBOARD</span>
                     </a>
-                    @* <span class="tooltip">DASHBOARD</span> *@
+                    <span class="tooltip">DASHBOARD</span>
                 </li>
-            }
+            } *@
 
             <li data-toggle="tooltip" data-placement="right" title="PATRIMÔNIO">
                 <a asp-controller="Patrimonio" asp-action="Index">
@@ -136,13 +136,13 @@
                 </li>
             }
 
-            <li data-toggle="tooltip" data-placement="right" title="COPIADORAS">
+            @* <li data-toggle="tooltip" data-placement="right" title="COPIADORAS">
                 <a asp-area="SistemaB" asp-controller="Home" asp-action="Index">
                     <img src="~/img/icon-printer.svg" alt="">
                     <span class="nav-item">COPIADORAS</span>
                 </a>
-                @* <span class="tooltip">IMPRESSORAS</span> *@
-            </li>
+                <span class="tooltip">IMPRESSORAS</span>
+            </li> *@
 
         </ul>
 

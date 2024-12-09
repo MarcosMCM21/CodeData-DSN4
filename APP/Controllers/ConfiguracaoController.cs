@@ -125,7 +125,7 @@ namespace CodeData_Connection.Controllers
 
             _context.SaveChanges();
 
-            return View("Usuarios");
+            return View("Usuario");
         }
 
         [HttpPost]
@@ -146,7 +146,7 @@ namespace CodeData_Connection.Controllers
 
             _context.SaveChanges();
 
-            return View("Usuarios");
+            return View("Usuario");
         }
     }
 

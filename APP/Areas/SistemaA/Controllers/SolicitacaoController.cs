@@ -66,6 +66,46 @@ namespace CodeData_Connection.Areas.SistemaA.Controllers
             return View("FormsSolicitacao", viewModel);
         }
 
+        public async Task<IActionResult> Editar(int id, bool tipoSolicitacao)
+        {
+            ViewBag.TipoSolicitacao = tipoSolicitacao;
+            ViewBag.Post = "Editar";
+            var dadosSolicitacao = ObterDetalhesSolicitacao(id);
+
+            var vendedores = _userManager.GetUsersInRoleAsync("Usuario").Result;
+            var clientes = await _context.Clientes.ToListAsync();
+            var documentos = await _context.Documentos.ToListAsync();
+
+            var viewModel = new FormsSolicitacaoViewModel
+            {
+                Tipo = dadosSolicitacao.DadosSolicitacao.Solicitacao.Tipo,
+                NumeroContrato = dadosSolicitacao.DadosSolicitacao.Solicitacao.Numero,
+                DataInicio = dadosSolicitacao.DadosSolicitacao.Solicitacao.DataInicio,
+                DataFinal = dadosSolicitacao.DadosSolicitacao.Solicitacao.DataFinal,
+                Descricao = dadosSolicitacao.DadosSolicitacao.Solicitacao.Descricao,
+                UserId = dadosSolicitacao.DadosSolicitacao.Solicitacao.UserId,
+                ClienteId = dadosSolicitacao.DadosSolicitacao.Solicitacao.ClienteId,
+                EnderecoId = dadosSolicitacao.Endereco.Id,
+                CEP = dadosSolicitacao.Endereco.CEP,
+                Rua = dadosSolicitacao.Endereco.Rua,
+                Numero = dadosSolicitacao.Endereco.Numero,
+                Estado = dadosSolicitacao.Endereco.Estado,
+                Complemento = dadosSolicitacao.Endereco.Complemento
+            };
+
+            if (dadosSolicitacao.Equipamentos != null)
+            {
+                viewModel.Equipamentos = dadosSolicitacao.Equipamentos;
+            }
+
+            ViewBag.Vendedores = vendedores;
+            ViewBag.Clientes = clientes;
+            ViewBag.Documentos = documentos;
+            ViewBag.Equipamentos = dadosSolicitacao.Equipamentos;
+
+            return View("FormsSolicitacao", viewModel);
+        }
+
         public async Task<IActionResult> ObterDadosSolicitacoes(bool tipoSolicitacao)
         {
             // 1. Obter as locações do banco de dados
@@ -317,6 +357,10 @@ namespace CodeData_Connection.Areas.SistemaA.Controllers
 
         [MaxLength(500)]
         public string Complemento { get; set; }
+        public string? NumeroDocumento { get; set; }
+        public string? NomeDocumento { get; set; }
+        public string? TipoDocumento { get; set; }
+        public IFormFile? Anexo { get; set; }
         public List<Equipamento> Equipamentos { get; set; }
     }
 

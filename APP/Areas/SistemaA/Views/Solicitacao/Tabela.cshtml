@@ -22,11 +22,11 @@
             <button class="btn orange" id="xls">XLS</button>
             @if (Model.First().Solicitacao.Tipo == false)
             {
-                <a class="btn orange register-btn" asp-action="Cadastrar" asp-route-tipoSolicitacao="@Model.First().Solicitacao.Tipo">Cadastrar Homologação</a>
+                <a class="btn orange register-btn" asp-action="Cadastrar" asp-route-tipoSolicitacao="false">Cadastrar Homologação</a>
             }
             else
             {
-                <a class="btn orange register-btn" asp-action="Cadastrar" asp-route-tipoSolicitacao="@Model.First().Solicitacao.Tipo">Cadastrar Locação</a>
+                <a class="btn orange register-btn" asp-action="Cadastrar" asp-route-tipoSolicitacao="true">Cadastrar Locação</a>
             }
         </div>
     </header>
@@ -138,7 +138,7 @@
                         <td>@solicitacao.Vendedor</td>
                         <td>
                             <a type="button" class="btn btn-primary" asp-action="Detalhes" asp-route-id="@solicitacao.Solicitacao.Id" data-toggle="tooltip" data-placement="right" title="DETALHES"><i class="fa-regular fa-eye" style="color: white"></i></a>
-                            <a type="button" class="btn btn-warning" asp-action="Editar" asp-route-id="@solicitacao.Solicitacao.Id" data-toggle="tooltip" data-placement="right" title="EDITAR"><i class="fa-regular fa-pen-to-square"></i></a>
+                            <a type="button" class="btn btn-warning" asp-action="Editar" asp-route-id="@solicitacao.Solicitacao.Id" asp-route-tipoSolicitacao="@Model.First().Solicitacao.Tipo.ToString().ToLower()" data-toggle="tooltip" data-placement="right" title="EDITAR"><i class="fa-regular fa-pen-to-square"></i></a>
                             <a type="button" class="btn btn-danger" href="#" data-toggle="tooltip" data-placement="right" title="DELETAR"><i class="fa-regular fa-trash-can" style="color: white"></i></a>
                         </td>
                     </tr>

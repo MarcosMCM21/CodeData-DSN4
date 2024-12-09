@@ -11,7 +11,7 @@
 }
 
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" data-bs-theme="dark">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -33,10 +33,12 @@
         if (themeMode === "true") {
             body.classList.remove('theme-light')
             body.classList.add('theme-dark')
+            document.documentElement.setAttribute('data-bs-theme','dark')
         }
         else if (themeMode === "false") {
             body.classList.remove('theme-dark')
             body.classList.add('theme-light')
+            document.documentElement.setAttribute('data-bs-theme','light')
         }
     </script>
 
@@ -173,7 +175,7 @@
             items.forEach(i => {
 
                 if (controller == "Solicitacao" && i.innerHTML.includes(controller)) {
-                    if (i.innerHTML.includes(`tipoSolicitacao=${tipoSolicitacao}`)) i.classList.add("selected")
+                    if (i.innerHTML.includes(`tipoSolicitacao=${tipoSolicitacao}`) || (i.innerHTML.includes(`tipoSolicitacao=${tipoSolicitacao}`) && action == "Cadastrar")) i.classList.add("selected")
                 }
 
                 else if (controller == "Home") {

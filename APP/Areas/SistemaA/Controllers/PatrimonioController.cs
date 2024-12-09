@@ -73,18 +73,20 @@ namespace CodeData_Connection.Areas.SistemaA.Controllers
                 DocumentoId = equipamento.DocumentoId
             };
 
+            ViewBag.Post = "Editar";
             ViewBag.Documentos = await _context.Documentos.Select(d => new EstoqueDocumento { Id = d.Id, Nome = d.Nome }).Distinct().ToListAsync();
             ViewBag.Estoques = await _context.Estoques.Select(e => new EstoqueDocumento { Id = e.Id, Nome = e.Nome }).Distinct().ToListAsync();
 
-            return View(viewModel);
+            return View("FormsPatrimonio", viewModel);
         }
 
         public async Task<IActionResult> Cadastrar()
         {
+            ViewBag.Post = "Cadastrar";
             ViewBag.Documentos = await _context.Documentos.Select(d => new EstoqueDocumento { Id = d.Id, Nome = d.Nome }).Distinct().ToListAsync();
             ViewBag.Estoques = await _context.Estoques.Select(e => new EstoqueDocumento { Id = e.Id, Nome = e.Nome }).Distinct().ToListAsync();
 
-            return View();
+            return View("FormsPatrimonio");
         }
 
         public IActionResult ImportarEquipamentos() 

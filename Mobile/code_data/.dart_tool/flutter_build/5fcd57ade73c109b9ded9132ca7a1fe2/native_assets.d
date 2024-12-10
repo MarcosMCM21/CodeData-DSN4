@@ -1,0 +1,1 @@
+ C:\\Users\\aluno\\Documents\\Warley\\Mobile\\code_data\\.dart_tool\\flutter_build\\5fcd57ade73c109b9ded9132ca7a1fe2\\native_assets.yaml: 

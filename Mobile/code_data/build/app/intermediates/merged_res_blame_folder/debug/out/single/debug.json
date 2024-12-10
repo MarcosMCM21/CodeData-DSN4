@@ -1,0 +1,46 @@
+[
+    {
+        "merged": "C:\\Users\\aluno\\.gradle\\daemon\\8.2.1\\com.example.code_data.app-merged_res-28:\\mipmap-xxhdpi_ic_launcher.png.flat",
+        "source": "C:\\Users\\aluno\\.gradle\\daemon\\8.2.1\\com.example.code_data.app-main-23:\\mipmap-xxhdpi\\ic_launcher.png"
+    },
+    {
+        "merged": "com.example.code_data.app-merged_res-28:/mipmap-mdpi_ic_launcher.png.flat",
+        "source": "com.example.code_data.app-main-23:/mipmap-mdpi/ic_launcher.png"
+    },
+    {
+        "merged": "com.example.code_data.app-merged_res-28:/mipmap-xxxhdpi_ic_launcher.png.flat",
+        "source": "com.example.code_data.app-main-23:/mipmap-xxxhdpi/ic_launcher.png"
+    },
+    {
+        "merged": "com.example.code_data.app-merged_res-28:/mipmap-xhdpi_ic_launcher.png.flat",
+        "source": "com.example.code_data.app-main-23:/mipmap-xhdpi/ic_launcher.png"
+    },
+    {
+        "merged": "C:\\Users\\aluno\\.gradle\\daemon\\8.2.1\\com.example.code_data.app-merged_res-28:\\mipmap-hdpi_ic_launcher.png.flat",
+        "source": "C:\\Users\\aluno\\.gradle\\daemon\\8.2.1\\com.example.code_data.app-main-23:\\mipmap-hdpi\\ic_launcher.png"
+    },
+    {
+        "merged": "C:\\Users\\aluno\\.gradle\\daemon\\8.2.1\\com.example.code_data.app-merged_res-28:\\mipmap-xxxhdpi_ic_launcher.png.flat",
+        "source": "C:\\Users\\aluno\\.gradle\\daemon\\8.2.1\\com.example.code_data.app-main-23:\\mipmap-xxxhdpi\\ic_launcher.png"
+    },
+    {
+        "merged": "com.example.code_data.app-merged_res-28:/mipmap-xxhdpi_ic_launcher.png.flat",
+        "source": "com.example.code_data.app-main-23:/mipmap-xxhdpi/ic_launcher.png"
+    },
+    {
+        "merged": "C:\\Users\\aluno\\.gradle\\daemon\\8.2.1\\com.example.code_data.app-merged_res-28:\\mipmap-mdpi_ic_launcher.png.flat",
+        "source": "C:\\Users\\aluno\\.gradle\\daemon\\8.2.1\\com.example.code_data.app-main-23:\\mipmap-mdpi\\ic_launcher.png"
+    },
+    {
+        "merged": "com.example.code_data.app-merged_res-28:/mipmap-hdpi_ic_launcher.png.flat",
+        "source": "com.example.code_data.app-main-23:/mipmap-hdpi/ic_launcher.png"
+    },
+    {
+        "merged": "C:\\Users\\aluno\\.gradle\\daemon\\8.2.1\\com.example.code_data.app-merged_res-28:\\mipmap-xhdpi_ic_launcher.png.flat",
+        "source": "C:\\Users\\aluno\\.gradle\\daemon\\8.2.1\\com.example.code_data.app-main-23:\\mipmap-xhdpi\\ic_launcher.png"
+    },
+    {
+        "merged": "C:\\Users\\aluno\\.gradle\\daemon\\8.2.1\\com.example.code_data.app-merged_res-28:\\drawable-v21_launch_background.xml.flat",
+        "source": "C:\\Users\\aluno\\.gradle\\daemon\\8.2.1\\com.example.code_data.app-main-23:\\drawable-v21\\launch_background.xml"
+    }
+]

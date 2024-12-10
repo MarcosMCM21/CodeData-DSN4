@@ -108,7 +108,7 @@ namespace CodeData_Connection.Controllers
         }
 
         [HttpPost]
-        public IActionResult BroquearUsuario(string id)
+        public IActionResult BloquearUsuario(string id)
         {
             Console.WriteLine("Usuário irá ser broqueado");
             var usuario = _context.Users.FirstOrDefault(u => u.Id == id);
@@ -125,11 +125,11 @@ namespace CodeData_Connection.Controllers
 
             _context.SaveChanges();
 
-            return View("Usuario");
+            return View("Usuarios");
         }
 
         [HttpPost]
-        public IActionResult DesbroquearUsuario(string id)
+        public IActionResult DesbloquearUsuario(string id)
         {
             Console.WriteLine("Usuário irá ser debroqueado");
             var usuario = _context.Users.FirstOrDefault(u => u.Id == id);
@@ -146,7 +146,7 @@ namespace CodeData_Connection.Controllers
 
             _context.SaveChanges();
 
-            return View("Usuario");
+            return View("Usuarios");
         }
     }
 

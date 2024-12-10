@@ -102,6 +102,8 @@ app.UseAuthentication();
 
 app.UseAuthorization();
 
+app.UseLockScreenMiddleware(); // Redireciona para a tela de LockScreen
+
 app.UseEndpoints(endpoints =>
 {
     _ = endpoints.MapControllerRoute(
@@ -126,7 +128,5 @@ app.UseEndpoints(endpoints =>
 
     _ = endpoints.MapRazorPages();
 });
-
-app.UseLockScreenMiddleware(); // Redireciona para a tela de LockScreen
 
 app.Run();

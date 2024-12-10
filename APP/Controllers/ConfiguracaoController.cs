@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CodeData_Connection.Models;
 using NuGet.Protocol;
+using CodeData_Connection.Models.Database.Entidade;
 namespace CodeData_Connection.Controllers
 {
     [Authorize(Roles = "Administrador")]
@@ -23,7 +24,6 @@ namespace CodeData_Connection.Controllers
 
         public IActionResult Usuarios()
         {
-
             return View();
         }
 
@@ -108,38 +108,33 @@ namespace CodeData_Connection.Controllers
         }
 
         [HttpPost]
-        public IActionResult BloquearUsuario(string id)
+        public IActionResult BloquearUsuario(string email)
         {
-            Console.WriteLine("Usuário irá ser broqueado");
-            var usuario = _context.Users.FirstOrDefault(u => u.Id == id);
+            var usuarios = _context.Users.ToList();
+            var usuario = _context.Users.Where(u => u.Email == email).FirstOrDefault();
 
-            Console.WriteLine(usuario.ToJson()); 
-            if (usuario == null)
+            Console.WriteLine(usuarios.ToJson());
+            Console.WriteLine(usuario);
+
+            if (usuario != null)
             {
-                Console.WriteLine("Deu ruim");
-                return NotFound();
+                Console.WriteLine("Bloquer");
+                _context.Entry(usuario).State = EntityState.Modified;
+                usuario.LockoutEnd = DateTime.Now.AddYears(100);
+                _context.SaveChanges();
             }
-
-            usuario.LockoutEnabled = true;
-            usuario.LockoutEnd = DateTime.Now.AddYears(100);
-
-            _context.SaveChanges();
 
             return View("Usuarios");
         }
 
         [HttpPost]
-        public IActionResult DesbloquearUsuario(string id)
+        public IActionResult DesbloquearUsuario(string email)
         {
-            Console.WriteLine("Usuário irá ser debroqueado");
-            var usuario = _context.Users.FirstOrDefault(u => u.Id == id);
-
-            Console.WriteLine(usuario.ToJson());
+            var usuario = _context.Users.FirstOrDefault(u => u.Email == email);
 
             if (usuario == null)
             {
                 Console.WriteLine("Deu ruim");
-                return NotFound();
             }
 
             usuario.LockoutEnd = DateTime.Now;

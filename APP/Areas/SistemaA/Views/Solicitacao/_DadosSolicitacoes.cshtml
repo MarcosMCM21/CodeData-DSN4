@@ -2,5 +2,9 @@
 
 @await Html.PartialAsync("Tabela", Model.DadosSolicitacao)
 
-<h1>LOCALIZAÇÃO</h1>
-@await Html.PartialAsync("~/Views/Components/_GoogleMapsMultiple.cshtml", Model.ListaEnderecos)
+<div class="card mt-3">
+    <div class="card-header"><h5>LOCALIZAÇÃO DAS SOLICITAÇÕES</h5></div>
+    <div class="card-body">
+        @await Html.PartialAsync("~/Views/Components/_GoogleMapsMultiple.cshtml", Model.ListaEnderecos)
+    </div>
+</div>

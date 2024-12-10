@@ -25,20 +25,16 @@
 </head>
 <body class="theme-light">
     <script>
-        // Script para verificar se o site está no modo escuro ou claro
-        // Mudança de tema está no arquivo _Navbar.cshtml
         let body = document.querySelector("body");
         let themeMode = sessionStorage.getItem("isDarkTheme");
 
         if (themeMode === "true") {
             body.classList.remove('theme-light')
             body.classList.add('theme-dark')
-            document.documentElement.setAttribute('data-bs-theme','dark')
         }
         else if (themeMode === "false") {
             body.classList.remove('theme-dark')
             body.classList.add('theme-light')
-            document.documentElement.setAttribute('data-bs-theme','light')
         }
     </script>
 
@@ -52,11 +48,11 @@
         <script>
             // Script para verificar o estado do menu lateral para ele aparecer maximizado ou minimizado
             let sidebar = document.querySelector('.sidebar')
-            let isMinimized = sessionStorage.getItem("isMinimized");
+            let isMinimized = localStorage.getItem("isMinimized");
             let img = document.getElementById('logo')
 
             if (!isMinimized) {
-                sessionStorage.setItem("isMinimized", "true");
+                localStorage.setItem("isMinimized", "true");
             } else {
                 if (isMinimized === "true") {
                     sidebar.classList.remove("active")
@@ -204,7 +200,7 @@
                     img.src = '/img/logo-codedata2-icon.svg'
                 }
 
-                sessionStorage.setItem("isMinimized", sidebar.classList.contains("active") ? false : true)
+                localStorage.setItem("isMinimized", sidebar.classList.contains("active") ? false : true)
             })
 
             $(function () {

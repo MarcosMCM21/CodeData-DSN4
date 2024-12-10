@@ -7,14 +7,33 @@
     ViewData["Title"] = "Documento";
 }
 
-<h1>DADOS DO DOCUMENTO</h1>
+<div class="container mt-5">
+    <div class="row">
+        <div class="col">
+            <div class="card mb-3">
+                <div class="card-header"><h5>DADOS DO DOCUMENTO</h5></div>
+                <div class="card-body">
+                    <p><strong>NÚMERO:</strong> @Model.Numero</p>
+                    <p><strong>NOME:</strong> @Model.Nome</p>
+                    <p><strong>TIPO:</strong> @Model.Tipo</p>
+                    <p><strong>DATA CADASTRO:</strong> @Model.DataCadastro</p>
+                </div>
+            </div>
 
-<p><strong>NÚMERO:</strong> @Model.Numero</p>
-<p><strong>NOME:</strong> @Model.Nome</p>
-<p><strong>TIPO:</strong> @Model.Tipo</p>
-<p><strong>DATA CADASTRO:</strong> @Model.DataCadastro</p>
+            <script>
+                console.log("@Model.Anexo")
+            </script>
 
-@if (Model.Anexo != null)
-{
-    <iframe src="data:application/pdf;base64,@Model.Anexo" style="width: 80%; height: 1200px;"></iframe>
-}
+            @if (!Model.Anexo.Equals(""))
+            {
+                <div class="card mb-3">
+                    <div class="card-header"><h5>VISUALIZAR DOCUMENTO</h5></div>
+                    <div class="card-body text-center">
+                        <iframe src="data:application/pdf;base64,@Model.Anexo" style="width: 80%; height: 1200px;"></iframe>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+

@@ -101,12 +101,12 @@
                             @if (usuario.Usuario.LockoutEnd.HasValue && usuario.Usuario.LockoutEnd > DateTime.Now)
                             {
                                 // Usuário bloqueado - Mostrar link para desbloquear
-                                <a type="button" class="btn btn-danger" asp-controller="Configuracao" asp-action="DesbloquearUsuario" asp-route-id="@usuario.Usuario.Id" data-toggle="tooltip" data-placement="right" title="DESBLOQUEAR"><i class="fa-solid fa-lock" style="color: white"></i></a>
+                                <a type="button" class="btn btn-danger" asp-controller="Configuracao" asp-action="DesbloquearUsuario" asp-route-id="@usuario.Usuario.Email" data-toggle="tooltip" data-placement="right" title="DESBLOQUEAR"><i class="fa-solid fa-lock" style="color: white"></i></a>
                             }
                             else
                             {
                                 // Usuário desbloqueado - Mostrar link para bloquear
-                                <a type="button" class="btn btn-danger" asp-controller="Configuracao" asp-action="BloquearUsuario" asp-route-id="@usuario.Usuario.Id" data-toggle="tooltip" data-placement="right" title="BLOQUEAR"><i class="fa-solid fa-unlock" style="color: white"></i></a>
+                                <a type="button" class="btn btn-danger" asp-controller="Configuracao" asp-action="BloquearUsuario" asp-route-id="@usuario.Usuario.Email" data-toggle="tooltip" data-placement="right" title="BLOQUEAR"><i class="fa-solid fa-unlock" style="color: white"></i></a>
                             }
 
                         </td>

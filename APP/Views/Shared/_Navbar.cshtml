@@ -145,18 +145,19 @@
     </div>
 
     <script>
-        window.addEventListener("DOMContentLoaded", () => {
+        window.addEventListener('load', ()=>{
             let darkTheme = document.getElementById('dark-theme')
 
-            darkTheme.checked = sessionStorage.getItem("isDarkTheme") ? true : false
+            darkTheme.checked = sessionStorage.getItem("isDarkTheme") === "true" ? true : false
 
             darkTheme.addEventListener('click', () => {
                 let body = document.querySelector("body");
-                let isDark = darkTheme.checked
 
-                if (isDark == false) {
+                if (sessionStorage.getItem("isDarkTheme") === "true") {
                     body.classList.remove('theme-dark')
                     body.classList.add('theme-light')
+
+                    console.log("1")
 
                     sessionStorage.setItem("isDarkTheme", false);
 
@@ -164,9 +165,12 @@
                     body.classList.remove('theme-light')
                     body.classList.add('theme-dark')
 
+                    console.log("2")
+
                     sessionStorage.setItem("isDarkTheme", true);
                 }
 
+                darkTheme.checked = sessionStorage.getItem("isDarkTheme") === "true" ? true : false
             })
         })
 

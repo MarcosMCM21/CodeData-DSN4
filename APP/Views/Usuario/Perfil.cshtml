@@ -21,11 +21,11 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <p><strong>Nome: </strong> @Model.FirstName</p>
-                    <p><strong>Sobrenome: </strong> @Model.LastName</p>
-                    <p><strong>Username: </strong> @Model.UserName</p>
+                    <p><strong>NOME: </strong> @Model.FirstName</p>
+                    <p><strong>SOBRENOME: </strong> @Model.LastName</p>
+                    <p><strong>USERNAME: </strong> @Model.UserName</p>
                     <p>
-                        <strong>Email: </strong> @Model.Email
+                        <strong>EMAIL: </strong> @Model.Email
                         @if (!Model.EmailConfirmed)
                         {
                             <span class="badge bg-warning">Não Verificado</span>
@@ -36,10 +36,10 @@
                             <span class="badge bg-success">Verificado</span>
                         }
                     </p>
-                    <p><strong>Data de Criação da Conta: </strong> @Model.DataCadastro.ToString("dd/MM/yyyy")</p>
+                    <p><strong>DATA DE CRIAÇÃO DA CONTA: </strong> @Model.DataCadastro.ToString("dd/MM/yyyy")</p>
                     @* <p><strong>Última vez logado: </strong> @Model.LastLogin.ToString("dd/MM/yyyy HH:mm")</p> *@
                     <p>
-                        <strong>Status da Conta: </strong>
+                        <strong>STATUS DA CONTA: </strong>
                         @if (Model.LockoutEnabled)
                         {
                             <span class="badge bg-success">Ativa</span>
